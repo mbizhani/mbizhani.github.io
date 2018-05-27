@@ -1,0 +1,36 @@
+title: Evocative Development
+email: mbizhani@gmail.com
+description: Learning by Sharing
+
+baseurl: ""
+url: ""
+permalink: /:categories/:title
+
+github_username: mbizhani
+linkedin_username: mbizhani
+
+# Build settings
+markdown: kramdown
+theme: minima
+plugins:
+  - jekyll-feed
+
+defaults:
+  -
+    scope:
+      path: ""
+      type: "posts"
+    values:
+      author: "Mehdi Bizhani"
+
+# Exclude from processing.
+# The following items will not be processed, by default. Create a custom list
+# to override the default setting.
+# exclude:
+#   - Gemfile
+#   - Gemfile.lock
+#   - node_modules
+#   - vendor/bundle/
+#   - vendor/cache/
+#   - vendor/gems/
+#   - vendor/ruby/
