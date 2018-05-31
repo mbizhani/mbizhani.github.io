@@ -2,9 +2,10 @@ title: Evocative Development
 email: mbizhani@gmail.com
 description: Learning by Sharing
 
-baseurl: ""
-url: ""
+#baseurl: ""
+url: "http://www.devocative.org"
 permalink: /:categories/:title
+show_excerpts: true
 
 github_username: mbizhani
 linkedin_username: mbizhani
