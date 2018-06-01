@@ -1,7 +1,6 @@
 ---
 layout: page
 title: About
-permalink: /about/
 ---
 
 Software production is full of challenges: 
@@ -26,62 +25,52 @@ This family is the essence of all my experiences and a proof of concept to devel
 		<th>First Name</th>
 		<td>Mehdi</td>
 
-		<th>Sex</th>
-		<td>Male</td>
+		<th>Email</th>
+		<td><a href="mailto:mbizhani@gmail.com" target="_blank">mbizhani@gmail.com</a></td>
 	</tr>
 
 	<tr>
 		<th>Last Name</th>
 		<td>Bizhani</td>
 
-		<th>Marital</th>
-		<td>Single</td>
+		<th>BS Degree</th>
+		<td>Computer Engineering</td>
 	</tr>
 
 	<tr>
 		<th>Birth Date</th>
 		<td>21-August-1981</td>
 
-		<th>BS Degree</th>
-		<td>Computer Engineering</td>
-	</tr>
-
-	<tr>
-		<th>Country</th>
-		<td>Iran</td>
-
 		<th>MS Degree</th>
 		<td>Information Technology Engineering</td>
 	</tr>
 
 	<tr>
-		<th>City</th>
-		<td>Tehran</td>
+		<th>Location</th>
+		<td>Iran / Tehran</td>
 
 		<th>Linkedin</th>
 		<td><a href="https://www.linkedin.com/in/mbizhani" target="_blank">linkedin.com/in/mbizhani</a></td>
 	</tr>
 
 	<tr>
-		<th>Email</th>
-		<td><a href="mailto:mbizhani@gmail.com" target="_blank">mbizhani@gmail.com</a></td>
+		<th>Web Site</th>
+		<td><a href="http://www.devocative.org" target="_blank">www.devocative.org</a></td>
 
 		<th>GitHub</th>
 		<td><a href="https://github.com/mbizhani" target="_blank">github.com/mbizhani</a></td>
 	</tr>
 
 	<tr>
-		<th>Cell</th>
-		<td>+98 912 3895295</td>
-
-		<th>Web Site</th>
-		<td><a href="http://www.devocative.org" target="_blank">www.devocative.org</a></td>
-	</tr>
-
-	<tr>
 		<th>Experience</th>
 		<td colspan="3">
-			13 years in software development and engineering based on Java platform mainly using Spring, Hibernate, Wicket, Maven, JQuery, Oracle Database, Groovy, and DevOps recently
+		    <ul>
+		        <li>13 years in software development and engineering</li>
+		        <li>Java platform mainly using Spring, Hibernate, Wicket, Groovy, and Maven</li>
+		        <li>Frontend mainly JQuery, EasyUI, and SCSS</li>
+		        <li>SQL & Database mainly Oracle, HSQLDB, and MySQL</li>
+		        <li>Linux mainly Debian & Oracle</li>
+		    </ul>
 		</td>
 	</tr>
 
