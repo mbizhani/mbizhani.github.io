@@ -1,0 +1,119 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    {%- seo title=false -%}
+
+    {%- feed_meta -%}
+
+    {%- if jekyll.environment == 'production' and site.google_analytics -%}
+    {%- include google-analytics.html -%}
+    {%- endif -%}
+
+    <title>
+        {% if page.caption %}
+        {{ page.caption }} | {{ site.title }}
+        {% else %}
+        {{ site.title }}
+        {% endif %}
+    </title>
+
+    <link rel="stylesheet" href="/assets/reveal/css/reveal.css">
+    <link rel="stylesheet" href="/assets/reveal/css/custom.css">
+    {%if page.theme %}
+    <link rel="stylesheet" href="/assets/reveal/css/theme/{{ page.theme }}.css" id="theme">
+    {% else %}
+    <link rel="stylesheet" href="/assets/reveal/css/theme/black.css" id="theme">
+    {% endif %}
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="/assets/reveal/lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        if (window.location.search.match(/print-pdf/gi)) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = 'text/css';
+            link.href = '/assets/reveal/css/print/pdf.css';
+            document.getElementsByTagName('head')[0].appendChild(link);
+        }
+    </script>
+
+    <style>
+    </style>
+</head>
+
+<body>
+<div class="m-header" style="background-color: #1b91ff;">
+    <table>
+        <tr>
+            <td style="width:10px;">
+                {% if site.title %}
+                <a href="/">{{ site.title }}</a>
+                {% endif %}
+            </td>
+            <td></td>
+            <td style="width:10px;padding: 0 8px;"><a id="m-pdf" href="?print-pdf" target="_blank">[print]</a></td>
+            {% if site.author %}
+            <td style="width:10px;">{{ site.author }}</td>
+            {% endif %}
+        </tr>
+    </table>
+
+</div>
+{%if page.caption %}
+<div class="m-header" style="z-index:20;text-align:center;">{{ page.caption }}</div>
+{% endif %}
+<div class="reveal">
+    <div class="slides">
+        {{ content }}
+    </div>
+</div>
+
+<script src="/assets/reveal/lib/js/head.min.js"></script>
+<script src="/assets/reveal/reveal.js"></script>
+
+<script>
+    Reveal.initialize({
+        center: true,
+        controls: true,
+        history: true,
+        progress: true,
+        slideNumber: true,
+        menu: {
+            numbers: true,
+            themes: true,
+            themesPath: '/assets/reveal/css/theme/',
+            transitions: true
+        },
+        {% if page.transition %}
+        transition: '{{ page.transition }}',
+        {% else %}
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        {% endif %}
+        dependencies: [
+            {src: '/assets/reveal/plugin/markdown/marked.js'},
+            {src: '/assets/reveal/plugin/markdown/markdown.js'},
+            {src: '/assets/reveal/plugin/notes/notes.js', async: true},
+            {src: '/assets/reveal/plugin/zoom-js/zoom.js', async: true},
+            {src: '/assets/reveal/plugin/menu/menu.js', async: true},
+            {
+                src: '/assets/reveal/plugin/highlight/highlight.js', async: true, callback: function () {
+                    hljs.initHighlightingOnLoad();
+                }
+            }
+        ]
+    });
+
+    window.onload = function (ev) {
+        if (window.location.search.match(/print-pdf/gi)) {
+            document.getElementById("m-pdf").style.display = "none";
+            window.print();
+        }
+    };
+</script>
+</body>
+</html>

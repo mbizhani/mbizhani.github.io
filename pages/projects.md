@@ -54,6 +54,7 @@ The list and class-diagram of the components are in the project homepage.
 ### Adroit
 [<svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg>](https://github.com/mbizhani/Adroit)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.devocative/adroit/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.devocative/adroit)
+
 The Adroit project is a collection of common and utility classes, specially used in `Demeter` project.
 
 

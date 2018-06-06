@@ -1,0 +1,22 @@
+.m-header {
+    position: absolute;
+    font-family: Helvetica, sans-serif;
+    color: black;
+    width: 100%;
+    z-index: 10;
+}
+
+.m-header a {
+    text-decoration: none;
+    color: black;
+}
+
+.m-header a:hover {
+    text-decoration: underline;
+}
+
+.m-header > table {
+    border: 0;
+    white-space: nowrap;
+    width: 100%;
+}
