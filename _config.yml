@@ -1,9 +1,10 @@
 title: Evocative Development
 email: mbizhani@gmail.com
-description: Learning by Sharing
+description: Learning by Sharing @ Devocative.Org
+author: Mehdi Bizhani
 
-#baseurl: ""
 url: "http://www.devocative.org"
+google_analytics: true
 permalink: /:categories/:title
 show_excerpts: true
 
@@ -22,7 +23,7 @@ defaults:
       path: ""
       type: "posts"
     values:
-      author: "Mehdi Bizhani"
+      author: Mehdi Bizhani
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
