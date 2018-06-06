@@ -55,7 +55,7 @@ This family is the essence of all my experiences and a proof of concept to devel
 
 	<tr>
 		<th>Web Site</th>
-		<td><a href="http://www.devocative.org" target="_blank">www.devocative.org</a></td>
+		<td><a href="https://www.devocative.org" target="_blank">devocative.org</a></td>
 
 		<th>GitHub</th>
 		<td><a href="https://github.com/mbizhani" target="_blank">github.com/mbizhani</a></td>
