@@ -17,11 +17,10 @@ layout: default
 			{%- endif -%}
 			{%- if page.update -%}
 			<br/>
-			Update:
 			<time class="dt-published" datetime="{{ page.update | date_to_xmlschema }}">
 				{%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
 				{{ page.update | date: date_format }}
-			</time>
+			</time> (updated)
 			{%- endif -%}
 		</p>
 	</header>
