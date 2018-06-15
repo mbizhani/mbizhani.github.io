@@ -11,7 +11,94 @@ This part tries to summarise `Stream` API in Java 8.
 `Stream` class, itself, is an Java interface, but it has some static methods to create a stream. Some other classes
 like collections has a specific method to return a Stream.
 
+```java
+import org.junit.Test;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.junit.Assert.assertEquals;
+
+public class TestStream {
+  @Test
+  public void testFibonacci() {
+    Stream<int[]> iterate;
+
+    iterate = Stream.iterate(new int[]{1, 1}, n -> new int[]{n[1], n[0] + n[1]});
+    int nth = iterate
+      .peek(n -> System.out.printf("Debug: %s \n", Arrays.toString(n)))
+      .limit(5)
+      .reduce((a, b) -> b)
+      .get()[1];
+    assertEquals(8, nth);
+
+    iterate = Stream.iterate(new int[]{1, 1}, n -> new int[]{n[1], n[0] + n[1]});
+    List<Integer> list = iterate
+      .limit(5)
+      .map(n -> n[1])
+      .collect(Collectors.toList());
+    assertEquals(list, Arrays.asList(1, 2, 3, 5, 8));
+  }
+
+  @Test
+  public void test_Files_FlatMap_Distinct_Sorted() throws IOException {
+    final String content = "test01 passed\ntest02 passed\ntest11 failed";
+    final String grepped = "test01 passed\ntest11 failed";
+
+    final List<String> words =
+      Arrays.asList("test01", "passed", "test02", "passed", "test11", "failed");
+
+    final List<String> distinctWords =
+      Arrays.asList("test01", "passed", "test02", "test11", "failed");
+
+    final List<String> sortedWords =
+      Arrays.asList("test11", "test02", "test01", "passed", "failed");
+
+    final Path file = Files.createTempFile("__", "__");
+    Files.write(file, content.getBytes());
+
+    try (Stream<String> stream = Files.lines(file)) {
+      String result = stream
+        .filter(line -> line.contains("1"))
+        .collect(Collectors.joining("\n"));
+      assertEquals(grepped, result);
+    }
+
+    try (Stream<String> stream = Files.lines(file)) {
+      List<String> result = stream
+        .flatMap(line -> Stream.of(line.split("\\s")))
+        .collect(Collectors.toList());
+      assertEquals(words, result);
+    }
+
+    try (Stream<String> stream = Files.lines(file)) {
+      List<String> result = stream
+        .flatMap(line -> Stream.of(line.split("\\s")))
+        .distinct()
+        .collect(Collectors.toList());
+      assertEquals(distinctWords, result);
+    }
+
+    try (Stream<String> stream = Files.lines(file)) {
+      List<String> result = stream
+        .flatMap(line -> Stream.of(line.split("\\s")))
+        .distinct()
+        .sorted(Comparator.reverseOrder())
+        .collect(Collectors.toList());
+      assertEquals(sortedWords, result);
+    }
+  }
+}
+```
+
 ### Creation
+The following methods return an `Stream` object.
 
 <table>
 	<tr>
@@ -25,9 +112,13 @@ like collections has a specific method to return a Stream.
 	</tr>
 	
 	<tr>
-		<td><code>Stream.of(T... varg)</code></td>
 		<td>
-			<code>Stream&lt;Integer&gt; stream = Stream.of(1, 5, 7)</code>
+			<code>Stream.of(T... varg)</code>
+			<br/>
+			<code>IntStream.of(int... varg)</code>
+		</td>
+		<td>
+			<code>Stream&lt;String&gt; stream = Stream.of("1", "5", "7")</code>
 		</td>
 	</tr>
 	
@@ -73,7 +164,9 @@ Stream.iterate(
 	</tr>
 </table>
 
-### Transformation
+### Transformation & Resizing
+The following methods return an `Stream` or Stream-based object.
+
 <table>
 	<tr>
 		<th>API</th>
@@ -86,7 +179,7 @@ Stream.iterate(
 <pre>
 // T t -&gt; boolean
 public interface Predicate&lt;T&gt; {
-    boolean test(T t);
+  boolean test(T t);
 }</pre>
 so
 <code>filter(n -&gt; n > 12)</code>
@@ -94,12 +187,12 @@ so
 	</tr>
 	
 	<tr>
-		<td><code>map(Function&lt;? super T, ? extends R&gt; mapper</code></td>
+		<td><code>map(Function&lt;? super T, ? extends R&gt; mapper)</code></td>
 		<td>
 <pre>
 // T t -&gt; R
 public interface Function&lt;T, R&gt; {
-    R apply(T t);
+  R apply(T t);
 }</pre>
 so
 <code>map(s -&gt; s.length())</code>
@@ -107,10 +200,29 @@ so
 	</tr>
 	
 	<tr>
+		<td><code>mapToInt(ToIntFunction&lt;? super T&gt; mapper): <b>IntStream</b></code></td>
+		<td>
+<pre>
+// T t -&gt; int
+public interface ToIntFunction&lt;T&gt; {
+  int applyAsInt(T value);
+}</pre>
+so
+<code>mapToInt(s -&gt; s.length())</code>
+		</td>
+	</tr>
+	
+	<tr>
+		<td colspan="2">
+			<code>mapToLong()</code> and <code>mapToDouble()</code> are similar to the above.
+		</td>
+	</tr>	
+	
+	<tr>
 		<td>
 <pre>
 flatMap(Function&lt;? super T,
-  ? extends Stream&lt;? extends R&gt;&gt; mapper</pre>
+  ? extends Stream&lt;? extends R&gt;&gt; mapper)</pre>
 		</td>
 		<td>
 <pre>
@@ -120,64 +232,88 @@ Stream&lt;String&gt; words = lines.flatMap(
 		</td>
 	</tr>
 
+	<tr>
+		<td><code>limit(long n)</code></td>
+		<td>
+	    	Returns a stream consisting of the <em>first n</em> elements in the encounter order, 
+	    	so it can be quite expensive on ordered parallel pipelines.
+	    	<br/>
+	    	<b>Note</b>: If ordered elements is required, and there is poor performance or memory utilization with
+			limit() in parallel pipelines, switching to sequential execution with sequential() may improve performance.
+		</td>
+	</tr>
+
+	<tr>
+		<td><code>skip(long n)</code></td>
+		<td>
+	    	Returns a stream remaining of the elements after discarding the <em>first n</em> elements in the encounter order, 
+	    	so it can be quite expensive on ordered parallel pipelines.
+	    	<br/>
+	    	If this stream contains fewer than <em>n</em> elements then an empty stream will be returned.
+	    	<br/>
+	    	<b>Note</b>: the note in limit()
+		</td>
+	</tr>
+
+	<tr>
+		<td><code>distinct()</code></td>
+		<td>
+			Returns a stream consisting of the distinct elements (according to equals()).
+			<br/>
+			For ordered streams, the selection of distinct elements is stable, however for unordered streams no stability guarantees are made.
+	    	<br/>
+	    	<b>Note</b>: the note in limit()
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+			<code>sorted()</code>
+			<br/>
+			<code>sorted(Comparator&lt;? super T&gt; comparator)</code>
+		</td>
+		<td>
+			Returns a stream of sorted elements according to natural order or given <em>comparator</em>.
+			<br/>
+			For ordered streams, the sort is stable, however for unordered streams no stability guarantees are made.
+		</td>
+	</tr>
 </table>
 
-```java
-import org.junit.Test;
+### Reduction & Collection
+- These methods are _terminal operations_ and get the final answer from a `Stream`.
+- Reduction ones mostly return an `Optional` object
+- Collection ones mostly return a `Collection`
+- Afters calling these methods, the `Stream` object is closed
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.junit.Assert.assertEquals;
-
-public class TestStream {
-  @Test
-  public void testFibonacci() {
-    Stream<int[]> iterate;
-
-    iterate = Stream.iterate(new int[]{1, 1}, n -> new int[]{n[1], n[0] + n[1]});
-    int nth = iterate
-      .limit(5)
-      .reduce((a, b) -> b)
-      .get()[1];
-    assertEquals(8, nth);
-
-    iterate = Stream.iterate(new int[]{1, 1}, n -> new int[]{n[1], n[0] + n[1]});
-    List<Integer> list = iterate
-      .limit(5)
-      .map(n -> n[1])
-      .collect(Collectors.toList());
-    assertEquals(list, Arrays.asList(1, 2, 3, 5, 8));
-  }
-
-  @Test
-  public void testFileAndFlatMap() throws IOException {
-    final String content = "test01 passed\ntest02 passed\ntest11 failed";
-    final String grepped = "test01 passed\ntest11 failed";
-    final List<String> words = Arrays.asList("test01", "passed",
-      "test02", "passed", "test11", "failed");
-
-    final Path file = Files.createTempFile("__", "__");
-    Files.write(file, content.getBytes());
-
-    try (Stream<String> stream = Files.lines(file)) {
-      String result = stream
-        .filter(line -> line.contains("1"))
-        .collect(Collectors.joining("\n"));
-      assertEquals(grepped, result);
-    }
-
-    try (Stream<String> stream = Files.lines(file)) {
-      List<String> result = stream
-        .flatMap(line -> Stream.of(line.split("\\s")))
-        .collect(Collectors.toList());
-      assertEquals(words, result);
-    }
-  }
-}
-```
+ <table>
+ 	<tr>
+ 		<th>API</th>
+ 		<th>Description</th>
+ 	</tr>
+ 	
+ 	<tr>
+ 		<td><code>count(): long</code></td>
+ 		<td>
+			Count the elements in this stream.
+			<br/>
+			This is a special case of reduction equivalent to:
+			<br/>
+			<code>return mapToLong(e -> 1L).sum();</code>
+ 		</td>
+ 	</tr>
+ 	
+ 	<tr>
+ 		<td>
+ 			<code>max()</code>
+ 			<code>min()</code>
+ 			<code>sum()</code>
+ 			<code>average()</code>
+ 			<code>summaryStatistics()</code>
+ 		</td>
+ 		<td>
+ 			The related mathematical function is applied on the numerical elements of the Stream.
+ 			So the stream must be <code>IntStream</code>, <code>LongStream</code>, or <code>DoubleStream</code>.  
+ 		</td>
+ 	</tr>
+</table>
