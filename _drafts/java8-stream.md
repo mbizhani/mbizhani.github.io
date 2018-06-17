@@ -5,7 +5,9 @@ categories: article tech
 excerpt: An introduction to Java 8, Stream
 ---
 
-This part tries to summarise `Stream` API in Java 8.
+In this part, a summary of `Stream` API in Java 8 is introduced. Although there are various tutorials in the Web, 
+this text attempts to highlight the important points. The previous part, [Functional Programming](/article/tech/java8-fp), 
+addressed functional programming and Lambda paradigm in Java 8. 
 
 ## Stream
 `Stream` class, itself, is a Java interface with some static methods to create a stream. Some other classes
@@ -14,8 +16,8 @@ and the following sections describes those APIs.
 
 The APIs can be divided into three groups
 - Creating a Stream ([Creation](#creation))
-- Applying a middle-process operation on the elements and returns a Stream ([Transformation & Resizing](#transformation-&-resizing))
-- Returning a proper result ([Reduction & Collection](#reduction-&-collection))
+- Applying an intermediate processing operation on the elements and returning a new Stream ([Transformation & Resizing](#transformation-&-resizing))
+- Returning a proper result, also called _terminal operations_ ([Reduction & Collection](#reduction-&-collection))
 
 
 ```java
@@ -24,15 +26,17 @@ import org.junit.Test;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
 
 public class TestStream {
+
   @Test
   public void testFibonacci() {
     Stream<int[]> iterate;
@@ -49,12 +53,13 @@ public class TestStream {
     List<Integer> list = iterate
       .limit(5)
       .map(n -> n[1])
+      //.collect(ArrayList::new, ArrayList::add, ArrayList::addAll)
       .collect(Collectors.toList());
     assertEquals(list, Arrays.asList(1, 2, 3, 5, 8));
   }
 
   @Test
-  public void test_Files_FlatMap_Distinct_Sorted() throws IOException {
+  public void test_Files_FlatMap_Distinct_Sorted_Reduction() throws IOException {
     final String content = "test01 passed\ntest02 passed\ntest11 failed";
     final String grepped = "test01 passed\ntest11 failed";
 
@@ -64,41 +69,161 @@ public class TestStream {
     final List<String> distinctWords =
       Arrays.asList("test01", "passed", "test02", "test11", "failed");
 
-    final List<String> sortedWords =
+    final List<String> sortedDistinctWords =
       Arrays.asList("test11", "test02", "test01", "passed", "failed");
 
     final Path file = Files.createTempFile("__", "__");
     Files.write(file, content.getBytes());
 
-    try (Stream<String> stream = Files.lines(file)) {
-      String result = stream
+    // Grepping lines containing '1'
+    try (Stream<String> lines = Files.lines(file)) {
+      String result = lines
         .filter(line -> line.contains("1"))
         .collect(Collectors.joining("\n"));
       assertEquals(grepped, result);
     }
 
-    try (Stream<String> stream = Files.lines(file)) {
-      List<String> result = stream
+    // List of words
+    try (Stream<String> lines = Files.lines(file)) {
+      List<String> result = lines
         .flatMap(line -> Stream.of(line.split("\\s")))
         .collect(Collectors.toList());
       assertEquals(words, result);
     }
 
-    try (Stream<String> stream = Files.lines(file)) {
-      List<String> result = stream
+    // List of distinct words
+    try (Stream<String> lines = Files.lines(file)) {
+      List<String> result = lines
         .flatMap(line -> Stream.of(line.split("\\s")))
         .distinct()
         .collect(Collectors.toList());
       assertEquals(distinctWords, result);
     }
 
-    try (Stream<String> stream = Files.lines(file)) {
-      List<String> result = stream
+    // List of distinct & descending-sorted words
+    try (Stream<String> lines = Files.lines(file)) {
+      List<String> result = lines
         .flatMap(line -> Stream.of(line.split("\\s")))
         .distinct()
         .sorted(Comparator.reverseOrder())
         .collect(Collectors.toList());
-      assertEquals(sortedWords, result);
+      assertEquals(sortedDistinctWords, result);
+    }
+
+    // List of distinct & descending-sorted words
+    try (Stream<String> lines = Files.lines(file)) {
+      String result = lines
+        .flatMap(line -> Stream.of(line.split("\\s")))
+        .distinct()
+        .sorted(Comparator.reverseOrder())
+        .findFirst() // min(Comparator.reverseOrder()) instead of sorted() & findFirst()
+        .get();
+      assertEquals("test11", result);
+    }
+
+    // Count number of words
+    try (Stream<String> lines = Files.lines(file)) {
+      long result = lines
+        .flatMap(line -> Stream.of(line.split("\\s")))
+        .count();
+      assertEquals(words.size(), result);
+    }
+
+    // Count number of characters of words (1/2)
+    String fileAsStr = new String(Files.readAllBytes(file));
+    long result = Pattern.compile("\\s")
+      .splitAsStream(fileAsStr)
+      .mapToLong(String::length)
+      .sum();
+    assertEquals(36, result);
+
+    // Count number of characters of words (2/2)
+    fileAsStr = new String(Files.readAllBytes(file));
+    result = Pattern.compile("\\s")
+      .splitAsStream(fileAsStr)
+      .reduce(0L,
+        (total, word) -> total + word.length(),
+        (total1, total2) -> total1 + total2);
+    assertEquals(36, result);
+  }
+
+  @Test
+  public void testFactorial() {
+    long result = LongStream
+      //.range(1, 5)        [1, 5)
+      .rangeClosed(1, 5) // [1, 5]
+      .reduce((left, right) -> left * right)
+      .getAsLong();
+
+    assertEquals(120, result);
+
+    result = LongStream
+      //.range(1, 5)        [1, 5)
+      .rangeClosed(1, 5) // [1, 5]
+      .reduce(1, (left, right) -> left * right);
+
+    assertEquals(120, result);
+  }
+
+  @Test
+  public void testCollectors() {
+    List<Employee> list = Arrays.asList(
+      new Employee("John", 5000),
+      new Employee("Jack", 6000),
+      new Employee("Jack", 7000),
+      new Employee("Bill", 3000));
+
+    Map<String, Employee> name2employee = list.stream()
+      .collect(Collectors.toMap(Employee::getName, Function.identity(), (curV, newV) -> newV));
+
+    assertEquals(3, name2employee.size());
+    assertEquals(7000, name2employee.get("Jack").getSalary().intValue());
+
+
+    final Map<String, List<Employee>> name2employees = list.stream()
+      .collect(Collectors.groupingBy(Employee::getName, LinkedHashMap::new, Collectors.toList()));
+
+    assertEquals("John", name2employees.keySet().stream().findFirst().get());
+    assertEquals(3, name2employees.size());
+    assertEquals(1, name2employees.get("Bill").size());
+    assertEquals(2, name2employees.get("Jack").size());
+
+
+    final int averageSalary = (int) list.stream()
+      .mapToInt(Employee::getSalary)
+      .average()
+      .getAsDouble();
+    assertEquals(5250, averageSalary);
+
+    final Map<Boolean, List<Employee>> highSalaryEmployees = list.stream()
+      .collect(Collectors.partitioningBy(emp-> emp.getSalary() > averageSalary));
+
+    assertEquals(2, highSalaryEmployees.get(true).size());
+    assertEquals(2, highSalaryEmployees.get(false).size());
+  }
+
+  // ------------------------------
+
+  class Employee {
+    private String name;
+    private Integer salary;
+
+    Employee(String name, Integer salary) {
+      this.name = name;
+      this.salary = salary;
+    }
+
+    String getName() {
+      return name;
+    }
+
+    Integer getSalary() {
+      return salary;
+    }
+
+    @Override
+    public String toString() {
+      return getName() + ", " + getSalary();
     }
   }
 }
@@ -469,12 +594,20 @@ collect(Collectors.toMap(
 collect(Collectors.toMap(
   Employee::getName,
   Function.identity()))</pre>
+Note: Duplicate key results in exception in previous two toMap(), however the following trie to handle it!
 <pre>
 // map name to employee, on duplicate key use first one
 collect(Collectors.toMap(
   Employee::getName,
   Function.identity(), 
   (curVal, newVal) -> curVal))</pre>
+            <br/>
+<pre>collect(Collectors.groupingBy(
+  Employee::getName): Map&lt;String, List&lt;Employee&gt;&gt;</pre>
+<pre>collect(Collectors.groupingBy(
+  Employee::getName, 
+  LinkedHashMap::new, 
+  Collectors.toList())): Map&lt;String, List&lt;Employee&gt;&gt;</pre>
  		</td>
  	</tr>
 
