@@ -310,6 +310,20 @@ Stream.iterate(
 			<code>Stream&lt;String&gt; lines = Files.lines(PATH_VAR)</code>
 		</td>
 	</tr>
+
+	<tr>
+		<td colspan="2">
+			<code>IntStream chars = "جاوا".codePoints()</code>
+		</td>
+	</tr>
+
+	<tr>
+		<td colspan="2">
+			<code>IntStream stream = new Random().ints()</code><br/>
+			<code>LongStream stream = new Random().longs()</code><br/>
+			<code>DoubleStream stream = new Random().doubles()</code>
+		</td>
+	</tr>
 </table>
 
 ### Transformation & Resizing
