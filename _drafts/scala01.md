@@ -2,12 +2,12 @@
 layout: post
 title: "Driving Scala - 01"
 categories: article scala
-excerpt: Introduction to Scala Language, Part 01
+excerpt: A Summary for Scala Language, Part 01
 ---
 
 ## Installation
-1. Section `Other ways to install Scala`, download for Linux [Link](https://www.scala-lang.org/download/)
-2. Define `SCALA_HOME` based on [Link](https://www.scala-lang.org/download/install.html)
+1. Section `Other ways to install Scala`, download for Linux ([link](https://www.scala-lang.org/download/))
+2. Define `SCALA_HOME` based on [link](https://www.scala-lang.org/download/install.html)
 3. Add `$SCALA_HOME/bin` to `$PATH`
 
 Now, create file `HelloWorld.scala`:
@@ -26,12 +26,14 @@ scalac HelloWorld.scala
 scala -cp . HelloWorld
 java -cp .:$SCALA_HOME/lib/* HelloWorld
 ```
+- Line 2, use `scala` command to execute the class
+- Since `scalac` generates bytecode, line 3 executes class by `java` command with extra classpath 
 
 The `HelloWorld` class can be rewritten as
 ```scala
 object HelloWorld extends App {
   val language = "Scala"
-  println(s"Hello World, My Lang is ${language}")
+  println(s"Hello World, My Lang is $language")
 }
 ```
 
@@ -57,6 +59,9 @@ Define Variable:
 // Sets xmax and ymax to 100
 val xmax, ymax = 100
 
+// assign two different constants with tuple in a single line
+val (sum, count) = (1.0, 1)
+
 // greeting and message are both strings, initialized with null
 var greeting, message: String = null
 ```
@@ -76,6 +81,8 @@ object FrenchDate {
   }
 }
 ```
+
+**TODO: `lazy` val**
 
 ### Collection
 Use `List()`, `Set()`, and `Map()`
@@ -174,3 +181,56 @@ val str: String = for (c <- "Hello"; i <- 0 to 1) yield (c + i).toChar // HIeflm
 val vc = for (i <- 0 to 1; c <- "Hello") yield (c + i).toChar // Vector(H, e, l, l, o, I, f, m, m, p)
 ```
 **Note**: Lines 4 & 5 look similar, but the results are different. So the generated collection is compatible with the first generator.
+
+## Function & Procedure
+- Scala functions are like static methods in Java (C++ also has functions)
+- As long as the function is not recursive, no need to specify the return type
+
+```scala
+def abs(x: Double) = if (x >= 0) x else -x
+
+def fac(n : Int) = {
+  var r = 1
+  for (i <- 1 to n) r = r * i
+  r // no need to use return keyword
+}
+
+// recursive factorial must declare Int as return
+def fac(n: Int): Int = if (n <= 0) 1 else n * fac(n - 1)
+```
+
+- Possible to define default value for parameters! To set a specific parameter, use named arguments!
+
+```scala
+def decorate(str: String, left: String = "[", right: String = "]") = left + str + right
+
+println(decorate("Hello")) // [Hello]
+println(decorate("Hello", "{")) // {Hello]
+println(decorate("Hello", right = "{")) // [Hello}
+```
+
+- A procedure is just a named block with any parameter, so in its syntax no `=`
+
+```scala
+def box(s : String) {
+  val border = "-" * (s.length + 2)
+  print(f"$border%n|$s|%n$border%n")
+}
+```
+- Scala has another way for varargs in Java
+  - The type of `args` is `Seq`
+  - Like Java, these type of parameters must be defined as last ones
+  - **Note**: Not possible to set default value for other parameters when such parameter is declared
+
+```scala
+def sum(args: Int*) = {
+  var result = 0
+  for (arg <- args) result += arg
+  result
+}
+
+// to call:
+println(sum(1, 3, 66))   // ok
+println(sum(1 to 5))     // error
+println(sum(1 to 5: _*)) // consider 1 to 5 as an argument sequence
+```
