@@ -5,6 +5,15 @@ categories: article scala
 excerpt: A Summary for Scala Language, Part 01
 ---
 
+## ToC
+- [Installation](#installation)
+- [Basics](#basics)
+- [Control Structures](#control-structures)
+- [Function & Procedures](#function-&-procedure)
+- [Arrays](#arrays)
+- [Collections](#collections)
+
+
 ## Installation
 1. Section `Other ways to install Scala`, download for Linux ([link](https://www.scala-lang.org/download/))
 2. Define `SCALA_HOME` based on [link](https://www.scala-lang.org/download/install.html)
@@ -41,9 +50,10 @@ object HelloWorld extends App {
 - No semicolon to terminate lines, unless multiple expressions on the same line
 - In spite of Java, Scala file names do not need to be the same as class names
 - Operator precedence is just as you’d expect in Java
-- The `void` type is `Unit` in Scala
+- The `Unit` in Scala is like Java's `void`, however `Unit` has a single value which is `()`
 - Avoid using `return` in a function
 - Scala has no checked exceptions
+- Scala has no equivalent of try-with-resource in Java
 
 - Using `object` keyword to create Singleton objects in Scala
 - Adding methods to these objects is like static methods in Java, and they are accessible by object name
@@ -59,7 +69,7 @@ Define Variable:
 // Sets xmax and ymax to 100
 val xmax, ymax = 100
 
-// assign two different constants with tuple in a single line
+// assign two different constants with a tuple in a single line
 val (sum, count) = (1.0, 1)
 
 // greeting and message are both strings, initialized with null
@@ -82,22 +92,7 @@ object FrenchDate {
 }
 ```
 
-**TODO: `lazy` val**
-
-### Collection
-Use `List()`, `Set()`, and `Map()`
-```scala
-val list = List(1, 2, 3)
-list.foreach(value => println(value))
-list.foreach(println)
-
-val map = Map((1, "A"), (20, "b"), 300 -> "C")
-map.foreach((entry: (Int, String)) => println(f"K=${entry._1}%03d, V=${entry._2}")) // formatted string
-map.foreach(println)
-```
-- Line 6,
-  - the `entry` is a _tuple_ of `(Int, String)`
-  - the `f` makes the string formatted and acts like `printf` in Java. The `%03d` pads the `${entry._1}` with max two leading zeros
+**TODO: look `lazy` val**
 
 ## Control Structures
 - In Java these two has differences:
@@ -112,20 +107,24 @@ map.foreach(println)
 val x: Double = Math.random()
 
 val b: Boolean = if (x > .5) true else false
-val a:Any = if (x > .5) true else "Oops!" // Any is the common supertype
-val u:Any = if (x > .5) true // equivalent to if (x > .5) true else ()
-val distance = { val dx = x - x0; val dy = y - y0; sqrt(dx * dx + dy * dy) }
+val a: Any = if (x > .5) true else "Oops!"
+val u: Any = if (x > .5) true // or if (x > .5) true else ()
+val distance = {val dx = x-x0; val dy = y-y0; sqrt(dx * dx + dy * dy)}
+
+val q: Double = if (x >= 0) Math.sqrt(x) else 
+  throw new IllegalArgumentException("No Negative")
 ```
 - Line 3, has a definite `Boolean` return type
-- Line 4, each branch has a different type, so the variable is of type `Any`, however the returning object is `Boolean` or `String`
+- Line 4, each branch has a different type, so the variable is of type `Any` (it is the common supertype), however the returning object is `Boolean` or `String`
 - Line 5, like line 4, but the returning object is `Boolean` or `Unit`. `Unit` type has one value which is `()`
 - Line 6, the value of `sqrt()` is assigned to `distance` (a good practice to initialize a `val`)
+- Line 8, the type of `if` is `Double` and the type of `else` is **`Nothing`** which is ignored!
 
 ### Loops
 - `while` is the same as Java
 
 ```scala
-var (r, n) = (1.0, 10) // using tuple to define multiple variables. r is Double, and n is Int
+var (r, n) = (1.0, 10) // multiple variables by tuple, r:Double, n:Int
 while (n > 0) {
   r = r * n
   n -= 1
@@ -145,7 +144,7 @@ for (i <- 1 to 10) {
 ```scala
 val s = "Hello"
 var sum = 0
-for (i <- 0 until s.length) // equivalent to for (i <- 0 to s.length - 1) 
+for (i <- 0 until s.length) // or for (i <- 0 to s.length - 1) 
   sum += s(i)
 ```
 or
@@ -172,7 +171,9 @@ for {i <- 1 to 3
   print(f"${10 * i + j}%3d")
 ```
 
-**for comprehension** , a `for` loop with `yield` 
+> **for comprehension** , a `for` loop with `yield` 
+
+
 ```scala
 val v = for (i <- 1 to 10) yield i % 3 // v is Vector(1, 2, 0, 1, 2, 0, 1, 2, 0, 1)
 v.foreach(println)
@@ -205,11 +206,11 @@ def fac(n: Int): Int = if (n <= 0) 1 else n * fac(n - 1)
 def decorate(str: String, left: String = "[", right: String = "]") = left + str + right
 
 println(decorate("Hello")) // [Hello]
-println(decorate("Hello", "{")) // {Hello]
-println(decorate("Hello", right = "{")) // [Hello}
+println(decorate("Hello", "(")) // (Hello]
+println(decorate("Hello", right = ")")) // [Hello)
 ```
 
-- A procedure is just a named block with any parameter, so in its syntax no `=`
+- A procedure is just a named block with 0-to-many parameter(s), but without any return vale. So in its syntax no `=`.
 
 ```scala
 def box(s : String) {
@@ -234,3 +235,21 @@ println(sum(1, 3, 66))   // ok
 println(sum(1 to 5))     // error
 println(sum(1 to 5: _*)) // consider 1 to 5 as an argument sequence
 ```
+
+## Arrays
+
+## Collections
+Use `List()`, `Set()`, and `Map()`
+```scala
+val list = List(1, 2, 3)
+list.foreach(value => println(value))
+list.foreach(println)
+
+val map = Map((1, "A"), (20, "b"), 300 -> "C")
+map.foreach((entry: (Int, String)) => 
+  println(f"K=${entry._1}%03d, V=${entry._2}")) // formatted string
+map.foreach(println)
+```
+- Line 6,
+  - the `entry` is a _tuple_ of `(Int, String)`
+  - the `f` makes the string formatted and acts like `printf` in Java. The `%03d` pads the `${entry._1}` with max two leading zeros
