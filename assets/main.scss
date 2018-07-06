@@ -23,3 +23,17 @@ $content-width: 1000px !default;
 		font-size: 14px;
 	}
 }
+
+pre {
+	padding: 0 4px;
+}
+
+td.gl {
+	width: 35px;
+}
+
+pre.lineno {
+	background-color: $grey-color;
+	color: $background-color;
+	width: 25px;
+}
