@@ -3,20 +3,14 @@ layout: page
 title: About
 ---
 
-Software production is full of challenges: 
-> analyzing, designing, developing, testing
+After 13 years of software development, I strongly believe in modular architecture and well-defined components. 
+To realize this belief, I have been developing an open source family of projects with [**`“Demeter”`**](https://github.com/mbizhani/Demeter) as its core. 
+It is a full-stack integration of well-known frameworks (**Hibernate**, **Spring** and **Wicket**) and a container of **“business-level component”**, called **“DModule”**.
 
-and more importantly
-> **integrating**, **maintaining**, **extending**, and **scaling**.
+Another area that I am so interested is data analysis and mining, and I have approached it both scientifically and technically. 
+In the banking domain, I have developed data warehouse and BI projects, and proposed a target marketing solution via data mining. 
+My current project in this area is [**`“Metis”`**](https://github.com/mbizhani/Metis) DModule, which is an open source SQL-based application for reporting and data analysis.
 
-After 13 years of software development, I strongly believe in modular architecture, well-defined components and assets to deliver a successful product.
-To realize this belief, I have been developing an open source family of projects with [**`“Demeter”`**](https://github.com/mbizhani/Demeter) as its core.
-
-Besides a full-stack integration of well-known frameworks (e.g. `Hibernate`, `Spring`, and `Wicket`), `Demeter` is a **`“DModule”`** container and provider of basic services. 
-Each DModule is a **“business-level component”** with its own web panels, services and entities, and is focused on its core issues. 
-I also have been developing two DModules: [**`“Metis”`**](https://github.com/mbizhani/Metis) is for SQL search and reporting, and [**`“Ares”`**](https://github.com/mbizhani/Ares) is a web console for operation.
-
-This family is the essence of all my experiences and a proof of concept to develop an integrated platform of modular blocks with high maintainability and fast feature extension. 
 
 ### Me in a Nutshell <sup>([My CV](/assets/cv/MBizhani_CV_En.pdf))</sup>
 
@@ -70,6 +64,8 @@ This family is the essence of all my experiences and a proof of concept to devel
 		        <li>Frontend mainly JQuery, EasyUI, and SCSS</li>
 		        <li>SQL & Database mainly Oracle, HSQLDB, and MySQL</li>
 		        <li>Linux mainly Debian & Oracle</li>
+		        <li>Data Warehousing & OLAP</li>
+		        <li>Data Mining for M.S. thesis with 2 published papers</li>
 		    </ul>
 		</td>
 	</tr>
