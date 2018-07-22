@@ -3,6 +3,7 @@ layout: post
 title: "Data 01"
 categories: article data
 excerpt: Basics of Data
+math: true
 ---
 
 ## Basics
@@ -17,7 +18,7 @@ excerpt: Basics of Data
   - X, Independents/Predictors (e.g. features of the drugs)
 
 
-## Types/Scale of Variables/Measurements/Features
+## Types/Scale of Variables/Features/Dimensions/Attributes
 
 Types       | Example                     | Graphs                   | Categorization | Mode (most frequent) | Order / Sort | Median | Add / Subtract | Ratio of Diff | Multiply / Divide | True Zero | Mean
 ------------|-----------------------------|--------------------------|----------------|----------------------|--------------|--------|----------------|---------------|-------------------|-----------|-----
@@ -57,3 +58,9 @@ Distribution          | Image | Description
 - Hypothesises
   - **Null**: Variables are not related to each other (variables are independent)
   - **Alternative**: Variables are related to each other (variables are associated)
+
+
+When $a \ne 0$, there are two solutions to \(ax^2 + bx + c = 0\) and they are
+$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}$$
+
+$$mean = \frac{\sum_{i=1}^{n} x_{i}}{n}$$
