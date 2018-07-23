@@ -68,11 +68,13 @@ The following code in Scala console
 ```scala
 val myRange = spark.range(1000).toDF("number")
 val divisBy2 = myRange.where("number % 2 = 0")
+divisBy2.count()
 ``` 
 or Python console
 ```python
 myRange = spark.range(1000).toDF("number")
 divisBy2 = myRange.where("number % 2 = 0")
+divisBy2.count()
 ```
 Line 1 creates a _DataFrame_ with one column containing 1,000 rows with values from 0 to 999:
 - immutable
@@ -82,11 +84,16 @@ Line 1 creates a _DataFrame_ with one column containing 1,000 rows with values f
 - with multiple _partitions_
   - each one is a collection of rows that is processed by a worker node in the cluster
 
-Line 2 applies a _Transformations_ on the DataFrame. Two groups
+Line 2 applies a _Transformations_ on the DataFrame. They are 2 groups
   - **narrow** - row in a source partition may be transformed at most to row of **a** destination partition (e.g. above `where`)
     - pipeline  
   - **wide** - row in a source partition can be transformed to rows of multiple destination partitions.
     - shuffle
+
+Line 3 does an aggregation transformation (wide) and at last collecting of results from processed partitions which is an _Action_. They are 3 groups
+  - view data in the console
+  - collect data to native objects in the respective language
+  - write to output data sources
 
 ### Misc
 - Publish Spark as a SQL DataSource ([link](https://spark.apache.org/docs/latest/sql-programming-guide.html#running-the-thrift-jdbcodbc-server)) 
