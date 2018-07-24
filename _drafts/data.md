@@ -7,60 +7,108 @@ math: true
 ---
 
 ## Basics
-- Population & Sampling: Strategies
-  - Stratified: sampling based on the key characteristics to represents the population
-  - Random
-- Designing Research
-  - Experimental: 
-  - Non-experimental 
-- Variables R = F(X)
-  - R, Dependents/Targets/Outcomes (e.g. cholesterol level)
-  - X, Independents/Predictors (e.g. features of the drugs)
+- Similarity / Dissimilarity application:
+  - clustering
+  - outlier detection
+  - nearest-neighbor classification
+- 2 Ways for **Proximity** of Two Objects
+  - function of the **distance** between their attribute values
+  - calculated based on **probabilities**
+- **Data objects** can also be referred to as 
+  - samples
+  - examples
+  - instances
+  - data points
+  - data tuples (in database context)
+  - objects
+- **Attribute** (data mining) = **Dimension** (OLAP) = **Feature** (machine learning) = **Variable** (statistics) 
+- **Attribute Vector** (or Feature Vector) - A set of attributes used to describe a given object
+  - _Univariate_   - the distribution of data involving one attribute (or variable)
+  - _Bivariate_    - distribution involves two attributes
+  - _Multivariate_ - distribution involves more attributes
 
+## Type/Scale of Variables/Features/Dimensions/Attributes
 
-## Types/Scale of Variables/Features/Dimensions/Attributes
+Types       | Example                            | Graphs                   | Categorization | Mode (most frequent) | Median / Order / Sort | Add / Subtract | Ratio of Diff | Multiply / Divide | True Zero | Mean
+------------|------------------------------------|--------------------------|----------------|----------------------|-----------------------|----------------|---------------|-------------------|-----------|-----
+**Nominal** | Enums (color)                      | Bar, Pie                 | X              | X
+**Ordinal** | Sorted Enum (priority,rank)        | Bar, Pie                 | X              | X                    | X
+**Interval**| Date, Map Coordinates              | Histogram, Box & Whisker | X              | X                    | X                     | X              | X
+**Ratio**   | Weight, Temperature in Kelvin, Age | Histogram, Box & Whisker | X              | X                    | X                     | X              | X             | X                 | X         | X
 
-Types       | Example                     | Graphs                   | Categorization | Mode (most frequent) | Order / Sort | Median | Add / Subtract | Ratio of Diff | Multiply / Divide | True Zero | Mean
-------------|-----------------------------|--------------------------|----------------|----------------------|--------------|--------|----------------|---------------|-------------------|-----------|-----
-**Nominal** | Enums (color)               | Bar, Pie                 | X              | X
-**Ordinal** | Sorted Enum (priority,rank) | Bar, Pie                 | X              | X                    | X            | X
-**Interval**| Date, Map Coordinates       | Histogram, Box & Whisker | X              | X                    | X            | X      | X              | X
-**Ratio**   | Size, Weight, Length        | Histogram, Box & Whisker | X              | X                    | X            | X      | X              | X             | X                 | X         | X
+## Central Tendency
+- Weighted Arithmetic Mean $\bar{x} = \frac{\sum_{i=1}^{n} w_{i} x_{i}} {\sum_{i=1}^{n} w_{i}}$ (for all $w_{i} = 1$ it is $\bar{x} = \frac{\sum_{i=1}^{n} x_{i}} {n}$)
+  - $\mu = \frac{\sum_{i=1}^{N} x_{i}} {N}$ if $N$ is the population
+  - Arithmetic mean is so sensitivity to extreme (e.g., outlier) values
+  - Use **trimmed mean** by chopping off values at the high and low extremes before calculation (e.g. 2% of top and bottom)
+- **Median** is a better measure of the center of data for _skewed (asymmetric) data_
+  - expensive to compute for a large number of observations
+  - following example tries to estimate
 
-## Variable & Statistical Tests
+<table>
+<tr>
+	<td>
+		<table>
+			<tr>
+				<th nowrap>Age Range</th> <th>Frequency</th> <th>Cumulative Frequency</th> <th>Cum ٪</th>
+			</tr>
+			
+			<tr>
+				<td>1 - 5</td> <td>200</td> <td>200</td> <td>06.26</td> 
+			</tr>
+			<tr>
+				<td>6 - 15</td> <td>450</td> <td>650</td> <td>20.35</td>
+			</tr>
+			<tr>
+				<td>16 - 20</td> <td>300</td> <td>950</td> <td>29.74</td>
+			</tr>
+			<tr style="background-color:yellow">
+				<td>21 - 50</td> <td>1500</td> <td>2450</td> <td>76.71</td>
+			</tr>
+			<tr>
+				<td>51 - 80</td> <td>700</td> <td>3150</td> <td>98.62</td>
+			</tr>
+			<tr>
+				<td>81 - 110</td> <td>44</td> <td>3194</td> <td>100.00</td>
+			</tr>
+		</table>
+	</td>
+	<td>
+		$$median = L_{MG} + (\frac{N/2 - (\sum freq)_l}{freq_{MG}})*width_{MG}$$
+		
+		$median_{freq} = \frac{3194 + 1}{2} = 1597.5$
+		$950 \leq 1597.5 < 2450 \implies [21, 50]$ MG (Median Group)
+		
+		$$median = 21 + \frac{3194/2 - 950}{1500} * 30 = 33.94$$
+	</td>
+</tr>
+<tr>
+	<td colspan="2">
+		<ol>
+			<li>Median must be in the median interval</li>
+			<li>From half down of frequency, total previous intervals are subtracted. This diff is in the median interval</li>
+			<li>The percent of the previous calculated diff over interval frequncey is mapped to the range and added to the lower boundary of the range</li>
+		</ol>
+	</td>
+</tr>
+</table>
 
-|                  | Nominal Indep | Oridinal Indep | Continuous Indep
--------------------|---------------|----------------|-----------------
-**Nominal Dep**    | Chi-square Test of Independence | Chi-square Test of Independence | Logistic Regression, Discriminant Analysis   
-**Ordinal Dep**    | Nonparametric Tests | Nonparametric Correlation | Ordinal Regression  
-**Continuous Dep** | T-Test, ANOVA | Nonparametric Correlation | Correlation, Linear Regression
+- **Mode** is the value that occurs most frequently in the set
+  - unimodal - one mode in data set
+  - bimodal - two modes in data set
+  - multimodal - mutiple modes in data set
 
-## Distributions
+### Distributions
 
 Distribution          | Image | Description
 ----------------------|-------|------------
-**Normal**            | ![n](/assets/images/data/dist/normal.png)     | - Symmetrical & Unimodal (Bell Shape).<br/>- The `mean` value can represent the distribution.<br/>- Range between -1SD and -1SD is 68% percent of distribution.<br/>- Example: IQ
-**Uniform**           | ![u](/assets/images/data/dist/uniform.png)    | - All values are equally likely.<br/>- Example: ID
-**Positively Skewed** | ![s](/assets/images/data/dist/pos-skewed.png) | - Asymmetric<br/>- Very common in social sciences<br/>- Example: Income
-**Negatively Skewed** | ![s](/assets/images/data/dist/neg-skewed.png) | - Asymmetric<br/>- Example: Cholesterol level
+**Normal**            | ![n](/assets/images/data/dist/normal.png)     | - Symmetrical & Unimodal (Bell Shape).<br/>- The `mean` value can represent the distribution.<br/>- Range between -1SD and -1SD is 68% percent of distribution.<br/>- Example: IQ <br/>- $mean = median = mode$
+**Positively Skewed** | ![s](/assets/images/data/dist/pos-skewed.png) | - Asymmetric<br/>- Very common in social sciences<br/>- Example: Income <br/>- $mean > median > mode$
+**Negatively Skewed** | ![s](/assets/images/data/dist/neg-skewed.png) | - Asymmetric<br/>- Example: Cholesterol level<br/>- $mean < median < mode$
 **Bimodal**           | ![b](/assets/images/data/dist/bimodal.png)    | - Distribution with two modes<br/>- The `mean` value can **not** represent the distribution!<br/>- Example: Love/Hate Product
+**Uniform**           | ![u](/assets/images/data/dist/uniform.png)    | - All values are equally likely.<br/>- Example: ID
 
-## Visualization
+## Dispersion
 
 ### Box & Whisker
 ![bw](/assets/images/data/chart/box-whisker.png)
-
-## Tests
-
-### Chi-square Test of Independence
-- Studies the relationship between two or more categorical variables
-- Determines if one category of a variable is more likely to be associated with a category of another variable
-- Hypothesises
-  - **Null**: Variables are not related to each other (variables are independent)
-  - **Alternative**: Variables are related to each other (variables are associated)
-
-
-When $a \ne 0$, there are two solutions to \(ax^2 + bx + c = 0\) and they are
-$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}$$
-
-$$mean = \frac{\sum_{i=1}^{n} x_{i}}{n}$$
