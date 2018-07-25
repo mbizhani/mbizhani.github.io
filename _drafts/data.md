@@ -96,7 +96,8 @@ Types       | Example                            | Graphs                   | Ca
 - **Mode** is the value that occurs most frequently in the set
   - unimodal - one mode in data set
   - bimodal - two modes in data set
-  - multimodal - mutiple modes in data set
+  - multimodal - multiple modes in data set
+- **Midrange** can also be used to assess the central tendency of a numeric data set: $midrange = \frac{x_{min} + x_{max}}{2}$
 
 ### Distributions
 
@@ -109,6 +110,13 @@ Distribution          | Image | Description
 **Uniform**           | ![u](/assets/images/data/dist/uniform.png)    | - All values are equally likely.<br/>- Example: ID
 
 ## Dispersion
+Suppose sorted data set $X = \\{x_1, x_2, ..., x_N\\}, x_{i} < x_{i+1}$
 
-### Box & Whisker
+- **Quantiles** are _points_ taken at regular intervals of a data distribution, dividing it into essentially equal size consecutive subsets
+  - 2-quantile is median point - divides $X$ into two halves
+  - 4-quantile are three points - median of $\\{x_1, ..., x_{median-1}\\}$, median of $X$, and median of $\\{x_{median+1}, ..., x_N\\}$
+    - In this case, each subset is called a **quartile** ![quartiles](/assets/images/data/quartiles.png)
+    - **InterQuartile Range** - $IQR = Q_3 - Q_1$
+- **Boxplot & Whisker** is a popular way of visualizing a distribution
+
 ![bw](/assets/images/data/chart/box-whisker.png)
