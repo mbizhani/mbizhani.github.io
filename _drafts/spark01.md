@@ -248,3 +248,9 @@ TakeOrderedAndProject(limit=5, orderBy=[aggOrder#230L DESC NULLS LAST], output=[
 		</td>
 	</tr>
 </table>
+
+### Dataset
+- Ability to assign a Java/Scala class to the records within a DataFrame
+  - Manipulate items as a collection of typed objects (e.g. Java `ArrayList` or Scala `Seq`)
+- Items are _type-safe_ - all the objects are conformed to the defined type
+- 
