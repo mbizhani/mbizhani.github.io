@@ -253,4 +253,34 @@ TakeOrderedAndProject(limit=5, orderBy=[aggOrder#230L DESC NULLS LAST], output=[
 - Ability to assign a Java/Scala class to the records within a DataFrame
   - Manipulate items as a collection of typed objects (e.g. Java `ArrayList` or Scala `Seq`)
 - Items are _type-safe_ - all the objects are conformed to the defined type
-- 
+- The type `Dataset` is a generic class as `Dataset[T]` in Scala or `Dataset<T>` in Java
+  - Supported `T` types are JavaBean pattern in Java or case classes in Scala
+- Advantage
+  - Define specific data type and manipulate it via arbitrary map and filter functions
+  - Spark can automatically reconvert it to DataFrame
+  - Using lower-level type-safe API for data manipulation
+
+```scala
+case class Flight(DEST_COUNTRY_NAME: String, ORIGIN_COUNTRY_NAME: String, count: BigInt)
+
+// above load code
+val flightCSV = spark
+  .read
+  .option("inferSchema", "true")
+  .option("header", "true")
+  .csv("data/csv/flight-summary.csv")
+
+val flights = flightCSV.as[Flight]
+
+flights
+  .filter(flight_row => flight_row.ORIGIN_COUNTRY_NAME != "Canada")
+  .take(3)
+```
+
+The result of take action in shell is
+```sh
+Array[Flight] = Array(
+  Flight(United States,Romania,15), 
+  Flight(United States,Croatia,1), 
+  Flight(United States,Ireland,344))
+```
