@@ -348,6 +348,14 @@ Stream.iterate(
 			<code>DoubleStream stream = new Random().doubles()</code>
 		</td>
 	</tr>
+	
+	<tr>
+		<td colspan="2">
+			<code>Stream&lt;T&gt; s = Arrays.stream(T[] array)</code><br/>
+			<code>Stream&lt;T&gt; s = Arrays.stream(T[] array, int startInclusive, int endExclusive)</code>
+		</td>
+	</tr>
+	
 </table>
 
 ### Transformation & Resizing
