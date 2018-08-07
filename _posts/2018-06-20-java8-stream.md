@@ -332,6 +332,14 @@ Stream.iterate(
 	<tr>
 		<td colspan="2">
 			<code>Stream&lt;String&gt; lines = Files.lines(PATH_VAR)</code>
+{% highlight java %}
+BufferedReader reader = new BufferedReader(...)
+/*
+Note: new BufferedReader(new InputStreamReader(INPUT_STREAM_OBJ))
+      so any InputStream can be converted to Stream<String>
+*/
+Stream<String> lines = reader.lines()
+{% endhighlight %}
 		</td>
 	</tr>
 
