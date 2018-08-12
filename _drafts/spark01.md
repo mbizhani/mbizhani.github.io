@@ -15,6 +15,7 @@ Now you can execute one of the following to execute a console:
 - `./bin/spark-shell` Scala console
 - `./bin/spark-sql` SQL console
 - **Note:** So current directory is `SPARK_INSTALL_DIR/spark-VERSION-bin-hadoopVER/`, used for relative addressing in console.
+- `ctrl + l` to clear screen in Linux or Mac (command line feature, not Spark!)
 
 In the Scala or Python console type `spark` and it shows the `SparkSession` of the application.
 
@@ -140,7 +141,7 @@ Now,
 	<tr>
 		<td>
 {% highlight scala %}
-val flightCSV = spark
+val flightDF = spark
   .read
   .option("inferSchema", "true")
   .option("header", "true")
@@ -149,28 +150,43 @@ val flightCSV = spark
 		</td>
 		<td>
 {% highlight python %}
+flightDF = spark\
+  .read\
+  .option("inferSchema", "true")\
+  .option("header", "true")\
+  .csv("data/csv/flight-summary.csv")
 {% endhighlight %}
 		</td>
 	</tr>
 
 	<tr>
 		<td colspan="2">
-			<code>flightCSV</code> shows <code>org.apache.spark.sql.DataFrame = [DEST_COUNTRY_NAME: string, ORIGIN_COUNTRY_NAME: string ... 1 more field]</code>
+			<code>flightDF</code> shows <code>org.apache.spark.sql.DataFrame = [DEST_COUNTRY_NAME: string, ORIGIN_COUNTRY_NAME: string ... 1 more field]</code>
 		</td>
 	</tr>
 	<tr>
 		<td colspan="2">
-			<code>flightCSV.take(3)</code> returns an Array of 3 objects of <code>org.apache.spark.sql.Row</code> type
+			<code>flightDF.count()</code> counts number of records in DataFrame
 		</td>
 	</tr>
 	<tr>
 		<td colspan="2">
-			<code>flightCSV.show()</code> shows a text-based-table of 20 first records of data 
+			<code>flightDF.take(3)</code> returns an Array of 3 objects of <code>org.apache.spark.sql.Row</code> type
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<code>flightDF.show()</code> shows a text-based-table of 20 first records of data 
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<code>flightDF.printSchema()</code> shows schema for the DataFrame 
 		</td>
 	</tr>
 	
 	<tr>
-		<td colspan="2"><code>flightCSV.createOrReplaceTempView("tv_flight")</code> converts a DataFrame into a view</td>
+		<td colspan="2"><code>flightDF.createOrReplaceTempView("tv_flight")</code> converts a DataFrame into a view</td>
 	</tr>
 
 	<tr>
@@ -183,7 +199,7 @@ spark.sql("""
   """)
   .show()
 
-flightCSV
+flightDF
   .groupBy("DEST_COUNTRY_NAME")
   .count()
   .show()
@@ -193,7 +209,7 @@ flightCSV
 spark.sql("SELECT max(count) from tv_flight").show
 
 import org.apache.spark.sql.functions.max
-flightCSV.select(max("count")).show()
+flightDF.select(max("count")).show()
 
 //---
 
@@ -209,7 +225,7 @@ sumBySql.explain
 sumBySql.show
 
 import org.apache.spark.sql.functions.desc
-val sumByCall = flightCSV
+val sumByCall = flightDF
   .groupBy("DEST_COUNTRY_NAME")
   .sum("count")
   .withColumnRenamed("sum(count)", "destination_total")
@@ -220,10 +236,56 @@ sumByCall.explain
 sumByCall.show
 {% endhighlight %}
 		</td>
+		<td>
+{% highlight python linenos %}
+spark.sql("""
+  SELECT DEST_COUNTRY_NAME, count(1)
+  FROM tv_flight
+  GROUP BY DEST_COUNTRY_NAME
+  """)\
+  .show()
+
+flightDF\
+  .groupBy("DEST_COUNTRY_NAME")\
+  .count()\
+  .show()
+
+// ---
+
+spark.sql("SELECT max(count) from tv_flight").show()
+
+from pyspark.sql.functions import max
+flightDF.select(max("count")).show()
+
+//---
+
+sumBySql = spark.sql("""
+  SELECT DEST_COUNTRY_NAME, sum(count) as destination_total
+  FROM tv_flight
+  GROUP BY DEST_COUNTRY_NAME
+  ORDER BY sum(count) DESC
+  LIMIT 5
+  """)
+
+sumBySql.explain()
+sumBySql.show()
+
+from pyspark.sql.functions import desc
+sumByCall = flightDF\
+  .groupBy("DEST_COUNTRY_NAME")\
+  .sum("count")\
+  .withColumnRenamed("sum(count)", "destination_total")\
+  .sort(desc("destination_total"))\
+  .limit(5)
+
+sumByCall.explain()
+sumByCall.show()
+{% endhighlight %}
+		</td>
 	</tr>
 	
 	<tr>
-		<td>
+		<td colspan="2">
 		Both outputs of the above explain is the same as follow
 {% highlight sh linenos %}
 TakeOrderedAndProject(limit=5, orderBy=[aggOrder#230L DESC NULLS LAST], output=[DEST_COUNTRY_NAME#10,destination_total#204L])
@@ -264,13 +326,13 @@ TakeOrderedAndProject(limit=5, orderBy=[aggOrder#230L DESC NULLS LAST], output=[
 case class Flight(DEST_COUNTRY_NAME: String, ORIGIN_COUNTRY_NAME: String, count: BigInt)
 
 // above load code
-val flightCSV = spark
+val flightDF = spark
   .read
   .option("inferSchema", "true")
   .option("header", "true")
   .csv("data/csv/flight-summary.csv")
 
-val flights = flightCSV.as[Flight]
+val flights = flightDF.as[Flight]
 
 flights
   .filter(flight_row => flight_row.ORIGIN_COUNTRY_NAME != "Canada")
