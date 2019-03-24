@@ -43,9 +43,10 @@ td.gl {
 }
 
 pre.lineno {
-	background-color: $grey-color;
-	color: $background-color;
+	background-color: #ddd;
+	color: #555;
 	width: 25px;
+	text-align: center;
 }
 
 #toc {
