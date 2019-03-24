@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Java Bond 008 - Mission: Stream"
+title: "Java 008 - Mission: Stream"
 categories: article tech
 excerpt: An introduction to Java 8, Stream
 ---
