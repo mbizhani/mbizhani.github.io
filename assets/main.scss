@@ -6,6 +6,16 @@ $content-width: 1000px !default;
 
 @import "minima";
 
+.site-header {
+	background-image: url("/assets/images/home.png");
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.site-title {
+	color: white !important;
+}
+
 .highlight {
 	table {
 		border: 0;
@@ -36,4 +46,27 @@ pre.lineno {
 	background-color: $grey-color;
 	color: $background-color;
 	width: 25px;
+}
+
+#toc {
+	position: fixed;
+	left: 5px;
+	top: 70px;
+	border: 1px solid #00008B;
+	border-radius: 5px;
+	padding: 5px;
+	background-color: white;
+	box-shadow: 4px 4px #aaaaaa;
+}
+
+#toc_body {
+	display: none;
+}
+
+#toc_lbl:hover + #toc_body, #toc_body:hover {
+	display: block;
+}
+
+#toc_lbl > img {
+	height: 30px;
 }

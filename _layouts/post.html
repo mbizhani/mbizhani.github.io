@@ -25,6 +25,11 @@ layout: default
 		</p>
 	</header>
 
+	<div id="toc">
+		<div id="toc_lbl"><img alt="toc" src="/assets/images/toc.png" title="Table of Content"/></div>
+		<div id="toc_body">{% include toc.html html=content %}</div>
+	</div>
+
 	<div class="post-content e-content" itemprop="articleBody">
 		{{ content }}
 	</div>

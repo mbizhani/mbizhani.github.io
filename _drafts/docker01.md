@@ -5,9 +5,7 @@ categories: article tech
 excerpt: Running containers by Docker
 ---
 
-## Docker
-
-### Introduction
+## Introduction
 
 Every process on your OS is executed from an application and it has only an **isolated memory space**.
 However, other resources such as storage and network are shared for all processes.
@@ -35,7 +33,7 @@ Container(s) can be started via following ways
 - Single host, multiple and related containers - using `docker-compose` command
 - Multiple host, lots of containers - using Docker Swarm and Kubernetes 
 
-### Installation
+## Installation
 Docker is presented in two editions: CE (community edition) and EE (enterprise edition). Most of the time, people use its CE and in the case of this tutorial.
 
 The installation is different due to your OS. So the best reference is the Docker site itself.
@@ -45,7 +43,7 @@ The installation is different due to your OS. So the best reference is the Docke
 
 **Note**: There is a general script for Linux distributions - `sudo curl -sSL https://get.docker.com | sh`
 
-### Docker CLI
+## Docker CLI
 After installing Docker, the `docker` command must be in your path and can be executed from your OS CLI app.
 
 Following table shows some common usages of `docker` command.
@@ -81,10 +79,10 @@ In [MySQL](#mysql) section, details of the following command is described by an 
 > {% raw %}`docker image inspect -f '{{println "VOL =" .Config.Volumes}}{{println "ENV =" .Config.Env}}{{println "PORTS =" .ContainerConfig.ExposedPorts}}' IMAGE`{% endraw %}
 
 
-### Real Examples
+## Real Examples
 Lets start real and practical examples.
 
-#### MySQL
+### MySQL
 - **Reference** [Docker Hub](https://hub.docker.com/_/mysql)
 - **Image Information**
   > {% raw %}`docker image inspect -f '{{println "VOL =" .Config.Volumes}}{{println "ENV =" .Config.Env}}{{println "PORTS =" .ContainerConfig.ExposedPorts}}' mysql:5.7`{% endraw %}
@@ -118,7 +116,7 @@ Lets start real and practical examples.
   --|--
   `-f` | it works like `tail -f` in Linux
 
-#### Redis
+### Redis
 - **Reference** [Docker Hub](https://hub.docker.com/_/redis)
 - **Starting container**
   > `docker container run -d -v /opt/redis/data:/data -p 6379:6379 --restart=always --name Redis redis:5.0.4 redis-server --requirepass PASSWORD`
