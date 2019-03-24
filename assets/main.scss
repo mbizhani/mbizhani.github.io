@@ -6,6 +6,14 @@ $content-width: 1000px !default;
 
 @import "minima";
 
+a {
+	color: #00004f;
+}
+
+a:visited {
+	color: #00004f;
+}
+
 .site-header {
 	background-image: url("/assets/images/home.png");
 	background-position: center;
