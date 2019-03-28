@@ -73,7 +73,7 @@ Command | Description
 `docker container exec CONTAINER` | Execute a command inside the container
 `docker container logs CONTAINER` | Display the standard output of the container as logs
 
-- `IMAGE` - Each image has a specific name to be addressed on a registry. The `IMAGE` reference in simple form on Docker Hub registry is:
+- `IMAGE` - each image has a specific name to be addressed on a registry. On Docker Hub, the simple form of `IMAGE` is:
   > `IMAGE_NAME[:TAG]`
 
   `TAG` is optional and its default value is `latest`. However, defining a specific tag is highly recommended to assure you about the version of the used image.
@@ -102,13 +102,13 @@ Lets start real and practical examples.
   `ENV = [...]` | list of defined environment variables
   `PORTS = map[3306/tcp:{} 33060/tcp:{}]` | exposed ports to be bound on the host
 - **Starting container**
-  > `docker container run -d -v /opt/mysql/data:/var/lib/mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root --restart=always --name MySQL mysql:5.7`
+  > `docker container run -d -v /opt/mysql:/var/lib/mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root --restart=always --name MySQL mysql:5.7`
 
   --|--
   `-d` | the container is detached and executed in background
-  `-v /opt/mysql/data:/var/lib/mysql` | _HOST_`:`_CONTAINER_ for mapping volume <br/> `/var/lib/mysql` of container is mapped on `/opt/mysql/data` of host
+  `-v /opt/mysql:/var/lib/mysql` | _HOST_`:`_CONTAINER_ for mapping volume, so `/var/lib/mysql` directory of container is mapped on `/opt/mysql` directory of host
   `-p 3306:3306` | _HOST_`:`_CONTAINER_ for binding ports
-  `-e MYSQL_ROOT_PASSWORD=root` | assigning value `root` for environment variable `MYSQL_ROOT_PASSWORD`
+  `-e MYSQL_ROOT_PASSWORD=root` | assigning value `root` for environment variable `MYSQL_ROOT_PASSWORD`, so the password of _root_ user in mysql is set to `root`
   `--restart=always` | on next host reboot or power-on, the container starts automatically (like services in Windows)
   `--name MySQL` | `MySQL` is assigned as the name to this container to be addressed easily, and such a value that can replace `CONTAINER` in above table.
   `mysql:5.7` | the `IMAGE` reference
@@ -129,7 +129,7 @@ Lets start real and practical examples.
 ### Redis
 - **Reference** [Docker Hub](https://hub.docker.com/_/redis)
 - **Starting container**
-  > `docker container run -d -v /opt/redis/data:/data -p 6379:6379 --restart=always --name Redis redis:5.0.4 redis-server --requirepass PASSWORD`
+  > `docker container run -d -v /opt/redis:/data -p 6379:6379 --restart=always --name Redis redis:5.0.4 redis-server --requirepass PASSWORD`
   
   --|--
   `redis-server --requirepass PASSWORD` | passing custom command to be executed on container startup instead of its default one
@@ -139,14 +139,13 @@ Lets start real and practical examples.
   <!-- TODO: redis-cli tutorial -->
   
 ### Oracle Database
-- **Reference** [Docker Hub](https://hub.docker.com/_/oracle-database-enterprise-edition)
-  - Click on "Proceed to Checkout"
+- **Reference** [Docker Hub](https://hub.docker.com/_/oracle-database-enterprise-edition) (note: click on "Proceed to Checkout")
 - Some official images, like Oracle DB, is available through Docker Store, and they need an account on [Docker Hub](https://hub.docker.com/)
 - **Starting container**
   - `docker login` - you need to login to access this image
-  > `docker run -d -it -p 1521:1521 -v /opt/oradb/data:/ORCL --name OracleDB store/oracle/database-enterprise:12.2.0.1`
+  > `docker run -d -it -p 1521:1521 -v /opt/oradb:/ORCL --restart=always --name OracleDB store/oracle/database-enterprise:12.2.0.1`
   
-  note: the container for Oracle DB needs the `-it` switches, even if it is detached
+  note: the container for Oracle DB needs the `-it` switches, even if it is detached (`-d`)
 - **Calling _sqlplus_ client**
   - Oracle 12c introduces a new architecture called **multitenant**. In this new architecture, a database instance consists of two main component
     - A **container**, called _CDB_, which is the basis environment of the instance
@@ -177,7 +176,7 @@ Lets start real and practical examples.
   > `docker run -u root -d -v /opt/jenkins:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -p 8080:8080 -e JENKINS_OPTS="--prefix=/jenkins" --restart=always --name Jenkins jenkinsci/blueocean:1.14.0`
 
     --|--
-    `-u root` | Username or UID (format: <name\|uid>\[:<group\|gid>\]) <br/>Set `root` user as the starter and owner of the process
+    `-u root` | Username or UID (format: `<name|uid>[:<group|gid>]`), so user `root` is set as the owner of the process
     `-v /var/run/docker.sock:/var/run/docker.sock` | Allow jenkins to create a container by calling Docker on your host (**Docker-in-Docker**)
     `-e JENKINS_OPTS="--prefix=/jenkins"` | Start the server with `/jenkins` context path (useful for Nginx forwarding)
     
