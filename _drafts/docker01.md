@@ -11,7 +11,7 @@ Every process on your OS is executed from an application code and each process c
 The OS or the VM (if there is any) can provide some security and isolation mechanisms, 
 however it can be different for each OS type and impose difficult configuration. 
 
-_Docker_ provides a layered archive file of the application(s), called an _Image_, 
+_Docker_ provides a layered architecture for contents of the application(s), called an _Image_, 
 and a _virtual environment_, called a _Container_, for running process(s) of the application(s). This _virtual environment_ is isolated by
 - memory
 - **storage** (similar to a _hypervisor_)
@@ -26,32 +26,41 @@ is the solution, and if you want a **light-weight isolated virtual environment f
 For example, if you want to run a [MySQL](#mysql) server, Docker is the best choice, and if you want to execute a simulation app with
 GUI, virtualization is the only choice. 
 
-The following class diagram illustrates the overall parts involved in Docker installed in your host.
+The following class diagram illustrates the overall parts involved in Docker installed on your box.
 
 ![DockerClassDiagram](/assets/images/docker/DockerCD.png)
 
-In a simple story, a container is started by the `docker daemon`, called by the `docker` client (command):
+In a simple story, a container is started by the `docker daemon`, initiated by the `docker` client (command):
 - At first, the image is downloaded from the registry if not already downloaded
 - Docker can create one or another independent container from one image
 - During container startup, Docker executes the command(s) provided in its image or passed as input parameters
-- Docker initializes the container's network interface and may attach it to one of its virtual networks due to startup parameters, 
-and even open a port on the host binding it to one of its internal process
+- Docker initializes the container's network interface and may attach it to one of its virtual networks due to startup parameters ([example](#nginx--jenkins--nexus)), 
+and even open a port on the host binding it to one of container's internal process
 - Docker may mount a file/directory to its internal file/directory due to startup parameters
 
-Container(s) can be started via one of following ways
-- `docker` command - single host, various unrelated containers
-- `docker-compose` command - single host, multiple related containers
-- Docker Swarm and Kubernetes - Multiple hosts with lots of containers 
+Container(s) can be created and started via one of following ways
+
+App | Host/Node | Container
+----|-----------|----------
+`docker` | single | various unrelated containers
+`docker-compose` | single | using single config file for multiple related containers or same-image containers for load balancing
+Docker Swarm or Kubernetes | multiple | large deployment and centralized management for lots of containers
+
+The _docker-compose_ and _swarm_ will be addressed in other posts.
 
 ## Installation
-Docker is presented in two editions: CE (community edition) and EE (enterprise edition). Most of the time, people use its CE and in the case of this tutorial.
+Docker is presented in two editions: **CE** (community edition) and **EE** (enterprise edition). Most of the time, people use its CE and also in the case of this tutorial.
 
 The installation is different due to your OS. So the best reference is the Docker site.
 - [Debian](https://docs.docker.com/install/linux/docker-ce/debian/)
 - [Ubuntu](https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 - [Windows](https://docs.docker.com/docker-for-windows/install/)
+- **Note**: There is a general installation script for Linux distributions - `sudo curl -sSL https://get.docker.com | sh`
 
-**Note**: There is a general installation script for Linux distributions - `sudo curl -sSL https://get.docker.com | sh`
+After installation
+- In Linux, by default only `root` user can execute `docker` command. Adding group `docker` to a user's groups, the user has access to Docker.
+So execute `usermod -a -G docker USER`.
+- Executing `ifconfig` in your Linux box, `docker0` must be in the list of network interfaces.
 
 ## Docker CLI
 After installing Docker, the `docker` command must be in your path and can be executed from your OS CLI app.
@@ -70,21 +79,22 @@ Command | Description
 `docker container stats` | Display a live stream of container(s) resource usage statistics
 `docker container run IMAGE` | Download the image, if not already downloaded, and start a container from it   
 `docker container top CONTAINER` | Display the running processes of a container
+`docker container inspect CONTAINER` | Display detailed information for a container
 `docker container exec CONTAINER` | Execute a command inside the container
-`docker container logs CONTAINER` | Display the standard output of the container as logs
+`docker container logs CONTAINER` | Display logs of the container
 
 - `IMAGE` - each image has a specific name to be addressed on a registry. On Docker Hub, the simple form of `IMAGE` is:
-  > `IMAGE_NAME[:TAG]`
+  > `REPONAME[:TAG]`
 
   `TAG` is optional and its default value is `latest`. However, defining a specific tag is highly recommended to assure you about the version of the used image.
   Some examples are `mysql:5.7`, `openjdk:8u191-alpine`, `redis:5.0.4-stretch`, and etc.
   
   The general form of `IMAGE` on a registry server is[^docker_fqn]:
-  > `[[HOSTNAME[:PORT]]/USERNAME]/REPONAME[:TAG]`
+  > `[[HOSTNAME[:PORT]/]USERNAME/]REPONAME[:TAG]`
 
 - `CONTAINER` refers to the name or id of a container
 
-**Note:** as stated in the previous table, the following command shows three most popular information of an `IMAGE`.
+**Note:** as stated in the previous table, the following command shows three popular information of an `IMAGE`.
 In [MySQL](#mysql) section, details of the following command is described as an example.
 > {% raw %}`docker image inspect -f '{{println "VOL =" .Config.Volumes}}{{println "ENV =" .Config.Env}}{{println "PORTS =" .ContainerConfig.ExposedPorts}}' IMAGE`{% endraw %}
 
@@ -102,15 +112,15 @@ Lets start real and practical examples.
   `ENV = [...]` | list of defined environment variables
   `PORTS = map[3306/tcp:{} 33060/tcp:{}]` | exposed ports to be bound on the host
 - **Starting container**
-  > `docker container run -d -v /opt/mysql:/var/lib/mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root --restart=always --name MySQL mysql:5.7`
+  > `docker container run -d -v /opt/docker/mysql:/var/lib/mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root --restart=always --name MySQL mysql:5.7`
 
   --|--
   `-d` | the container is detached and executed in background
-  `-v /opt/mysql:/var/lib/mysql` | _HOST_`:`_CONTAINER_ for mapping volume, so `/var/lib/mysql` directory of container is mapped on `/opt/mysql` directory of host
+  `-v /opt/docker/mysql:/var/lib/mysql` | _HOST_`:`_CONTAINER_ for mapping volume, so `/var/lib/mysql` directory of container is mapped on `/opt/docker/mysql` directory of host
   `-p 3306:3306` | _HOST_`:`_CONTAINER_ for binding ports
   `-e MYSQL_ROOT_PASSWORD=root` | assigning value `root` for environment variable `MYSQL_ROOT_PASSWORD`, so the password of _root_ user in mysql is set to `root`
   `--restart=always` | on next host reboot or power-on, the container starts automatically (like services in Windows)
-  `--name MySQL` | `MySQL` is assigned as the name to this container to be addressed easily, and such a value that can replace `CONTAINER` in above table.
+  `--name MySQL` | `MySQL` is assigned as the name to this container to be addressed easily (`CONTAINER` in above table, is this name).<br/>**note**: this name also used as network name for the container
   `mysql:5.7` | the `IMAGE` reference
 - **Calling _mysql_ client CLI**
   > `docker container exec -it MySQL mysql -uroot -proot`
@@ -129,7 +139,7 @@ Lets start real and practical examples.
 ### Redis
 - **Reference** [Docker Hub](https://hub.docker.com/_/redis)
 - **Starting container**
-  > `docker container run -d -v /opt/redis:/data -p 6379:6379 --restart=always --name Redis redis:5.0.4 redis-server --requirepass PASSWORD`
+  > `docker container run -d -v /opt/docker/redis:/data -p 6379:6379 --restart=always --name Redis redis:5.0.4 redis-server --requirepass PASSWORD`
   
   --|--
   `redis-server --requirepass PASSWORD` | passing custom command to be executed on container startup instead of its default one
@@ -142,27 +152,31 @@ Lets start real and practical examples.
 - **Reference** [Docker Hub](https://hub.docker.com/_/oracle-database-enterprise-edition) (note: click on "Proceed to Checkout")
 - Some official images, like Oracle DB, is available through Docker Store, and they need an account on [Docker Hub](https://hub.docker.com/)
 - **Starting container**
-  - `docker login` - you need to login to access this image
-  > `docker run -d -it -p 1521:1521 -v /opt/oradb:/ORCL --restart=always --name OracleDB store/oracle/database-enterprise:12.2.0.1`
-  
-  note: the container for Oracle DB needs the `-it` switches, even if it is detached (`-d`)
+  > `docker container run -d -it -p 1521:1521 -v /opt/docker/oradb:/ORCL --restart=always --name OracleDB store/oracle/database-enterprise:12.2.0.1`
+
+  - you need to login to pull this image, so execute `docker login` before pulling
+  - the container for Oracle DB needs the `-it` switches, even if it is detached (`-d`)
 - **Calling _sqlplus_ client**
+  - `sys`@CDB
+  > `docker container exec -it OracleDB /bin/bash -c "source /home/oracle/.bashrc; sqlplus '/ as sysdba'"`
+  - `sys`@PDB
+  > `docker container exec -it OracleDB /bin/bash -c "source /home/oracle/.bashrc; sqlplus sys/Oradoc_db1@ORCLPDB1 as sysdba"`
+
   - Oracle 12c introduces a new architecture called **multitenant**. In this new architecture, a database instance consists of two main component
     - A **container**, called _CDB_, which is the basis environment of the instance
-    - One or more **pluggable DBs**, called _PDB_, which is an end-user database for the application (this image has only one PDB)
-  - SqlPlus for `sys@CDB`
-  > `docker exec -it OracleDB /bin/bash -c "source /home/oracle/.bashrc; sqlplus '/ as sysdba'"`
-  - SqlPlus for `sys@PDB` - as default, the PDB's name is `ORCLPDB1` and the `sys` password is `Oradoc_db1`
-  > `docker exec -it OracleDB /bin/bash -c "source /home/oracle/.bashrc; sqlplus sys/Oradoc_db1@ORCLPDB1 as sysdba"`
-  
+    - One or more **pluggable DBs**, called _PDB_, which is an end-user database for applications (this image has only one PDB)
+  - The PDB information of this image
+    - Name is `ORCLPDB1` and its `sys` password is `Oradoc_db1`
+    - **JDBC URL** - `jdbc:oracle:thin:@localhost:1521/orclpdb1.localdomain`  
+
   <!-- TODO: sqlplus tutorial -->
   
 ### Sonatype Nexus
 - **Reference** [Docker Hub](https://hub.docker.com/r/sonatype/nexus3)
 - **Starting container**
-    > `mkdir -p /opt/nexus/data` <br/>
-    > `chown -R 200:200 /opt/nexus` <br/>
-    > `docker run -d -v /opt/nexus/data:/nexus-data -p 8081:8081 -e NEXUS_CONTEXT=nexus --restart=always --name Nexus sonatype/nexus3:3.15.2`
+    > `mkdir -p /opt/docker/nexus/data` <br/>
+    > `chown -R 200:200 /opt/docker/nexus` <br/>
+    > `docker container run -d -v /opt/docker/nexus/data:/nexus-data -p 8081:8081 -e NEXUS_CONTEXT=nexus --restart=always --name Nexus sonatype/nexus3:3.15.2`
 
     --|--
     `-e NEXUS_CONTEXT=nexus` | Start the server with `/nexus` context path (useful for Nginx forwarding)
@@ -173,7 +187,7 @@ Lets start real and practical examples.
 ### Jenkins Blue Ocean
 - **Reference** [Docker Hub](https://hub.docker.com/r/jenkinsci/blueocean)
 - **Starting container**
-  > `docker run -u root -d -v /opt/jenkins:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -p 8080:8080 -e JENKINS_OPTS="--prefix=/jenkins" --restart=always --name Jenkins jenkinsci/blueocean:1.14.0`
+  > `docker container run -d -u root -v /opt/docker/jenkins:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock -p 8080:8080 -e JENKINS_OPTS="--prefix=/jenkins" --restart=always --name Jenkins jenkinsci/blueocean:1.14.0`
 
     --|--
     `-u root` | Username or UID (format: `<name|uid>[:<group|gid>]`), so user `root` is set as the owner of the process
@@ -181,6 +195,74 @@ Lets start real and practical examples.
     `-e JENKINS_OPTS="--prefix=/jenkins"` | Start the server with `/jenkins` context path (useful for Nginx forwarding)
     
     - Visit [localhost:8080/jenkins](http://localhost:8080/jenkins)
+
+### Nginx * Jenkins * Nexus
+Lets mix up things and create a little bit advanced example to highlight Docker networking.
+This practical example can be used as a basis for a CI (continuous integration) environment.
+Following picture shows the final result of the example.
+
+![Nginx](/assets/images/docker/Nginx.png)
+
+The next script implements above picture:
+```sh
+docker network create DokNet1
+
+mkdir -p /opt/docker/nexus/data
+chown -R 200:200 /opt/docker/nexus
+docker container run -d \
+ -v /opt/docker/nexus/data:/nexus-data \
+ --network DokNet1 -e NEXUS_CONTEXT=nexus \
+ --restart=always --name Nexus sonatype/nexus3:3.15.2
+
+docker container run -d -u root \
+ -v /opt/docker/jenkins:/var/jenkins_home \
+ -v /var/run/docker.sock:/var/run/docker.sock \
+ --network DokNet1 -e JENKINS_OPTS="--prefix=/jenkins" \
+ --restart=always --name Jenkins jenkinsci/blueocean:1.14.0
+
+mkdir -p /opt/docker/nginx
+cat > /opt/docker/nginx/nginx.conf << "EOF"
+server_names_hash_bucket_size 64;
+
+server {
+  listen 80;
+  server_name localhost;
+  client_max_body_size 80M;
+  proxy_http_version 1.1;
+
+  location /nexus/ {
+    proxy_pass http://Nexus:8081/nexus/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+  }
+
+  location /jenkins/ {
+    proxy_pass http://Jenkins:8080/jenkins/;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+  }
+}
+EOF
+
+docker container run -d \
+ -v /opt/docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf \
+ --network DokNet1 -p 80:80 \
+ --restart=always --name Nginx nginx:1.15.10
+```
+
+- Line 1 - Docker creates a virtual network, called `DokNet1`.
+  - **Check it by executing `docker network inspect DokNet1`**
+  - After this command execution, a long string is printed on screen which is identifier of this network. Its first 12 characters is also unique and we call it `NET_ID`.
+  - Executing `ifconfig`, it is in the list by the name of `br-NET_ID`
+- Option `--network DokNet1` attaches the container to `DokNet1` network, so all of the above containers are in the same network.
+- Lines 17-38 create a config file for Nginx
+  - Line 27 - Nginx forward request to Nexus by calling `http://Nexus:8081/nexus/`, which restates the fact that containers can access each other by the name via network.
+  - Line 33 - It is the same as previous line for Jenkins 
+- Only Nginx has a binding port, and it is not necessary for Jenkins and Nexus to bind ports.
+- Accessing web apps
+  - Jenkins - [http://localhost/jenkins](localhost/jenkins)
+  - Nexus - [http://localhost/nexus](localhost/jenkins). Executing `curl -u admin:admin123 http://localhost/nexus/service/metrics/ping` is another way.
+- At the end, execute `docker network inspect DokNet1` again. You can see list of containers attached to this network.
 
 ## References
 [^docker_layer]: [Docker Layers Explained](https://dzone.com/articles/docker-layers-explained)
