@@ -47,7 +47,7 @@ I'm looking forward to
 
 	<tr>
 		<th>Location</th>
-		<td>Iran / Tehran</td>
+		<td>Tehran, Iran</td>
 
 		<th>Linkedin</th>
 		<td><a href="https://www.linkedin.com/in/mbizhani" target="_blank">linkedin.com/in/mbizhani</a></td>
