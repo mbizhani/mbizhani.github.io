@@ -2,9 +2,12 @@
 # Only the main Sass file needs front matter (the dashes are enough)
 ---
 
-$content-width: 1000px !default;
-
 @import "minima";
+$base-color: #264c66;
+
+.bg-devocative {
+	background-color: $base-color !important;
+}
 
 a {
 	color: #00004f;
@@ -14,14 +17,8 @@ a:visited {
 	color: #00004f;
 }
 
-.site-header {
-	background-image: url("/assets/images/home.png");
-	background-position: center;
-	background-repeat: no-repeat;
-}
-
-.site-title {
-	color: white !important;
+code {
+	color: #00003f;
 }
 
 .highlight {
@@ -61,21 +58,28 @@ pre.lineno {
 	position: fixed;
 	left: 5px;
 	top: 70px;
-	border: 1px solid #00008B;
-	border-radius: 5px;
+	border-radius: 30px;
+	box-shadow: 2px 2px 3px #999;
+	background-color: $base-color;
 	padding: 5px;
-	background-color: white;
-	box-shadow: 4px 4px #aaaaaa;
+}
+
+#toc_lbl {
+	width:40px;
+	height:40px;
+	text-align:center;
+	color: #ffffff;
+	padding: 8px;
 }
 
 #toc_body {
 	display: none;
+	background-color: #dddddd;
+	text-align: left;
+	border-radius: 10px;
+	font-size: smaller;
 }
 
 #toc_lbl:hover + #toc_body, #toc_body:hover {
 	display: block;
-}
-
-#toc_lbl > img {
-	height: 30px;
 }

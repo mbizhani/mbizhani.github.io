@@ -3,38 +3,41 @@ layout: default
 ---
 
 <div class="home">
-  {%- if page.title -%}
-    <h1 class="page-heading">{{ page.title }}</h1>
-  {%- endif -%}
+	{%- if page.title -%}
+	<h1 class="page-heading">{{ page.title }}</h1>
+	{%- endif -%}
 
-  {{ content }}
+	{{ content }}
 
-  {%- if site.posts.size > 0 -%}
-    <ul class="post-list">
-      {%- for post in site.posts -%}
-      <li>
-        {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
-        <span class="post-meta">
-          {{ post.date | date: date_format }}
-          {%- if post.update -%}
-          <sub> updated: <b>{{ post.update | date: date_format }}</b></sub>
-          {%- endif -%}
-        </span>
-        <h3 style="margin:0">
-          <a class="post-link" href="{{ post.url | relative_url }}">
-            {{ post.title | escape }}
-          </a>
-        </h3>
-        {%- if site.show_excerpts -%}
-        <blockquote>
-          {{ post.excerpt }}
-        </blockquote>
-        {%- endif -%}
-      </li>
-      {%- endfor -%}
-    </ul>
+	{%- if site.posts.size > 0 -%}
+	<ul class="post-list">
+		{%- for post in site.posts -%}
+		<li>
+			{%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+			<div class="post-meta">
+				<div class="badge badge-danger m-1"><i class="fa fa-fire"></i></div>
+				{%- if post.update -%}
+				<div class="badge badge-dark">Updated: {{ post.update | date: date_format }}</div>
+				<div class="badge badge-light">{{ post.date | date: date_format }}</div>
+				{% else %}
+				<div class="badge badge-dark">{{ post.date | date: date_format }}</div>
+				{%- endif -%}
+			</div>
+			<h4 style="margin:0">
+				<a href="{{ post.url | relative_url }}">
+					{{ post.title | escape }}
+				</a>
+			</h4>
+			{%- if site.show_excerpts -%}
+			<blockquote>
+				{{ post.excerpt }}
+			</blockquote>
+			{%- endif -%}
+		</li>
+		{%- endfor -%}
+	</ul>
 
-    <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
-  {%- endif -%}
+	<p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
+	{%- endif -%}
 
 </div>

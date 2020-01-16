@@ -5,28 +5,35 @@ layout: default
 
 	<header class="post-header">
 		<h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
-		<p class="post-meta">
+		<p>
+			{%- if page.author -%}
+			<span class="badge badge-warning" itemprop="author" itemscope itemtype="http://schema.org/Person">
+				<i class="fa fa-pencil" aria-hidden="true"></i>
+				<span itemprop="name">{{ page.author }}</span>
+			</span>
+			<br/>
+			{%- endif -%}
+			<span class="badge badge-light">
+			<i class="fa fa-clock-o" aria-hidden="true"></i>
 			<time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">
 				{%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
 				{{ page.date | date: date_format }}
 			</time>
-			{%- if page.author -%}
-			• <span itemprop="author" itemscope itemtype="http://schema.org/Person">
-				<span class="p-author h-card" itemprop="name">{{ page.author }}</span>
-			  </span>
-			{%- endif -%}
+			</span>
 			{%- if page.update -%}
-			<br/>
+			<span>-</span>
+			<span class="badge badge-light">
 			<time class="dt-published" datetime="{{ page.update | date_to_xmlschema }}">
 				{%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
-				{{ page.update | date: date_format }}
-			</time> (updated)
+				Updated: {{ page.update | date: date_format }}
+			</time>
+			</span>
 			{%- endif -%}
 		</p>
 	</header>
 
 	<div id="toc">
-		<div id="toc_lbl"><img alt="toc" src="/assets/images/toc.png" title="Table of Content"/></div>
+		<div id="toc_lbl"><i class="fa fa-list" aria-hidden="true"></i></div>
 		<div id="toc_body">{% include toc.html html=content %}</div>
 	</div>
 
