@@ -61,7 +61,7 @@ pre.lineno {
 	border-radius: 30px;
 	box-shadow: 2px 2px 3px #999;
 	background-color: $base-color;
-	padding: 5px;
+	padding: 8px;
 }
 
 #toc_lbl {
@@ -78,6 +78,7 @@ pre.lineno {
 	text-align: left;
 	border-radius: 10px;
 	font-size: smaller;
+	padding: 3px;
 }
 
 #toc_lbl:hover + #toc_body, #toc_body:hover {

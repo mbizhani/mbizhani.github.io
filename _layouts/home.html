@@ -1,43 +1,64 @@
 ---
 layout: default
 ---
-
 <div class="home">
 	{%- if page.title -%}
 	<h1 class="page-heading">{{ page.title }}</h1>
 	{%- endif -%}
 
-	{{ content }}
+	<div class="row">
+		<div class="col">
+			{{ content }}
 
-	{%- if site.posts.size > 0 -%}
-	<ul class="post-list">
-		{%- for post in site.posts -%}
-		<li>
-			{%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
-			<div class="post-meta">
-				<div class="badge badge-danger m-1"><i class="fa fa-fire"></i></div>
-				{%- if post.update -%}
-				<div class="badge badge-dark">Updated: {{ post.update | date: date_format }}</div>
-				<div class="badge badge-light">{{ post.date | date: date_format }}</div>
-				{% else %}
-				<div class="badge badge-dark">{{ post.date | date: date_format }}</div>
-				{%- endif -%}
-			</div>
-			<h4 style="margin:0">
-				<a href="{{ post.url | relative_url }}">
-					{{ post.title | escape }}
-				</a>
-			</h4>
-			{%- if site.show_excerpts -%}
-			<blockquote>
-				{{ post.excerpt }}
-			</blockquote>
+			{%- if site.posts.size > 0 -%}
+			<ul class="post-list">
+				{%- for post in site.posts -%}
+				<li>
+					{%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
+					<div class="post-meta">
+						<div class="badge badge-danger m-1"><i class="fa fa-fire"></i></div>
+						{%- if post.update -%}
+						<div class="badge badge-dark">Updated: {{ post.update | date: date_format }}</div>
+						<div class="badge badge-light">{{ post.date | date: date_format }}</div>
+						{% else %}
+						<div class="badge badge-dark">{{ post.date | date: date_format }}</div>
+						{%- endif -%}
+					</div>
+					<h4 style="margin:0">
+						<a href="{{ post.url | relative_url }}">
+							{{ post.title | escape }}
+						</a>
+					</h4>
+					{%- if site.show_excerpts -%}
+					<blockquote>
+						{{ post.excerpt }}
+					</blockquote>
+					{%- endif -%}
+				</li>
+				{%- endfor -%}
+			</ul>
+
+			<p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
 			{%- endif -%}
-		</li>
-		{%- endfor -%}
-	</ul>
-
-	<p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
-	{%- endif -%}
-
+		</div>
+		<div class="col-3">
+			<div class="card shadow">
+				<div class="card-header bg-dark text-light">
+					<span class="font-weight-bold text-monospace">Notes</span>
+				</div>
+				<div class="list-group list-group-flush">
+				{%- assign default_paths = site.pages | map: "path" -%}
+				{%- assign page_paths = site.header_pages | default: default_paths -%}
+				{%- for path in page_paths -%}
+				{%- assign my_page = site.pages | where: "path", path | first -%}
+				{%- if my_page.title and my_page.url contains "notes" -%}
+				<a class="list-group-item list-group-item-action" href="{{ my_page.url | relative_url }}">
+					<i class="fa fa-dot-circle-o" aria-hidden="true"></i> {{ my_page.title | escape }}
+				</a>
+				{%- endif -%}
+				{%- endfor -%}
+			</div>
+			</div>
+		</div>
+	</div>
 </div>
