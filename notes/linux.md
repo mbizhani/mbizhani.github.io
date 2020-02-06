@@ -4,10 +4,7 @@ title: Linux
 toc: true
 ---
 
-## Shell Commands
-
-### Commands
-- `hostnamectl --static set-hostname <HOSTNAME>`
+## General
 - `watch` - execute a program periodically, showing output fullscreen
   - `watch [-d] [-n] [-t] command`
     - `-d` : Highlight the differences between successive updates
@@ -17,10 +14,11 @@ toc: true
 - `dmidecode --type 17 | less` - show information about RAM modules
 - `hdparm -I /dev/sda | less` - show information about HDD
 
-- **`find`**
+### find cmd
   - By default, it searches in subdirectories recursively, unless `-maxdepth` option is set.
 
 | `find DIR -name "SEARCH"` | case sensitive SEARCH in DIR
+| `find DIR -iname "*.rar" -printf "%f\n"` <br/> `find DIR -iname "*.rar" -exec basename {} \;` <br/> `find DIR -iname "*.rar" | awk -F "/" '{print $(NF)}'` | just print filename (without parent dirs)
 | `find DIR -type d -iname "SEARCH"` | case insensitive SEARCH only folders in DIR
 | `find DIR -type f -mtime +7 -exec rm -f {} \;` | delete files older than 7 days in DIR
 | `find DIR -maxdepth 1 -type f -mtime +7 -exec rm -f {} \;` | delete files only in DIR and older than 7 days 
@@ -34,13 +32,19 @@ find /path/to/folders/* -type d \
     -exec sh -c "mv {}.mbox/*.emlx {}.mbox/Messages" \;
 ```
 
-- **User**
+### awk cmd
+
+| `find . -iname "*.rar" -printf "%f\n" | awk -F ".part" '{print $1}' | sort | uniq` | list rar-parted files
+| `docker ps -a -f "status=exited" | awk '$3 ~ /runner/ {print "docker rm "$1}' | bash` | remove GitLab Runner exited containers
+| `docker images -q -f "dangling=true" | awk '{print "docker rmi -f "$1}' | bash` | remove dangling Docker images
+
+### User
 
 | `adduser USERNAME` | add new user
-| `usermod -aG GROUP1[,GROUP2,...] USERNAME` | append groups to user's groups
-| `usermod -g GROUP USERNAME` | change user’s primary group
+| `usermod -a -G GRP1[,GRP2,...] USERNAME` | append groups to user's groups
+| `usermod -g GRP USERNAME` | change user’s primary group
 
-### Config Files
+## Config Files
 - `/etc/environment`
   - system-wide environment variable settings
   - not a script file
@@ -58,12 +62,13 @@ iface eth0 inet static
   - `apt install bash-completion`
   - if not worked, edit `/etc/bash.bashrc` and uncomment the section related to bash-completion
 
-### Network
+## Network
+- `hostnamectl --static set-hostname <HOSTNAME>`
 - `export http_proxy=http://[USERNAME:PASSWORD@]PROXY_SERVER[:PORT]` ([Ref](https://www.cyberciti.biz/faq/linux-unix-set-proxy-environment-variable/))
   - connect text based session and/or applications via the proxy server
   - apps like `apt`, `lynx`, `wget`, ...
 
-- **`ip` command**
+### ip cmd
 
 `ip` vs other net tools [link1](https://p5r.uk/blog/2010/ifconfig-ip-comparison.html) and [cyberciti](https://www.cyberciti.biz/faq/linux-ip-command-examples-usage-syntax)
 
@@ -75,7 +80,7 @@ iface eth0 inet static
 | Show neighbour (ARP)                     | `ip n` or `ip neigh`  | `arp -a`                        |
 | Show socket statics/info                 | `ss -lntp` `ss -antp` | `netstat -lntp` `netstat -antp` |
 
-### LVM
+## LVM
 - **Note**: Rescan the SCSI bus to add a SCSI device without rebooting the VM ([Ref](https://www.cyberciti.biz/tips/vmware-add-a-new-hard-disk-without-rebooting-guest.html))
   - `find /sys/class/scsi_host/ -name "host*" -exec sh -c "echo '- - -' > {}/scan" \;`
   - `fdisk -l` and find the newly added device
@@ -122,7 +127,7 @@ Categories=CATEGORY;
 EOL
 ``` 
 
-- VMWare
+### VMWare
   - `apt install open-vm-tools` - Open VMware Tools for virtual machines hosted on VMware (CLI)
   - `apt install open-vm-tools-desktop` - Open VMware Tools for virtual machines hosted on VMware (GUI)
   - After Kernel update, Workstation crashes due to some module problem => ([Solution](https://github.com/mkubecek/vmware-host-modules/)) ([Releases](https://github.com/mkubecek/vmware-host-modules/releases))
@@ -134,7 +139,7 @@ make
 make install
 ```
 
-- Utility Apps
+### Utility Apps
 
 | Function         | App                                                                
 |------------------|---|
