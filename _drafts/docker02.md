@@ -11,12 +11,19 @@ excerpt: Running multiple containers by docker-compose
 With Compose, you use a YAML file to configure your application’s services. Then, with a single command, 
 you create and start all the services from your configuration ([REF](https://docs.docker.com/compose)).
 
-For installation, some linux distributions such as Debian has a proper package. The single command-file also can be
-downloaded from its GitHub repo using the following command:
+For installation, some linux distributions such as Debian has a proper package. 
+Another solution is to download the single command-file from its GitHub using the following command ([REF](https://docs.docker.com/compose/install/)):
 
-`sudo curl -L "https://github.com/docker/compose/releases/download/1.25.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose`
+```sh
+sudo curl -L \
+  "https://github.com/docker/compose/releases/download/1.25.3/docker-compose-$(uname -s)-$(uname -m)" \ 
+  -o /usr/local/bin/docker-compose
+suso chmod +x /usr/local/bin/docker-compose
+```
 
-### Features
+**Note**: To install a different version of Compose, substitute `1.25.3` with the version of Compose you want to use.
+
+### Compose Features
 
 - **Multiple isolated environments on a single host**
   - Uses a project name to isolate environments from each other
@@ -26,9 +33,9 @@ downloaded from its GitHub repo using the following command:
 - **Only recreate containers that have changed**
   - Compose caches the configuration used to create a container. When you restart a service that has not changed, Compose re-uses the existing containers. Re-using containers means that you can make changes to your environment very quickly.
 - **Variables and moving a composition between environments**
-  - Variables can be used in the compose file
+  - Variables can be used in the Compose file
   - Variables from the shell environment such as `${USER}` can be addressed
-  - Variables also can be defined in a `.env` file beside the compose file in `key=value` format
+  - Variables also can be defined in a `.env` file beside the Compose file in `key=value` format
   - Variables can be used in the following formats
     - `${VARIABLE}` or `$VARIABLE` - simple
     - `${VARIABLE:-default}` evaluates to `default` if `VARIABLE` is _unset_ or _empty_ in the environment.
@@ -48,7 +55,7 @@ TRAEFIK_VER=2.1.3
 
 ## First Sample
 
-The following `yml` uses some images to illustrate various `docker-compose` features alongside the above `.env` file. 
+In the following `yml`, some images are used to illustrate various `docker-compose` features alongside the above `.env` file. 
 Before execution, run `docker network create main_net`.
 
 ```yaml
@@ -116,7 +123,7 @@ networks:
     name: main_net
 ```
 
-Save the previous block as `docker-compose.yml` in directory called `Example` (just to simplify the sample) and as described above, the `example` is the project name.
+Copy sample in `docker-compose.yml` and save it in a directory called `Example` (just to simplify the sample), so the `example` is the project name.
 Also create `.env` in this directory. Now run `docker-compose up -d`:
 
 - `example_web` docker network is created
@@ -126,22 +133,22 @@ Also create `.env` in this directory. Now run `docker-compose up -d`:
   - `example_portainer_1`
   - `example_traefik_1`
 - `docker-compose logs -f traefik` - watch the `traefik` service log
-- `docker-compose exec busybox sh` - a shell program is executed in the `busybox` service. Now execute following commands
+- `docker-compose exec busybox sh` - the `sh` program is executed in the `busybox` service. Now execute following commands:
   - `hostname` - result: `busybox` (line 51)
   - `ip a` - result: 3 interfaces - `lo`, one for `web` and the other for `ext`
   - `ping traefik` and `ping example_traefik_1` show the same result. The `traefik` is set as alias for container `example_traefik_1`
   ({% raw %}`docker container inspect -f '{{ .NetworkSettings.Networks.example_web.Aliases }}' example_traefik_1`{% endraw %})
   - `telnet traefik 80`, `telnet nginx 80`, and `telnet portainer 9000` - you can telnet the services
-- Traefik is the reverse proxy. You can access the following URLs:
+- Traefik is the reverse proxy. Access the following URLs:
   - [http://localhost:8080](http://localhost:8080) - Traefik dashboard (enabled by `--api.insecure=true`)
   - [http://localhost/web](http://localhost/web) - Nginx default page
   - [http://localhost/portainer](http://localhost/portainer) - Portainer application
 - For volumes, `./DIR` can be used to create a `DIR` in current directory on host (line 34 if `VOL_BASE_DIR` is undefined).
-  - Note: relative volume is only possible in `docker-compose` and later it translates into absolute directory 
+  - Note: relative volume is only possible in `docker-compose` and later it is translated into absolute directory 
   ({% raw %}`docker container inspect -f '{{ .HostConfig.Binds }}' example_portainer_1`{% endraw %})
 - `docker-compose stop` - stop all running containers
 - `docker-compose start` - start all stopped containers
-- `docker-compose down` - stop and remove all containers and then remove `web` network
+- `docker-compose down` - stop and remove all containers and then remove `web` network (owned networks by the compose file)
 
 ## Services
 
@@ -202,13 +209,13 @@ Also create `.env` in this directory. Now run `docker-compose up -d`:
 
 ### Redis
 
-### GitLab & GitLab Runner
-
-### Nexus
-
 ### MySQL
 
-### Monitoring
+### DevOps
+
+#### GitLab & GitLab Runner
+
+#### Nexus
 
 #### Grafana
 
