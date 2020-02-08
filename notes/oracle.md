@@ -79,11 +79,13 @@ where
 - Parent/Child or FK/PK Relation
 ```sql
 select
+    'create index '||ch.owner||'.IDX_'||ch.constraint_name||
+      ' on '||ch.owner||'.'||ch.table_name||'('||chc.column_name||');' create_idx_fk,
     -- child cols
-    ch.constraint_name ch_fk_const, ch.table_name ch_table, chc.column_name ch_col,
+    ch.constraint_name ch_fk_const, ch.owner ch_owner, ch.table_name ch_table, chc.column_name ch_col,
     -- parent cols
-    pr.constraint_name pr_pk_const, pr.table_name pr_table, prc.column_name pr_col
--- child tables
+    pr.constraint_name pr_pk_const, pr.owner pr_owner, pr.table_name pr_table, prc.column_name pr_col
+    -- child tables
 from all_constraints ch
 join all_cons_columns chc on chc.constraint_name = ch.constraint_name and chc.owner=ch.owner
 -- parent tables
@@ -91,6 +93,7 @@ join all_constraints pr on pr.constraint_name = ch.r_constraint_name and pr.owne
 join all_cons_columns prc on prc.constraint_name = pr.constraint_name and prc.owner = pr.owner
 where
     ch.constraint_type = 'R'
+    --and pr.constraint_name = ''
     --and pr.owner = ''
     --and pr.table_name = ''
 ```
@@ -142,3 +145,11 @@ create table t_T1 (
   - `alter table T1 drop column COL`
   - `alter table T1 enable/disable constraint CONST`
   - `alter table T1 drop constraint CONST`
+
+### DB Link
+- Create 
+```sql
+create database link L
+   connect to U identified by "P"
+   using '(description=(address=(protocol=tcp)(host=H)(port=1521))(connect_data=(service_name=S)))'
+```
