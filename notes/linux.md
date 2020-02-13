@@ -11,6 +11,8 @@ toc: true
 	- `-n` : Specify update interval in seconds
 	- `-t` : Turn off the header showing the interval, command, and current time at the top of the display
   - Multiple commands - `watch "CMD1; echo '\n'; CMD2; ..."`
+- `echo $(date +'%Y-%m-%d_%H-%M-%S')`
+- `seq -f "MSG_ID: %03g" 20`
 - `dmidecode --type 17 | less` - show information about RAM modules
 - `hdparm -I /dev/sda | less` - show information about HDD
 

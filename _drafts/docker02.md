@@ -2,7 +2,7 @@
 layout: post
 title: "Docker to the Point - Part 2"
 categories: article tech
-excerpt: Running multiple containers by docker-compose
+excerpt: Using Docker Compose to run multiple containers
 ---
 
 ## Introduction
@@ -47,10 +47,22 @@ suso chmod +x /usr/local/bin/docker-compose
 
 ```sh
 VOL_BASE_DIR=/opt/docker_vols
+
+TRAEFIK_VER=2.1.3
+PORTAINER_VER=1.23.0
+
 BUSYBOX_VER=1.31.1-glibc
 NGINX_VER=1.17.2
-PORTAINER_VER=1.23.0
-TRAEFIK_VER=2.1.3
+
+CONFLUENT_VER=5.3.1-1
+KAFDROP_VER=3.23.0
+
+REDIS_VER=5.0.7
+REDIS_PASSWD=ReDis
+
+MYSQL_VER=8.0.19
+MYSQL_PASSWS=rOOt
+ADMINER_VER=4.7.6-standalone
 ```
 
 ## First Sample
@@ -144,7 +156,7 @@ Also create `.env` in this directory. Now run `docker-compose up -d`:
   - [http://localhost/web](http://localhost/web) - Nginx default page
   - [http://localhost/portainer](http://localhost/portainer) - Portainer application
 - For volumes, `./DIR` can be used to create a `DIR` in current directory on host (line 34 if `VOL_BASE_DIR` is undefined).
-  - Note: relative volume is only possible in `docker-compose` and later it is translated into absolute directory 
+  - **Note**: relative volume is only possible in `docker-compose` and later it is translated into absolute directory 
   ({% raw %}`docker container inspect -f '{{ .HostConfig.Binds }}' example_portainer_1`{% endraw %})
 - `docker-compose stop` - stop all running containers
 - `docker-compose start` - start all stopped containers
@@ -183,6 +195,13 @@ Also create `.env` in this directory. Now run `docker-compose up -d`:
     networks:
       - net
 ```
+- Lines 8 enables dashboard and lines 9 create an `entrypoint` for the dashboard on port `8080`
+- Lines 13-20 configure dashboard with basic-auth and redirection to `/dashbiard`
+  - Line 18 defines basic-auth middleware with user `admin` ([REF](https://docs.traefik.io/v2.0/middlewares/basicauth/))
+    - Using `echo $(htpasswd -nb user password) | sed -e s/\\$/\\$\\$/g` command to generate the expression
+    - **Note**: `htpasswd` is installed via `apache2-utils` package on Debian
+  - Lines 19 and 20 enables the redirection to `/dashboard`
+    - In line 20, the `${1}` refers to the group defined in the regex in previous line  
 
 ### Portainer
 
@@ -206,21 +225,134 @@ Also create `.env` in this directory. Now run `docker-compose up -d`:
 ```
 
 ### Kafka
+```yaml
+version: '3.6'
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:${CONFLUENT_VER:-latest}
+    restart: always
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    volumes:
+      - ${VOL_BASE_DIR:-.}/zookeeper/data:/var/lib/zookeeper/data
+      - ${VOL_BASE_DIR:-.}/zookeeper/log:/var/lib/zookeeper/log
+    networks:
+      - net
+
+  kafka:
+    image: confluentinc/cp-kafka:${CONFLUENT_VER:-latest}
+    restart: always
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+      # Multi-Net Config
+      KAFKA_LISTENERS: INSIDE://:9092,OUTSIDE://:29092
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9092,OUTSIDE://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+
+      # All-Same-Net Simple Config
+      # KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+    volumes:
+      - ${VOL_BASE_DIR:-.}/kafka/data:/var/lib/kafka/data
+    ports:
+      - 29092:29092
+    networks:
+      - net
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop:${KAFDROP_VER:-latest}
+    restart: always
+    depends_on:
+      - kafka
+    environment:
+      JVM_OPTS: "-Xms16M -Xmx48M"
+      KAFKA_BROKERCONNECT: kafka:9092
+      SERVER_PORT: 9090
+      SERVER_SERVLET_CONTEXTPATH: "/"
+    ports:
+      - 9090:9090
+    networks:
+      - net
+```
+- Kafka Networking Config ([REF](https://docs.confluent.io/current/kafka/multi-node.html)):
+  - All containers attached to `net` network can connect to `kafka` server via port `9092` through `INSIDE://:9092` listener advertised by `INSIDE://kafka:9092`, such as `kafdrop`
+  - Other clients on the host (localhost) can connect to kafka server via port `29092` through `OUTSIDE://:29092` listener advertised by `OUTSIDE://localhost:29092`
+- `docker-compose exec kafka bash` - Check Kafka Server
+  - Topic commands
+    - `kafka-topics --zookeeper zookeeper:2181 --list`
+    - `kafka-topics --zookeeper zookeeper:2181 --create --partitions 3 --replication-factor 1 --if-not-exists --topic bar`
+    - `kafka-topics --zookeeper zookeeper:2181 --describe --topic bar`
+  - Messaging commands
+    - `seq -f "MSG_ID: %03g" 20 | kafka-console-producer --broker-list localhost:9092 --topic bar && echo 'Messages Are Sent'`
+    - `kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --topic bar --max-messages 10`
+    - Note: the order of messages are based on partitions 
+- For Clustered Deployment on Docker check [[REF](https://docs.confluent.io/5.0.0/installation/docker/docs/installation/clustered-deployment.html)]
 
 ### Redis
+```yaml
+  redis:
+    image: redis:${REDIS_VER:-latest}
+    restart: always
+    command: redis-server --requirepass ${REDIS_PASSWD:-redis} --appendonly yes
+    ports:
+      - 6379:6379
+    volumes:
+      - ${VOL_BASE_DIR:-.}/redis:/data
+    networks:
+      - net
+```
+- `docker-compose exec redis redis-cli -a ReDis` - Interactive Redis CLI
+- Syntax: `redis-cli [-h HOST] [-p PORT] [-a PASSWORD]`
+-Commands
+  - `ping`
+  - `keys *` - return all keys
+  - `type KEY` - check type of value
+  - `del KEY`
+  - Getting values - Redis supports multiple types of data ([REF](https://redis.io/topics/data-types-intro))
+    - `get KEY` - string
+    - `smembers KEY` - set
+    - `lrange KEY START END` - list
+- `docker-compose exec redis redis-cli -a ReDis --stat [-i INTERVAL]` - Continuous stats mode
 
 ### MySQL
+```yaml
+  mysql:
+    image: mysql:${MYSQL_VER:-latest}
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWS:-root}
+    volumes:
+      - ${VOL_BASE_DIR:-.}/mysql:/var/lib/mysql
+    networks:
+      - net
 
-### DevOps
-
-#### GitLab & GitLab Runner
-
-#### Nexus
-
-#### Grafana
-
-#### Prometheus & Alert Manager
-
-#### Node Exporter
-
-#### CAdvisor
+  adminer:
+    image: adminer:${ADMINER_VER:-latest}
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      ADMINER_DESIGN: ng9
+    networks:
+      - net
+```
+- [What’s New in MySQL 8.0?](https://mysqlserverteam.com/whats-new-in-mysql-8-0-generally-available/) 
+- `docker-compose exec mysql -uroot -prOOt` - Run MySql CLI
+  - Syntax: `mysql -uUSER -pPASSWORD` (no space!)
+  - `show databases;`
+  - `create database DB;`
+  - `use DB`
+  - `show tables;`
+  - `desc TABLE;`
+  - `create user USER identified by 'PASSWORD';`
+  - `grant all privileges on DB.* to USER;`
+- `docker-compose exec mysql mysqldump -uUSER -pPASSWORD DB | grep -v Warning | gzip > DB_$(date +'%Y-%m-%d_%H-%M-%S').sql.gz`
+- `zcat DB.sql.gz | docker-compose exec -T mysql mysql -uUSER -pPASSWORD DB`
+  - **Note**: By default `docker-compose exec` allocates a tty, so `-T` disables pseudo-tty allocation. 
