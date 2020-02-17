@@ -42,9 +42,13 @@ find /path/to/folders/* -type d \
 
 ### User
 
+| **User CRUD**
 | `adduser USERNAME` | add new user
 | `usermod -a -G GRP1[,GRP2,...] USERNAME` | append groups to user's groups
 | `usermod -g GRP USERNAME` | change user’s primary group
+| **User Audit** ([ref](https://www.thegeekdiary.com/5-useful-command-examples-to-monitor-user-activity-under-linux/))
+| `who -aH` | users currently logged in to the system
+| `last -a` or `lastb -a` | show a listing of last logged in users (`lastb` shows bad login attempts)
 
 ## Config Files
 - `/etc/environment`
@@ -155,6 +159,6 @@ make install
 | Photo Editor     | SIMPLE: <u><code>PhotoFlare</code></u> ADVANCED: <u><code>Gimp</code></u>, `Inkscape`, `RawTherapee`, `Krita`
 | Download Manager | `XDM 2018`
 | Remoting Client  | `remmina`
-| Processes Viewer | `htop`
+| Shell Monitoring | System: `htop` <br/> Network: `iptraf`
 | Shell Utilities  | `multitail`
 
