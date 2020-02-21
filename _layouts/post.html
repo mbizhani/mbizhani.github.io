@@ -5,6 +5,9 @@ layout: default
 
 	<header class="post-header">
 		<h1 class="post-title p-name" itemprop="name headline">{{ page.title | escape }}</h1>
+		<blockquote>
+			{{ page.excerpt }}
+		</blockquote>
 		<p>
 			{%- if page.author -%}
 			<span class="badge badge-warning" itemprop="author" itemscope itemtype="http://schema.org/Person">
