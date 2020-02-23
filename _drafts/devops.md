@@ -14,12 +14,12 @@ this post:
 call a CI/CD server/agent to execute a `pipeline` based on the defined event/hook. 
 For git server, in this post [`GitLab CE`](https://hub.docker.com/r/gitlab/gitlab-ce) is used.
 
-2. **CI/CD Server** - Jenkins is one of the most famous CI/CD server. However, since GitLab is the git server in this example, there is 
-[`GitLab Runner`](https://hub.docker.com/r/gitlab/gitlab-runner) which is its integrated solution for CI/CD.
+2. **CI/CD Server** - Jenkins is one of the most famous CI/CD applications. However, [`GitLab Runner`](https://hub.docker.com/r/gitlab/gitlab-runner)
+is more convenient as it is the integrated and default CI/CD tool for GitLab server.
 
-3. **Artifact/Image Repository** - After source code build, the result artifact must be shipped to the server. 
-Since Docker is used as the executor on servers, the final package must be deployed as Docker image. 
-So a registry is required in this case. [`Sonatype Nexus 3`](https://hub.docker.com/r/sonatype/nexus3) is 
+3. **Artifact/Image Repository** - After source code build, the output artifact must be shipped to the server. 
+Since Docker is used to run applications on servers, the final package must be deployed as Docker image. 
+So a registry is required in this case to mediate images between servers. [`Sonatype Nexus 3`](https://hub.docker.com/r/sonatype/nexus3) is 
 a professional repository management tool and it supports various development/build tools such as maven, npm, and so on.
 
 4. **Deployment Servers/Cluster** - At the end of a CD pipeline, a server or cluster is required for executing the container(s). 
@@ -31,8 +31,8 @@ The CD can be translated into following paradigms:
 
 ## Installation
 
-The DevOps environment is installed via Docker Compose. So it is the prerequisite. It is also highly recommended to setup all 
-the softwares and containers on the Linux box without any graphical desktop and `NetworkManager` must be disabled. 
+The DevOps environment is installed via Docker Compose. So it is the prerequisite, and you can learn about it in [Docker to the Point - Part 2]({% post_url 2020-02-13-docker02 %}). 
+It is also highly recommended to setup all the containers on the Linux box without any graphical desktop and `NetworkManager` must be disabled. 
 You can use a virtual machine software. 
 
 **_Note_**
@@ -50,6 +50,8 @@ Then, follow the below steps (commands should be executed in `DevOps` directory)
 1. `chmod +x init.sh && sudo ./init.sh`
 2. `docker-compose up -d`
 3. Config [GitLab Server](#gitlab)
+4. Register [GitLab Runner](#gitlab-runner)
+5. Config [Nexus](#sonatype-nexus-3)
 
 ### `.env`
 
