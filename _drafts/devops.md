@@ -268,14 +268,17 @@ The `gitlab-runner` container is registered as a runner as depicted in the follo
 
 ### Sonatype Nexus 3
 
-Sonatype Nexus is one the greatest open source repository management software. It supports various repository types such as
-Docker registry, Maven, NPM, and so on. This post only presents its Docker registry feature.
+Sonatype Nexus is one of the greatest open source repository management software. It supports various repository types such as
+_Docker registry_, _Maven_, _NPM_, and so on. This post only presents its Docker registry feature.
+
+**Note**: In spite of Docker registry feature in GitLab, Nexus 3 is still the favorite repository management application for
+supporting other types of repository such as maven, npm, and so on. If you only need a Docker registry, then GitLab may be more convenient.
 
 - `http://HOST/nexux` - First page of Nexus
-- Login with user `admin` and the password is in `${VOL_BASE_DIR}/nexus/` temp file.
+- Login with user `admin` and the password is in `${VOL_BASE_DIR}/nexus/admin.password` temp file.
 - Create a blob store called `docker` 
-- Create a hosted Docker repository on HTTP port `8083`
-- Create a group Docker repository on HTTP port `8082` and add previous one to this
+- Create a **hosted** Docker repository on HTTP port `8083`
+- Create a **group** Docker repository on HTTP port `8082` and add previous one to this
 - Enable `Docker Bearer Token Realm`
 - To push an image to hosted repo
   - `docker login -u USER -p PASS HOST:8083`
