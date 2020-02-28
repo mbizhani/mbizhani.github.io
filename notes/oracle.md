@@ -43,6 +43,9 @@ where
 --and schemaname='?'
 --and machine='?'
 ```
+- Gather Statistics ([REF](https://oracle-base.com/articles/misc/cost-based-optimizer-and-database-statistics))
+  - `dbms_stats.gather_schema_stats('SCHEMA');`
+  - `dbms_stats.gather_table_stats('SCHEMA', 'TABLE');`
 
 ### Export/Import
 - `select * from dba_directories`
@@ -56,6 +59,8 @@ where
   - `remap_schema=SRC1:DEST1[,SRC2:DEST2,...]`
   - `parallel=DEGREE`
   - `transform=oid:n` (for proc/func to get new OID)
+- Data Pump Jobs
+  - `select * from dba_datapump_jobs`
 
 ### CDB/PDB
 - `show pdbs` or `select con_id, name, open_mode from v$pdbs`
