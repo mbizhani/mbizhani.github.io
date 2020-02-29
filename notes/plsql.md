@@ -11,10 +11,9 @@ toc: true
 create or replace procedure ar2fa_replacer(p_owner in varchar2, p_table in varchar2 default null) is
 	v_count number;
 begin
-	dbms_output.enable(1000000);
 	dbms_output.put_line('--- Ar to Fa Replacer: owner=' || p_owner || ', table=' || p_table);
 
-	for col in (select * from all_tab_cols
+	for col in (select * from dba_tab_cols
 				where owner = upper(p_owner)
 				  and data_type like '%CHAR%'
 				  and (p_table is null or table_name = upper(p_table))
@@ -36,6 +35,8 @@ begin
 		end loop;
 end;
 ```
+  - Line 6, use `dba_tab_cols` instead of `all_tab_cols`
+  - Grant `select any dictionary` to procedure's owner 
 
 ## Trigger
 
