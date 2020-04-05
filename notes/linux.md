@@ -14,6 +14,8 @@ toc: true
 - `echo $(date +'%Y-%m-%d_%H-%M-%S')`
 - `seq -f "MSG_ID: %03g" 20`
 - `w` - shows brief info of system and current logged in users
+- `dpkg -S ABSOLUTE_FILE_NAME` - Search for a filename from installed packages. (note: can't work on symlinks)
+- `systemctl show SERVICE` - Show properties of one or more units, jobs, or the manager itself.
 - `dmidecode --type 17 | less` - show information about RAM modules
 - `hdparm -I /dev/sda | less` - show information about HDD
 
@@ -153,7 +155,7 @@ make install
 |------------------|---|
 | Media Converter  | `HandBrake` `WinFF`(using ffmpeg library)
 | Screen Snapshot  | `Flameshot`
-| Screen Recorder  | `obs-studio` `kazam` `vokoscreen` ([Ref](https://itsfoss.com/best-linux-screen-recorders/))
+| Screen Recorder  | `obs-studio` `kazam` `vokoscreen` - ([Ref](https://itsfoss.com/best-linux-screen-recorders/))
 | Code Editor      | `Intellij Idea` `VSCode` `Atom` `Sublime Text`
 | Diff/Merge Files | `meld`
 | Note/Wiki Editor | `Zim`
