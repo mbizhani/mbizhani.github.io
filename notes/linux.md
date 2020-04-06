@@ -153,17 +153,18 @@ make install
 
 | Function         | App                                                                
 |------------------|---|
-| Media Converter  | `HandBrake` `WinFF`(using ffmpeg library)
+| Media Converter  | `HandBrake` `WinFF`(using `ffmpeg` library)
 | Screen Snapshot  | `Flameshot`
 | Screen Recorder  | `obs-studio` `kazam` `vokoscreen` - ([Ref](https://itsfoss.com/best-linux-screen-recorders/))
+| Screen Annotate  | `gromit-mpx`
 | Code Editor      | `Intellij Idea` `VSCode` `Atom` `Sublime Text`
 | Diff/Merge Files | `meld`
 | Note/Wiki Editor | `Zim`
 | PDF Reader       | `Foxit Reader`
 | Photo Editor     | SIMPLE: <u><code>PhotoFlare</code></u> ADVANCED: <u><code>Gimp</code></u>, `Inkscape`, `RawTherapee`, `Krita`
 | Diagram Editor   | `drow.io` [[Desktop](https://github.com/jgraph/drawio-desktop/releases)] [[Web](https://www.draw.io/)]
-| Download Manager | `XDM 2018`
+| Download Manager | `XDM`
 | Remoting Client  | `remmina`
 | Shell Monitoring | System: `htop` <br/> Network: `iptraf`, `tcptrack`
-| Shell Utilities  | `multitail`
+| Shell Utility    | `multitail`
 

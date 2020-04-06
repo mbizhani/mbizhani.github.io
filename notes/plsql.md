@@ -46,5 +46,14 @@ create or replace trigger user_default_nls after logon on database
 begin
    execute immediate 'alter session set time_zone = ''UTC''';
    execute immediate 'alter session set nls_language = ''AMERICAN''';
+   execute immediate 'alter session set nls_comp = ''LINGUISTIC''';
+   
+   if sys_context('USERENV','SESSION_USER') in ('USER1') then
+        execute immediate 'alter session set nls_sort = ''BINARY_CI''';
+    else
+        execute immediate 'alter session set nls_sort = ''BINARY''';
+   end if;
 end;
 ```
+- Line 5 and 8 provide search case insensitive in strings [REF](https://stackoverflow.com/questions/5391069/case-insensitive-searching-in-oracle).
+The `_CI` suffix in `NLS_SORT` results in case insensitivity due to [REF](https://oracle-base.com/articles/12c/column-level-collation-and-case-insensitive-database-12cr2)
