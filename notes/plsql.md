@@ -41,19 +41,25 @@ end;
 ## Trigger
 
 ### User logon
+
 ```sql
-create or replace trigger user_default_nls after logon on database 
+create or replace trigger user_default_nls after logon on database
+declare
+    v_count number;
 begin
-   execute immediate 'alter session set time_zone = ''UTC''';
-   execute immediate 'alter session set nls_language = ''AMERICAN''';
-   execute immediate 'alter session set nls_comp = ''LINGUISTIC''';
-   
-   if sys_context('USERENV','SESSION_USER') in ('USER1') then
+    execute immediate 'alter session set time_zone = ''UTC''';
+    execute immediate 'alter session set nls_language = ''AMERICAN''';
+    execute immediate 'alter session set nls_comp = ''LINGUISTIC''';
+    
+    select count(1) into v_count from SCHEMA1.VIEW1 where USERNAME = sys_context('USERENV','SESSION_USER');
+    
+    if v_count = 1 or sys_context('USERENV','SESSION_USER') in ('U1', 'U2') then
         execute immediate 'alter session set nls_sort = ''BINARY_CI''';
     else
         execute immediate 'alter session set nls_sort = ''BINARY''';
-   end if;
+    end if;
 end;
 ```
-- Line 5 and 8 provide search case insensitive in strings [REF](https://stackoverflow.com/questions/5391069/case-insensitive-searching-in-oracle).
-The `_CI` suffix in `NLS_SORT` results in case insensitivity due to [REF](https://oracle-base.com/articles/12c/column-level-collation-and-case-insensitive-database-12cr2)
+- In line 9, `SCHEMA1.VIEW1` is a view with the column `USERNAME` containing list of upper-cased username as exceptions.
+- Line 7 and 12 provide search case insensitive in strings [REF](https://stackoverflow.com/questions/5391069/case-insensitive-searching-in-oracle).
+Appending `_CI` suffix for `NLS_SORT` results in case insensitivity due to [REF](https://oracle-base.com/articles/12c/column-level-collation-and-case-insensitive-database-12cr2).
