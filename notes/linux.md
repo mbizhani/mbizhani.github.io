@@ -160,7 +160,7 @@ make install
 | Code Editor      | `Intellij Idea` `VSCode` `Atom` `Sublime Text`
 | Diff/Merge Files | `meld`
 | Note/Wiki Editor | `Zim`
-| PDF Reader       | `Foxit Reader`
+| PDF              | `Foxit Reader` `unoconv`(doc converter)
 | Photo Editor     | SIMPLE: <u><code>PhotoFlare</code></u> ADVANCED: <u><code>Gimp</code></u>, `Inkscape`, `RawTherapee`, `Krita`
 | Diagram Editor   | `drow.io` [[Desktop](https://github.com/jgraph/drawio-desktop/releases)] [[Web](https://www.draw.io/)]
 | Download Manager | `XDM`

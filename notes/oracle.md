@@ -70,6 +70,10 @@ where
   - Common user - username must start with `c##` and consist only of ASCII characters ([stack](https://stackoverflow.com/questions/22886791/invalid-common-user-or-role-name))
   - Normal user - first `alter session set "_ORACLE_SCRIPT"=true` and then create user
 
+### SqlPlus Command
+- `sqlplus '/ as sysdba'` - connect as `sys`
+- `echo SQL | sqlplus USER[/PASSWORD][@SERVICE]` - execute simple `SQL` statement
+
 ## Select
 - `alter session set current_schema = U`
 - Use escape - `where username like 'DM\_%' escape '\'`
