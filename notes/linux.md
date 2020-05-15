@@ -11,13 +11,15 @@ toc: true
 	- `-n` : Specify update interval in seconds
 	- `-t` : Turn off the header showing the interval, command, and current time at the top of the display
   - Multiple commands - `watch "CMD1; echo '\n'; CMD2; ..."`
-- `echo $(date +'%Y-%m-%d_%H-%M-%S')`
-- `seq -f "MSG_ID: %03g" 20`
-- `w` - shows brief info of system and current logged in users
-- `dpkg -S ABSOLUTE_FILE_NAME` - Search for a filename from installed packages. (note: can't work on symlinks)
-- `systemctl show SERVICE` - Show properties of one or more units, jobs, or the manager itself.
-- `dmidecode --type 17 | less` - show information about RAM modules
-- `hdparm -I /dev/sda | less` - show information about HDD
+
+---|---
+`echo $(date +'%Y-%m-%d_%H-%M-%S')` | Formatted Date 
+`seq -f "MSG_ID: %03g" 20` | String Generator
+`w` | Shows brief info of system and current logged in users
+`dpkg -S ABSOLUTE_FILE_NAME` | Search for a filename from installed packages. (note: can't work on symlinks)
+`systemctl show SERVICE` | Show properties of one or more units, jobs, or the manager itself.
+`dmidecode --type 17 | less` | RAM Modules Information 
+`hdparm -I /dev/sda | less` | HDD Information 
 
 ### find cmd
   - By default, it searches in subdirectories recursively, unless `-maxdepth` option is set.
@@ -45,14 +47,21 @@ find /path/to/folders/* -type d \
 
 ### User
 
-| **User CRUD**
-| `adduser USERNAME` | add new user
-| `usermod -a -G GRP1[,GRP2,...] USERNAME` | append groups to user's groups
-| `usermod -g GRP USERNAME` | change user’s primary group
-| **User Audit** ([ref](https://www.thegeekdiary.com/5-useful-command-examples-to-monitor-user-activity-under-linux/))
-| `who -aH` | users currently logged in to the system
-| `last -a` or `lastb -a` | show a listing of last logged in users (`lastb` shows bad login attempts) <br/> file = `/var/log/wtmp`
-| `laslog` | reports the most recent login of all users <br/> file = `/var/log/lastlog`
+#### CRUD
+
+---|---
+`adduser USERNAME` | add new user
+`usermod -a -G GRP1[,GRP2,...] USERNAME` | append groups to user's groups
+`usermod -g GRP USERNAME` | change user’s primary group
+
+#### Audit
+
+- [Ref](https://www.thegeekdiary.com/5-useful-command-examples-to-monitor-user-activity-under-linux/)
+
+---|---
+`who -aH` | Users currently logged in to the system
+`last -a` or `lastb -a` | Listing of last logged in users (`lastb` shows bad login attempts) <br/> file = `/var/log/wtmp`
+`laslog` | Most recent login of all users <br/> file = `/var/log/lastlog`
 
 ## Config Files
 - `/etc/environment`
@@ -135,7 +144,14 @@ Terminal=false
 Type=Application
 Categories=CATEGORY;
 EOL
-``` 
+```
+- `Alt + Mouse Scroll` in XFCE results in zoom in/out
+
+### Debian Images
+- [Stable](https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/)
+- [Testing/Weekly-Builds](https://cdimage.debian.org/cdimage/weekly-builds/amd64/iso-dvd/)
+- [Testing/Weekly-Builds + Non-free](https://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware/weekly-builds/amd64/iso-dvd/)
+- [Live](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/)
 
 ### VMWare
   - `apt install open-vm-tools` - Open VMware Tools for virtual machines hosted on VMware (CLI)

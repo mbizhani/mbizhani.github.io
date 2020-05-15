@@ -7,6 +7,7 @@ toc: true
 ## Procedure
 
 ### Replace Arabic special characters by Farsi
+
 ```sql
 create or replace procedure ar2fa_replacer(p_owner in varchar2, p_table in varchar2 default null) is
     v_count number;
@@ -38,6 +39,17 @@ end;
 - Line 6, use `dba_tab_cols` instead of `all_tab_cols`
 - Grant `select any dictionary` (line 6), `select any table` (line 12), and `update any table` (line 20) to procedure's owner **explicitly** (role `DBA` not enough)
 
+### Drop Users with Search
+
+```sql
+begin
+    for usr in (select username from all_users where username like 'TST%')
+    loop
+        execute immediate 'drop user '||usr.username||' cascade';
+    end loop;
+end;
+```
+
 ## Trigger
 
 ### User logon
@@ -62,4 +74,5 @@ end;
 ```
 - In line 9, `SCHEMA1.VIEW1` is a view with the column `USERNAME` containing list of upper-cased username as exceptions.
 - Line 7 and 12 provide search case insensitive in strings [REF](https://stackoverflow.com/questions/5391069/case-insensitive-searching-in-oracle).
-Appending `_CI` suffix for `NLS_SORT` results in case insensitivity due to [REF](https://oracle-base.com/articles/12c/column-level-collation-and-case-insensitive-database-12cr2).
+
+**Note:** Appending `_CI` suffix for `NLS_SORT` results in case insensitivity due to [REF](https://oracle-base.com/articles/12c/column-level-collation-and-case-insensitive-database-12cr2).

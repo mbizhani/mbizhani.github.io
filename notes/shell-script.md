@@ -6,7 +6,7 @@ toc: true
 
 ## Conditional Expression
 
-**Note:** `EXPR && echo true` - Fast R&D, returning`true`, expression true, otherwise false.
+**Note:** `EXPR && echo true` - on returning`true` expression is true, otherwise false.
 
 ### String
 
