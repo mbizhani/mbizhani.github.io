@@ -98,3 +98,58 @@ function add() {
 
 RESULT=$(add "3" "6")
 ```
+
+## Samples
+
+### Dynamic Music Player
+- In XFCE, `ctrl+alt+p` is defined to play/pause the player. The player can be `parole` or `smplayer`. 
+So based on priority and running processes, the script decides to send action to selected player.
+
+```sh
+FIRST='parole'
+SECOND='smplayer'
+
+if [ "$(pgrep $FIRST)" ]; then
+	PLAYER=$FIRST
+elif [ "$(pgrep $SECOND)" ]; then
+	PLAYER=$SECOND
+else 
+	PLAYER=$FIRST
+fi
+
+echo "$PLAYER - action = $1"
+
+case $PLAYER in
+	'parole')
+		case $1 in
+			'pop')
+				parole -p
+				;;
+			
+			'next')
+				parole -N
+				;;
+
+			'prev')
+				parole -P
+				;;
+		esac
+		;;
+		
+	'smplayer')
+		case $1 in
+			'pop')
+				smplayer -send-action pause
+				;;
+			
+			'next')
+				smplayer -send-action play_next
+				;;
+
+			'prev')
+				smplayer -send-action play_prev
+				;;
+		esac
+		;;
+esac
+```
