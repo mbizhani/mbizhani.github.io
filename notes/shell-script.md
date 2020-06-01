@@ -102,7 +102,8 @@ RESULT=$(add "3" "6")
 ## Samples
 
 ### Dynamic Music Player
-- In XFCE, `ctrl+alt+p` is defined to play/pause the player. The player can be `parole` or `smplayer`. 
+- In XFCE keyboard layout, `ctrl + alt + p` shortcut is defined to play-or-pause (pop) the player. 
+The player can be `parole` or `smplayer`. 
 So based on priority and running processes, the script decides to send action to selected player.
 
 ```sh

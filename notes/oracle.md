@@ -141,8 +141,8 @@ create table t_T1 (
     constraint pk_T1 primary key(id),
     constraint fk_COL2PARENT foreign key(fk_COL) references t_PARENT(id),
     constraint uc_T1_X unique (C1 [, C2, ...]),
-    constraint chk_T1_COL2 check (b_COL2 in (0, 1)),
-    constraint chk_T1_COL6 check (e_COL5 in (...))
+    constraint ch_T1_COL2 check (b_COL2 in (0, 1)),
+    constraint ch_T1_COL6 check (e_COL5 in (...))
 )
 ```
 
