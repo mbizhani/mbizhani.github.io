@@ -13,7 +13,7 @@ In this article I tried to define a convention for entities specially in JPA wit
 
 ## Database Prefix Convention
 
-The reasons for this convention are
+The reasons for these conventions are
 - I have worked with multiple databases tools and they are not as smart as programming tools.
 - Programming languages has more various data types than SQL
 - This convention eases SQL query development
@@ -36,12 +36,14 @@ Procedure    | `pr_`
 
 Using following prefixes, the type or application of a column can be emphasized.
 
-Character/String | `c_`
-Boolean          | `b_`
-Number           | `n_` (`i_` for int and `r_` for real)
-Date/Timestamp   | `d_`
-Enumeration      | `e_`
-Foreign Key      | `f_`
+Column Type/Application | Prefix | Note
+------------------------|--------|-------------------------------
+Number                  | `n_`   | 
+Date/Timestamp          | `d_`   | 
+Character/String        | `c_`   | 
+Boolean                 | `b_`   | it is usually **small integer** in DB
+Enumeration             | `e_`   | it is usually **integer** (or string) in DB
+Foreign Key             | `f_`   | it is usually **integer** (or string) in DB
 
 ### Constraint
 
@@ -67,20 +69,14 @@ In this way you can even assign business-defined values to the literal.
 The following sample shows the way.
 
 ```java
+@Getter
+@RequiredArgsConstructor
 public enum EUserStatus {
   Locked(-1),
   Disabled(0),
   Enabled(1);
 
   private final int id;
-
-  UserStatus(int id) {
-    this.id = id;
-  }
-
-  public int getId() {
-    return id;
-  }
 }
 ```
 Suppose later, `Expired` literal must be added to the enum. You can easily add `Expired(-2)` in any order. 
@@ -92,6 +88,7 @@ public class EnumConverter {
 
   @Converter(autoApply = true)
   public static class UserStatusConverter implements AttributeConverter<EUserStatus, Integer> {
+
     @Override
     public Integer convertToDatabaseColumn(EUserStatus entry) {
       return entry != null ? entry.getId() : null;
@@ -111,5 +108,22 @@ public class EnumConverter {
 }
 ```
 
-### Defining Constraint in JPA Annotation
+### Unique Constraint
 
+Setting unique constraint name is necessary, specially when you want to handle the specific violation to produce a validation error message.
+As you know for single column constraint you can user `@Column(unique = true)`. However, due to previous reason, it is not recommended. 
+The best way is using `@UniqueConstraint` in `@Table` annotation. Lets have an example:
+
+```java
+@Entity
+@Table(name = "t_user", uniqueConstraints = {
+	@UniqueConstraint(name = User.UC_USERNAME, columnNames = {"c_username", "f_department"}),
+	@UniqueConstraint(name = User.UC_NATIONAL_CODE, columnNames = {"c_national_code"})
+})
+public class User {
+	public static final String UQ_USERNAME = "uc_user_username";
+	public static final String UC_NATIONAL_CODE = "uc_user_national_code";
+
+    // ...
+}
+```  
