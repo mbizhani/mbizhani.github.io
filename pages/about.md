@@ -2,6 +2,7 @@
 layout: page
 title: About
 ---
+> Download CV <a href="/assets/cv/MBizhani_CV_En.pdf" style="color:red"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></a>
 
 With over 10 years of experience in software engineering, I have learned some skills and solved many problems, and yet there are lots of challenges to encounter.
 
@@ -18,7 +19,7 @@ I'm looking forward to
 - developing fully-fledged enterprise software with best practices of microservice architecture covering most of its design patterns using polyglot datastores and handling distributed challenges in a cloud environment such as eventual consistency.
 - utilizing my masters degree experience in data mining and analysis in an enterprise project.
 
-### Me in a Nutshell <sup>([My CV](/assets/cv/MBizhani_CV_En.pdf))</sup>
+### Me in a Nutshell
 
 <table style="border: 1px solid black" align="center">
 	<tr>
@@ -68,11 +69,11 @@ I'm looking forward to
 		        <li>Over 10 years in software development and engineering</li>
 		        <li>Java platform mainly using <code>Spring</code>, <code>Hibernate</code>, <code>Wicket</code>, <code>Groovy</code>, and <code>Maven</code></li>
 		        <li>Reactive Microservice Applications with<br/><code>Spring Boot + Redis + MySQL + Kafka + Nginx + Docker</code></li>
-		        <li>DevOps and CI using <code>Docker + Jenkins + Nexus</code></li>
+		        <li>DevOps and CI/CD using <code>GitLab CI/CD + Nexus + Traefik + Docker Swarm + Prometheus + Grafana</code></li>
 		        <li>Databases using <code>Oracle</code>, <code>H2</code>, <code>HSQLDB</code>, and <code>MySQL</code></li>
 		        <li><code>Debian</code>, <code>Ubuntu</code>, and <code>Oracle</code> Linux</li>
 		        <li>Data Warehousing & OLAP</li>
-		        <li>Data Mining for M.S. thesis with 2 published papers</li>
+		        <li>Data Mining</li>
 		    </ul>
 		</td>
 	</tr>
