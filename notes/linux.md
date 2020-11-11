@@ -145,11 +145,24 @@ EOL
 ```
 - `Alt + Mouse Scroll` in XFCE results in zoom in/out
 
-### Debian Images
+### Debian
+#### Image Address
 - [Stable](https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/)
 - [Testing/Weekly-Builds](https://cdimage.debian.org/cdimage/weekly-builds/amd64/iso-dvd/)
 - [Testing/Weekly-Builds + Non-free](https://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware/weekly-builds/amd64/iso-dvd/)
 - [Live](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/)
+
+#### Config
+- Stable (Buster) `/etc/apt/sources.list`
+```
+deb http://deb.debian.org/debian buster main contrib
+deb http://security.debian.org/debian-security buster/updates main contrib
+```
+- Testing (Bullseye) `/etc/apt/sources.list`
+```
+deb http://deb.debian.org/debian testing main contrib non-free
+deb http://security.debian.org testing-security main contrib non-free
+```
 
 ### VMWare
   - `apt install open-vm-tools` - Open VMware Tools for virtual machines hosted on VMware (CLI)
