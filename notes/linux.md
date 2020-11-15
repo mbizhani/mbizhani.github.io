@@ -68,13 +68,6 @@ find /path/to/folders/* -type d \
   - consists of assignment expressions, one per line
 - `/etc/profile`
   - executed whenever a bash login shell is entered (e.g. when logging in from the console or over ssh), as well as by the DisplayManager when the desktop session loads.
-- `/etc/network/interfaces` (in Debian)
-```
-iface eth0 inet static
-    address <IP>/24
-    gateway <IP>
-    dns-nameservers 8.8.8.8 8.8.4.4
-```
 - Bash Command Completion
   - `apt install bash-completion`
   - if not worked, edit `/etc/bash.bashrc` and uncomment the section related to bash-completion
@@ -84,6 +77,21 @@ iface eth0 inet static
 - `export http_proxy=http://[USERNAME:PASSWORD@]PROXY_SERVER[:PORT]` ([Ref](https://www.cyberciti.biz/faq/linux-unix-set-proxy-environment-variable/))
   - connect text based session and/or applications via the proxy server
   - apps like `apt`, `lynx`, `wget`, ...
+- `/etc/network/interfaces` (in Debian)
+```
+iface eth0 inet static
+    address <IP>/24
+    gateway <IP>
+    dns-nameservers 8.8.8.8 8.8.4.4
+```
+  - Using `sed` to update
+    ```sh
+    # update dhcp to static
+    sed -i "s|dhcp|static\n\taddress 1.1.1.1\/24\n\tgateway 1.1.1.1\n\tdns-nameservers 8.8.8.8|g" /etc/network/interfaces
+
+    # update address, ...
+    sed -i -r "s|address.*|address 2.2.2.2\/24|g" /etc/network/interfaces
+    ```
 
 ### ip cmd
 
