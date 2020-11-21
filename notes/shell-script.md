@@ -101,56 +101,48 @@ RESULT=$(add "3" "6")
 
 ## Samples
 
-### Dynamic Music Player
-- In XFCE keyboard layout, `ctrl + alt + p` shortcut is defined to play-or-pause (pop) the player. 
-The player can be `parole` or `smplayer`. 
-So based on priority and running processes, the script decides to send action to selected player.
+### Command with Proxy
+A simple script to set `http_proxy` env variable in current shell and then executes passed parameters as commands.
 
 ```sh
-FIRST='parole'
-SECOND='smplayer'
+#! /bin/bash
+
+export http_proxy="http://localproxy:9876"
+
+eval "$@"
+```
+
+### Dynamic Music Player
+- In XFCE keyboard layout, for example set `ctrl + alt + p` to call following script with `pop` parameter. 
+- The player can be `parole` or `smplayer`. 
+- So based on priority and running processes, the script decides to send action to selected player.
+
+```sh
+#!/bin/bash
+
+declare -A PAROLE=( ["pop"]="parole -p" ["next"]="parole -N" ["prev"]="parole -P" )
+declare -A SMPLAYER=( ["pop"]="smplayer -send-action pause" ["next"]="smplayer -send-action play_next" ["prev"]="smplayer -send-action play_prev" )
+
+FIRST='smplayer'
+SECOND='parole'
 
 if [ "$(pgrep $FIRST)" ]; then
-	PLAYER=$FIRST
+  PLAYER=$FIRST
 elif [ "$(pgrep $SECOND)" ]; then
-	PLAYER=$SECOND
+  PLAYER=$SECOND
 else 
-	PLAYER=$FIRST
+  PLAYER=$FIRST
 fi
 
 echo "$PLAYER - action = $1"
 
 case $PLAYER in
-	'parole')
-		case $1 in
-			'pop')
-				parole -p
-				;;
-			
-			'next')
-				parole -N
-				;;
+  'parole')
+    eval "${PAROLE[$1]}"
+  ;;
 
-			'prev')
-				parole -P
-				;;
-		esac
-		;;
-		
-	'smplayer')
-		case $1 in
-			'pop')
-				smplayer -send-action pause
-				;;
-			
-			'next')
-				smplayer -send-action play_next
-				;;
-
-			'prev')
-				smplayer -send-action play_prev
-				;;
-		esac
-		;;
+  'smplayer')
+    eval "${SMPLAYER[$1]}"
+  ;;
 esac
 ```
