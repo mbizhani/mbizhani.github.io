@@ -5,9 +5,9 @@ categories: article tech
 excerpt: Config a Kubernetes cluster with RKE
 ---
 
-## Installation
+## Installing a K8S Cluster
 
-**Note:** in this text, _laptop_ means your working _workstation_ or _computer_, which is used for setup k8s on node(s).
+**Note:** in this text, _laptop_ means your working _workstation_ or _computer_, which is used to set up k8s on the node(s).
 
 ### On Laptop
 - Create SSH key
@@ -28,7 +28,7 @@ excerpt: Config a Kubernetes cluster with RKE
   - `usermod -aG docker rke`
 - Install your laptop's public ssh key (`id_rsa.pub`)
   - `cat id_rsa.pub > /home/rke/.ssh/authorized_keys`
-- [Optional] Download RKE docker images in node(s) (needs `rke` command)
+- [Optional] Download RKE docker images in the node(s) (needs `rke` command)
   - `rke config -s` - list all images
 
 ### Run RKE
@@ -79,7 +79,7 @@ Here is a simple `rke config` questionnaire:
 ```
 **Note:** only questions with `(*)` mark are answered, others are passed with default.
 
-And some parts of a single-node `cluster.yml`
+Now, some parts of a single-node `cluster.yml`
 ```yaml
 nodes:
 - address: r1

@@ -104,18 +104,20 @@ RESULT=$(add "3" "6")
 ### Command with Proxy
 A simple script to set `http_proxy` env variable in current shell and then executes passed parameters as commands.
 
+**Note:** replace `HOST` and `PORT` with your configuration.
+
 ```sh
 #! /bin/bash
 
-export http_proxy="http://localproxy:9876"
+export http_proxy="http://HOST:PORT"
 
 eval "$@"
 ```
 
 ### Dynamic Music Player
-- In XFCE keyboard layout, for example set `ctrl + alt + p` to call following script with `pop` parameter. 
-- The player can be `parole` or `smplayer`. 
-- So based on priority and running processes, the script decides to send action to selected player.
+- In XFCE keyboard layout, for example set `ctrl + alt + p` to call following script with `pop` (play or pause) parameter. 
+- The player can be `parole` or `smplayer` or anything you want. 
+- Based on priority and running processes, the script decides to send action to selected player.
 
 ```sh
 #!/bin/bash
