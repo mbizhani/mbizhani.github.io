@@ -4,7 +4,7 @@ title: Linux
 toc: true
 ---
 
-## General
+## Utility Commands
 - `watch` - execute a program periodically, showing output fullscreen
   - `watch [-d] [-n] [-t] command`
     - `-d` : Highlight the differences between successive updates
@@ -45,15 +45,17 @@ find /path/to/folders/* -type d \
 `docker ps -a -f "status=exited" | awk '$3 ~ /runner/ {print "docker rm "$1}' | bash` | remove GitLab Runner exited containers
 `docker images -q -f "dangling=true" | awk '{print "docker rmi -f "$1}' | bash` | remove dangling Docker images
 
-### User
 
-#### CRUD
+
+## User Management
+
+### CRUD
 
 `adduser USERNAME` | add new user
 `usermod -a -G GRP1[,GRP2,...] USERNAME` | append groups to user's groups
 `usermod -g GRP USERNAME` | change user’s primary group
 
-#### Audit
+### Audit
 
 - [Ref](https://www.thegeekdiary.com/5-useful-command-examples-to-monitor-user-activity-under-linux/)
 
@@ -61,18 +63,10 @@ find /path/to/folders/* -type d \
 `last -a` or `lastb -a` | Listing of last logged in users (`lastb` shows bad login attempts) <br/> file = `/var/log/wtmp`
 `laslog` | Most recent login of all users <br/> file = `/var/log/lastlog`
 
-## Config Files
-- `/etc/environment`
-  - system-wide environment variable settings
-  - not a script file
-  - consists of assignment expressions, one per line
-- `/etc/profile`
-  - executed whenever a bash login shell is entered (e.g. when logging in from the console or over ssh), as well as by the DisplayManager when the desktop session loads.
-- Bash Command Completion
-  - `apt install bash-completion`
-  - if not worked, edit `/etc/bash.bashrc` and uncomment the section related to bash-completion
+
 
 ## Network
+### General
 - `hostnamectl --static set-hostname <HOSTNAME>`
 - `export http_proxy=http://[USERNAME:PASSWORD@]PROXY_SERVER[:PORT]` ([Ref](https://www.cyberciti.biz/faq/linux-unix-set-proxy-environment-variable/))
   - connect text based session and/or applications via the proxy server
@@ -105,6 +99,40 @@ iface eth0 inet static
 | Show neighbour (ARP)                     | `ip n` or `ip neigh`  | `arp -a`                        |
 | Show socket statics/info                 | `ss -lntp` `ss -antp` | `netstat -lntp` `netstat -antp` |
 
+### ssh cmd
+- SSH Keygen
+  - `ssh-keygen -t rsa -b 4096 -f ~/.ssh/NAME`
+  - `cat ~/.ssh/NAME.pub | ssh USER@HOST "mkdir ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys"`
+  - `ssh -i ~/.ssh/NAME USER@HOST`
+- Port Forwarding - [`DEST:PORT`] <- [`MIDDLE:PORT`] <- [`SRC:PORT`]
+  - On [`DEST`]
+    - `ssh -i ~/.ssh/NAME -N -R [BIND_ADDRESS:]PORT:MIDDLE:MIDDLE_PORT USER@MIDDLE`
+  - On [`SRC`]
+    - `ssh -i ~/.ssh/NAME -N -L [BIND_ADDRESS:]PORT:MIDDLE:MIDDLE_PORT USER@MIDDLE`
+  - Deploy as service - create `/etc/systemd/system/myssh.service` with following content:
+    ```
+    [Unit]
+    Description=MySSH
+    Requires=network.target
+    After=systemd-user-sessions.service
+    
+    [Service]
+    User=USER_ON_DEST
+    ExecStart=ssh -i IDENTITY -N -R [BIND_ADDRESS:]PORT:MIDDLE:MIDDLE_PORT USER@MIDDLE
+    Type=simple
+    KillMode=mixed
+    TimeoutSec=30
+    Restart=on-failure
+    RestartSec=10
+    StartLimitIntervalSec=30
+    StartLimitBurst=10
+    
+    [Install]
+    WantedBy=multi-user.target
+    ```
+    Now, `systemctl enable myssh` and `systemctl start myssh`. Check the service by `systemctl status myssh`. 
+
+
 ## LVM
 - **Note**: Rescan the SCSI bus to add a SCSI device without rebooting the VM ([Ref](https://www.cyberciti.biz/tips/vmware-add-a-new-hard-disk-without-rebooting-guest.html))
   - `find /sys/class/scsi_host/ -name "host*" -exec sh -c "echo '- - -' > {}/scan" \;`
@@ -136,6 +164,22 @@ debian-vg   1   3   0 wz--n- <29.76g    0
 PV         VG        Fmt  Attr PSize   PFree
 /dev/sda5  debian-vg lvm2 a--  <29.76g    0
 ```
+
+
+## Config Files
+- `/etc/environment`
+  - system-wide environment variable settings
+  - not a script file
+  - consists of assignment expressions, one per line
+- `/etc/profile`
+  - executed whenever a bash login shell is entered (e.g. when logging in from the console or over ssh), as well as by the DisplayManager when the desktop session loads.
+- Bash Command Completion
+  - `apt install bash-completion`
+  - if not worked, edit `/etc/bash.bashrc` and uncomment the section related to bash-completion
+  - Some commands generate its own bash completion script. Append `source <(CMD_TO_BASH_COMPLETION)` in your `$HOME/.bashrc`.
+  - If you have the script, like `docker-compose`, put it in `/etc/bash_completion.d/`.
+
+
 
 ## Misc
 - Create application menu in XFCE
