@@ -11,37 +11,45 @@ excerpt: Config a Kubernetes cluster with RKE
 
 ### On Laptop
 - Create SSH key
-  - `ssh-keygen` with **passphrase** 
-    - `$HOME/.ssh/id_rsa` - SSH private key, keep this secure
-    - `$HOME/.ssh/id_rsa.pub` - SSH public key, copy this to nodes
-- Install `kubectl` and add it to the `PATH` 
+  - `ssh-keygen -t rsa -b 4096 -f ~/.ssh/rke` 
+    - `$HOME/.ssh/rke` - SSH private key, keep this secure
+    - `$HOME/.ssh/rke.pub` - SSH public key, copy this to nodes
+    - Setting passphrase is optional.
+- Install `kubectl` (and add it to the `PATH`) [Ref](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+  - `apt-get update && sudo apt-get install -y apt-transport-https gnupg2 curl`
+  - `curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -`
+  - `echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list`
+  - `apt-get update`
+  - `apt-get install -y kubectl`
 
 ### Prepare your Node(s)
+On each node
 - Check your hostname and assert `/etc/hosts`
 - Disable Swap
   - `swapoff -a`
   - Remove any `swap` entry from `/etc/fstab`
 - Install SSH server
-- Install Docker
+- Install Docker CE
 - Create user `rke`
   - `adduser rke`
   - `usermod -aG docker rke`
-- Install your laptop's public ssh key (`id_rsa.pub`)
-  - `cat id_rsa.pub > /home/rke/.ssh/authorized_keys`
-- [Optional] Download RKE docker images in the node(s) (needs `rke` command)
-  - `rke config -s` - list all images
+- Install your laptop's public ssh key (`rke.pub`)
+  - `cat ~/.ssh/rke.pub | ssh rke@NODE "mkdir ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys"`
+- `rke config -s` - list all images
 
 ### Run RKE
 On the laptop:
-- Install `ssh-agent` and run it
+- [Optional] If you have set the passphrase, install `ssh-agent` and run it
   - `eval $(ssh-agent)`
-  - `ssh-add`, and enter your **passphrase**
+  - `ssh-add`, and enter your passphrase
 - Test your SSH connection to your node(s)
-  - `ssh rke@NODE_IP` - SSH login without asking `rke`'s password
+  - `ssh -i ~/.ssh/rke rke@NODE_IP` - SSH login without asking `rke`'s password
 - Download [RKE Release](https://github.com/rancher/rke/releases/latest), rename it to `rke`, and set it in `PATH`
 - `rke config` - ask the questions to setup your k8s cluster
   - It creates a `cluster.yml`
-  - Modify `cluster.yml` and set `ssh_agent_auth` to `true` 
+  - Modify `cluster.yml`
+    - [Optional] Set `ssh_agent_auth` to `true` if you set passphrase
+    - [Optional] Prepend all `system_images` with your private registry
 - `rke up`
   - It'll show `Finished building Kubernetes cluster successfully`
   - A `kube_config_cluster.yml` is created which is `kubectl` config file
@@ -51,14 +59,14 @@ On the laptop:
 
 Here is a simple `rke config` questionnaire:
 ```
-    [+] Cluster Level SSH Private Key Path [~/.ssh/id_rsa]: 
+(*) [+] Cluster Level SSH Private Key Path [~/.ssh/id_rsa]: ~/.ssh/rke
     [+] Number of Hosts [1]: 
 (*) [+] SSH Address of host (1) [none]: r1
     [+] SSH Port of host (1) [22]: 
     [+] SSH Private Key Path of host (r1) [none]: 
     [-] You have entered empty SSH key path, trying fetch from SSH key parameter
     [+] SSH Private Key of host (r1) [none]: 
-    [-] You have entered empty SSH key, defaulting to cluster level SSH key: ~/.ssh/id_rsa
+    [-] You have entered empty SSH key, defaulting to cluster level SSH key: ~/.ssh/rke
 (*) [+] SSH User of host (r1) [ubuntu]: rke
     [+] Is host (r1) a Control Plane host (y/n)? [y]: 
 (*) [+] Is host (r1) a Worker host (y/n)? [n]: y
@@ -93,7 +101,7 @@ nodes:
   user: rke
   docker_socket: /var/run/docker.sock
   ssh_key: ""
-  ssh_key_path: ~/.ssh/id_rsa
+  ssh_key_path: ~/.ssh/rke
   ssh_cert: ""
   ssh_cert_path: ""
   labels: {}
@@ -104,9 +112,9 @@ network:
   plugin: canal
   ...
 ...
-ssh_key_path: ~/.ssh/id_rsa
+ssh_key_path: ~/.ssh/rke
 ssh_cert_path: ""
-ssh_agent_auth: true 
+ssh_agent_auth: false 
 ...
 ```
 
