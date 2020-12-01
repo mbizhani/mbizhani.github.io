@@ -122,16 +122,16 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sample-dep
+  name: sample-dep1
 spec:
   replicas: 2
   selector:
      matchLabels:
-       app: test-dep
+       app: test-dep1
   template:
     metadata:
       labels:
-        app: test-dep
+        app: test-dep1
     spec:
       containers:
         - name: busybox
@@ -151,21 +151,53 @@ spec:
 - `kubectl run nginx --image=nginx` - creates a deployment
 
 ## Service
-Kubernetes networking addresses four concerns [[REF](https://kubernetes.io/docs/concepts/services-networking/)]:
-- Containers within a **Pod** use networking to communicate via **loopback**.
-- The **Service** resource lets you expose an application running in Pods to be reachable from **outside your cluster**.
-- You can also use **Services** to publish services only for consumption **inside your cluster**.
+> Kubernetes networking addresses four concerns [[REF](https://kubernetes.io/docs/concepts/services-networking/)]:
+> - Containers within a **Pod** use networking to communicate via **loopback**.
+> - Cluster networking provides communication between different Pods.
+> - The **Service** resource lets you expose an application running in Pods to be reachable from **outside your cluster**.
+> - You can also use **Services** to publish services only for consumption **inside your cluster**.
 
+Three Types:
+- Cluster IP
+- Node Port
+- Load Balancer
+
+### Cluster IP
 ```yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: sample-srv
+  name: sample-srv1
 spec:
+  # type: ClusterIP # NOT REQUIRED, AS DEFAULT
   selector:
-    app: test-dep
+    app: test-dep1
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
 ```
+
+- `kubectl exec -it sample-dep1-XXXXXXXX -- sh`
+  - `ping sample-srv1` - resolves name and shows its cluster ip.
+  - `wget -qO - http://sample-srv1`
+- Now copy deployment and service as `sample-dep2` and `sample-srv2`, and apply them.
+  - You can `ping` and `wget` each other's services from the pods. 
+
+### Node Port
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-srv-np
+spec:
+  type: NodePort
+  selector:
+    app: test-dep1
+  ports:
+    - protocol: TCP
+      port: 80         # REQUIRED
+      targetPort: 80   # if not set, same as port
+      nodePort: 31111  # RANGE [30000, 32767]. If not set, get randomly from the range  
+```
+- Access `http://NODE:31111`

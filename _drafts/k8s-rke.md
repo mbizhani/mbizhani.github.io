@@ -15,12 +15,11 @@ excerpt: Config a Kubernetes cluster with RKE
     - `$HOME/.ssh/rke` - SSH private key, keep this secure
     - `$HOME/.ssh/rke.pub` - SSH public key, copy this to nodes
     - Setting passphrase is optional.
-- Install `kubectl` (and add it to the `PATH`) [Ref](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+- Install `kubectl` (and add it to the `PATH`) [[REF](https://kubernetes.io/docs/tasks/tools/install-kubectl/)]
   - `apt-get update && sudo apt-get install -y apt-transport-https gnupg2 curl`
   - `curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -`
   - `echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list`
-  - `apt-get update`
-  - `apt-get install -y kubectl`
+  - `apt-get update && apt-get install -y kubectl`
 
 ### Prepare your Node(s)
 On each node
@@ -34,8 +33,7 @@ On each node
   - `adduser rke`
   - `usermod -aG docker rke`
 - Install your laptop's public ssh key (`rke.pub`)
-  - `cat ~/.ssh/rke.pub | ssh rke@NODE "mkdir ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys"`
-- `rke config -s` - list all images
+  - `cat ~/.ssh/rke.pub | ssh rke@NODE "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys"`
 
 ### Run RKE
 On the laptop:
@@ -45,6 +43,7 @@ On the laptop:
 - Test your SSH connection to your node(s)
   - `ssh -i ~/.ssh/rke rke@NODE_IP` - SSH login without asking `rke`'s password
 - Download [RKE Release](https://github.com/rancher/rke/releases/latest), rename it to `rke`, and set it in `PATH`
+- `rke config -s` - list all images
 - `rke config` - ask the questions to setup your k8s cluster
   - It creates a `cluster.yml`
   - Modify `cluster.yml`
@@ -53,9 +52,10 @@ On the laptop:
 - `rke up`
   - It'll show `Finished building Kubernetes cluster successfully`
   - A `kube_config_cluster.yml` is created which is `kubectl` config file
-  - `kubectl --kubeconfig=kube_config_cluster.yml cluster-info`
-  
-**Note:** you can exec `export KUBECONFIG=$(pwd)/kube_config_cluster.yml` to run `kubectl` without `--kubeconfig`.
+- `kubectl --kubeconfig=kube_config_cluster.yml cluster-info`
+- Run `kubectl` without `--kubeconfig`
+  - `export KUBECONFIG=$(pwd)/kube_config_cluster.yml` 
+  - `mkdir -p ~/.kube && cp -f kube_config_cluster.yml ~/.kube/config && chmod 600 ~/.kube/config`
 
 Here is a simple `rke config` questionnaire:
 ```
@@ -85,7 +85,10 @@ Here is a simple `rke config` questionnaire:
     [+] Cluster DNS Service IP [10.43.0.10]: 
     [+] Add addon manifest URLs or YAML files [no]: 
 ```
-**Note:** only questions with `(*)` mark are answered, others are passed with default.
+- Only questions with `(*)` mark are answered, others are passed with default.
+- Line 21, `Cluster IP Range [10.43.0.0/16]` is IP range for Services
+  - Line 24, DNS service's IP is in the Cluster IP range.
+- Line 23, `CIDR [10.42.0.0/16]` is IP range for Pods
 
 Now, some parts of a single-node `cluster.yml`
 ```yaml
@@ -174,6 +177,7 @@ spec:
                   number: 8080
 ```
 - `kubectl --kubeconfig=kube_config_cluster.yml apply -f rancher-demo-deployment.yml`
+- `kubectl --kubeconfig=kube_config_cluster.yml get all -o wide`
 - Open [http://r1/](http://r1/)
 
 ## References
