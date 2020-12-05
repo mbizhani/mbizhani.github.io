@@ -124,7 +124,14 @@ eval "$@"
 </div>
 
 ### Upload to a Docker Registry
-
 <div>
 <script src="/assets/embed.js?target=https://github.com/mbizhani/Dockage/blob/master/Script/upload-to-registry.sh"></script>
+</div>
+
+### My `tmux`
+Usage: `mytmux.sh CMD...`
+- For a multi-word command, surround it with single or double quote
+- Example: `mytmux.sh 'tail -f file1' 'tail -f file2'`
+<div>
+<script src="/assets/embed.js?target=https://github.com/mbizhani/Dockage/blob/master/Script/mytmux.sh"></script>
 </div>
