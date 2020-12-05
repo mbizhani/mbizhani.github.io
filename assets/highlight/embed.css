@@ -38,6 +38,10 @@ table.hljs-ln td {
 	border: 0;
 }
 
+td.hljs-ln-numbers {
+	padding-right: 10px;
+}
+
 code.hljs {
 	border: 0;
 }
