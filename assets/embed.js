@@ -1,8 +1,7 @@
-/*
-The original script is from https://github.com/yusanshi/embed-like-gist/blob/master/embed.js
-*/
+/*!
+ * The original script is from https://github.com/yusanshi/embed-like-gist/blob/master/embed.js
+ */
 embed();
-
 function embed() {
 	const params = (new URL(document.currentScript.src)).searchParams;
 	const target = new URL(params.get("target"));
@@ -23,14 +22,13 @@ function embed() {
 	const file = pathSplit.slice(5, pathSplit.length).join("/");
 	const fileExtension = file.split('.')[file.split('.').length - 1];
 	const rawFileURL = `https://raw.githubusercontent.com/${user}/${repository}/${branch}/${file}`;
-	// The id where code will be embeded. In order to support a single `target` embedded for multiple times,
-	// we use a random string to avoid duplicated id.
 	const containerId = Math.random().toString(36).substring(2);
-
-	// Reserving space for code area should be done in early time
-	// or the div may not be found later
 	document.write(`
 <div id="${containerId}"></div>
+<div id="${containerId}_loader" class="alert alert-warning">
+<span class="fa fa-spinner fa-spin fa-1x"></span>
+Loading from <a class="alert-link" href="${rawFileURL}">${rawFileURL}</a>
+</div>
 <link rel="stylesheet" href="/assets/highlight/styles/${style}.css">
 <link rel="stylesheet" href="/assets/highlight/embed.css">
 `);
@@ -62,10 +60,12 @@ function embed() {
 		.all(showLineNumbers ? [fetchFile, loadHLJS, loadHLJSNum] : [fetchFile, loadHLJS])
 		.then((result) => {
 			const targetDiv = document.getElementById(containerId);
+			document.getElementById(containerId+"_loader").style.display = "none";
 			embedCodeToTarget(targetDiv, result[0], showBorder, showLineNumbers, showFileMeta, isDarkStyle, target.href, rawFileURL, fileExtension, startLine, endLine, tabSize);
 		}).catch((error) => {
 		const errorMsg = `Failed to process ${rawFileURL}\n${error}`;
 		const targetDiv = document.getElementById(containerId);
+		document.getElementById(containerId+"_loader").style.display = "none";
 		embedCodeToTarget(targetDiv, errorMsg, showBorder, showLineNumbers, showFileMeta, isDarkStyle, target.href, rawFileURL, 'plaintext', -1, -1, tabSize);
 	});
 }
