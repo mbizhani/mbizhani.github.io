@@ -13,6 +13,8 @@ apiVersion:
 kind:
 metadata:
   name:
+  namespace: # OPTIONAL
+  labels:    # OPTIONAL
 
 spec:
 ```
@@ -124,16 +126,16 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sample-dep1
+  name: sample-dep
 spec:
   replicas: 2
   selector:
      matchLabels:
-       app: test-dep1
+       app: test-dep
   template:
     metadata:
       labels:
-        app: test-dep1
+        app: test-dep
     spec:
       containers:
         - name: busybox
@@ -163,27 +165,40 @@ Three Types:
 - Cluster IP
 - Node Port
 - Load Balancer
+- ExternalName
 
 ### Cluster IP
 ```yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: sample-srv1
+  name: sample-srv-cip
 spec:
   # type: ClusterIP # NOT REQUIRED, AS DEFAULT
   selector:
-    app: test-dep1
+    app: test-dep
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
 ```
 
-- `kubectl exec -it sample-dep1-XXXXXXXX -- sh`
-  - `ping sample-srv1` - resolves name and shows its cluster ip.
-  - `wget -qO - http://sample-srv1`
-- Now copy deployment and service as `sample-dep2` and `sample-srv2`, and apply them.
+- `kubectl exec -it sample-dep-XXXXXXXX -- sh`
+  - `wget -qO - http://sample-srv-cip`
+  - Search DNS
+    ```
+    # nslookup sample-srv-cip
+    Server:         10.43.0.10
+    Address:        10.43.0.10:53
+    
+    Name:   sample-srv-cip.default.svc.cluster.local
+    Address: 10.43.110.139
+    ```
+    So `sample-srv-cip` has all alternative names:
+    - `sample-srv-cip.default`
+    - `sample-srv-cip.default.svc`
+    - `sample-srv-cip.default.svc.cluster.local`
+- Now copy deployment and service as `sample-dep2` and `sample-srv-cip2`, and apply them.
   - You can `ping` and `wget` each other's services from the pods. 
 
 ### Node Port
@@ -195,7 +210,7 @@ metadata:
 spec:
   type: NodePort
   selector:
-    app: test-dep1
+    app: test-dep
   ports:
     - protocol: TCP
       port: 80         # REQUIRED
