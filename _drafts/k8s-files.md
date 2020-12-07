@@ -26,6 +26,8 @@ ReplicationController | v1
 ReplicaSet            | apps/v1
 Deployment            | apps/v1
 Service               | v1
+PersistentVolume      | v1
+PersistentVolumeClaim | v1
 
 ## Pod
 ```yaml
@@ -201,3 +203,129 @@ spec:
       nodePort: 31111  # RANGE [30000, 32767]. If not set, get randomly from the range  
 ```
 - Access `http://NODE:31111`
+
+
+## Volume
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-dep
+spec:
+  replicas: 1
+  selector:
+     matchLabels:
+       app: test-dep
+  template:
+    metadata:
+      labels:
+        app: test-dep
+    spec:
+      containers:
+        - name: busybox
+          image: busybox:1.32
+          tty: true
+          volumeMounts:
+            - name: data-dir
+              mountPath: /data
+        - name: nginx
+          image: nginx:1.18.0
+          volumeMounts:
+            - name: html-dir
+              mountPath: /usr/share/nginx/html
+              readOnly: true
+
+      volumes:
+        - name: data-dir
+          hostPath:
+            path: /opt/test-pod
+            type: DirectoryOrCreate
+        - name: html-dir
+          hostPath:
+            path: /opt/test-pod
+            type: DirectoryOrCreate
+```
+
+## Storage
+
+### PV
+```yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sample-pv
+spec:
+  accessModes:                             # REQUIRED
+    - ReadWriteOnce
+    - ReadWriteMany
+  #volumeMode: Filesystem                  # DEFAULT 
+  capacity:                                # REQUIRED
+    storage: 1Gi
+  #persistentVolumeReclaimPolicy: Retain   # DEFAULT
+  nfs:
+    server: 192.168.1.129
+    path: /opt/sharedNFS
+```
+- `kubectl get pv`
+```
+NAME        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   REASON   AGE
+sample-pv   1Gi        RWO,RWX        Retain           Available                                   65s
+```
+
+### PVC
+```yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sample-pvc
+spec:
+  accessModes:          # REQUIRED
+    - ReadWriteOnce
+  resources:            # REQUIRED
+    requests:
+      storage: 10Mi
+```
+- `kubectl get pvc`
+```
+NAME         STATUS   VOLUME      CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+sample-pvc   Bound    sample-pv   1Gi        RWO,RWX                       16s
+```
+
+### Deployment
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-dep
+spec:
+  replicas: 2
+  selector:
+     matchLabels:
+       app: test-dep
+  template:
+    metadata:
+      labels:
+        app: test-dep
+    spec:
+      containers:
+        - name: busybox
+          image: busybox:1.32
+          tty: true
+          volumeMounts:
+            - name: data-dir
+              mountPath: /data
+        - name: nginx
+          image: nginx:1.18.0
+          volumeMounts:
+            - name: html-dir
+              mountPath: /usr/share/nginx/html
+              readOnly: true
+
+      volumes:
+        - name: data-dir
+          persistentVolumeClaim:
+            claimName: sample-pvc
+        - name: html-dir
+          persistentVolumeClaim:
+            claimName: sample-pvc
+```

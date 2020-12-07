@@ -102,7 +102,7 @@ iface eth0 inet static
 ### ssh cmd
 - SSH Keygen
   - `ssh-keygen -t rsa -b 4096 -f ~/.ssh/NAME`
-  - `cat ~/.ssh/NAME.pub | ssh USER@HOST "mkdir ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys"`
+  - `cat ~/.ssh/NAME.pub | ssh USER@HOST "mkdir -d ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys"`
   - `ssh -i ~/.ssh/NAME USER@HOST`
 - Port Forwarding - [`DEST:PORT`] <- [`MIDDLE:PORT`] <- [`SRC:PORT`]
   - On [`DEST`]
@@ -132,6 +132,23 @@ iface eth0 inet static
     ```
     Now, `systemctl enable myssh` and `systemctl start myssh`. Check the service by `systemctl status myssh`. 
 
+### NFS
+On Server:
+- `apt install nfs-kernel-server`
+- Edit `/etc/exports`
+```
+DIR     192.168.1.0/24(rw,sync,no_root_squash,no_subtree_check)
+DIR     172.16.15.124(ro)
+```
+- **Note:** In case of VMware Workstation VM's NAT, use `insecure`
+```
+DIR     HOST_IP(rw,sync,no_root_squash,no_subtree_check,insecure)
+```
+
+On Client(optional):
+- `apt install nfs-common`
+- `showmount -e SERVER`
+- `mount -t nfs SERVER:DIR LOCAL_DIR`
 
 ## LVM
 - **Note**: Rescan the SCSI bus to add a SCSI device without rebooting the VM ([Ref](https://www.cyberciti.biz/tips/vmware-add-a-new-hard-disk-without-rebooting-guest.html))
