@@ -1,0 +1,42 @@
+---
+layout: page
+title: PostgreSQL
+toc: true
+---
+
+## Users & Roles
+
+Due to [[REF](https://aws.amazon.com/blogs/database/managing-postgresql-users-and-roles/)]
+> Users, groups, and roles are the same thing in PostgreSQL, with the only difference being that 
+> users have permission to log in by default. The `CREATE USER` and `CREATE GROUP` statements are 
+> actually aliases for the `CREATE ROLE` statement.
+
+## Create
+
+```sql
+create role ROLE with login password 'PASS'
+create database DB with owner ROLE ;
+```
+
+## Meta Data
+
+### List user and roles
+[[REF](https://www.postgresqltutorial.com/postgresql-list-users/)]
+```sql
+SELECT usename AS role_name,
+  CASE 
+     WHEN usesuper AND usecreatedb THEN 
+	   CAST('superuser, create database' AS pg_catalog.text)
+     WHEN usesuper THEN 
+	    CAST('superuser' AS pg_catalog.text)
+     WHEN usecreatedb THEN 
+	    CAST('create database' AS pg_catalog.text)
+     ELSE 
+	    CAST('' AS pg_catalog.text)
+  END role_attributes
+FROM pg_catalog.pg_user
+ORDER BY role_name desc
+```
+
+## BackUp
+- [[Incremental backups work in PostgreSQL](https://kcaps.medium.com/how-incremental-backups-work-in-postgresql-and-how-to-implement-them-in-10-minutes-d3689e8414d9)]
