@@ -195,7 +195,12 @@ PV         VG        Fmt  Attr PSize   PFree
   - if not worked, edit `/etc/bash.bashrc` and uncomment the section related to bash-completion
   - Some commands generate its own bash completion script. Append `source <(CMD_TO_BASH_COMPLETION)` in your `$HOME/.bashrc`.
   - If you have the script, like `docker-compose`, put it in `/etc/bash_completion.d/`.
-
+- `~/.vimrc` - VIM editor config for current user, set paste mode as default (prevent indentation on paste)
+  ```
+  set pastetoggle=<F3>
+  set paste
+  syntax on
+  ```
 
 
 ## Misc

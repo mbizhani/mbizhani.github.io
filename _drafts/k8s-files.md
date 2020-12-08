@@ -81,7 +81,7 @@ spec:
           tty: true
         - name: nginx
           image: nginx:1.18.0
-          ports:
+          ports: # OPTIONAL (nginx is on port 80 by default)
             - containerPort: 80
 ```
 
@@ -161,11 +161,22 @@ spec:
 > - The **Service** resource lets you expose an application running in Pods to be reachable from **outside your cluster**.
 > - You can also use **Services** to publish services only for consumption **inside your cluster**.
 
-Three Types:
-- Cluster IP
-- Node Port
-- Load Balancer
-- ExternalName
+Four Types [[REF](https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types)]
+- **ClusterIP**
+  - Default Value
+  - Makes the Service only reachable from within the cluster
+
+- **NodePort**
+  - Exposes the Service on each Node's IP at a static port
+  - A `ClusterIP` Service, to which the `NodePort` Service routes, is automatically created
+
+- **LoadBalancer**
+  - Exposes the Service externally using a cloud provider's load balancer
+  - `NodePort` and `ClusterIP` Services, to which the external load balancer routes, are automatically created
+
+- **ExternalName**
+  - Maps the Service to the contents of the externalName field (e.g. foo.bar.example.com), by returning a `CNAME` record with its value
+  - No proxying of any kind is set up
 
 ### Cluster IP
 ```yaml
@@ -215,7 +226,7 @@ spec:
     - protocol: TCP
       port: 80         # REQUIRED
       targetPort: 80   # if not set, same as port
-      nodePort: 31111  # RANGE [30000, 32767]. If not set, get randomly from the range  
+      nodePort: 31111  # DEFAULT RANGE [30000, 32767]. If not set, get randomly from the range  
 ```
 - Access `http://NODE:31111`
 
@@ -269,17 +280,20 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: sample-pv
+  labels:
+    type: nfs
+    target: sample
 spec:
   accessModes:                             # REQUIRED
     - ReadWriteOnce
     - ReadWriteMany
-  #volumeMode: Filesystem                  # DEFAULT 
   capacity:                                # REQUIRED
-    storage: 1Gi
+    storage: 1Gi                           # UNITS: Gi
+  #volumeMode: Filesystem|Block            # DEFAULT 
   #persistentVolumeReclaimPolicy: Retain   # DEFAULT
   nfs:
+    path: /opt/sharedNFS/
     server: 192.168.1.129
-    path: /opt/sharedNFS
 ```
 - `kubectl get pv`
 ```
@@ -298,7 +312,7 @@ spec:
     - ReadWriteOnce
   resources:            # REQUIRED
     requests:
-      storage: 10Mi
+      storage: 1Gi
 ```
 - `kubectl get pvc`
 ```
@@ -327,20 +341,19 @@ spec:
           image: busybox:1.32
           tty: true
           volumeMounts:
-            - name: data-dir
-              mountPath: /data
+            - name: html-dir
+              mountPath: /html
+              subPath: nginx
         - name: nginx
           image: nginx:1.18.0
           volumeMounts:
             - name: html-dir
               mountPath: /usr/share/nginx/html
-              readOnly: true
+              subPath: nginx
 
       volumes:
-        - name: data-dir
-          persistentVolumeClaim:
-            claimName: sample-pvc
         - name: html-dir
           persistentVolumeClaim:
             claimName: sample-pvc
 ```
+- It seems a PVC can only be used once in a Pod(?)
