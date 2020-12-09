@@ -275,6 +275,24 @@ spec:
 ## Storage
 
 ### PV
+[[REF](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)]
+> - A PersistentVolume (PV) is a piece of storage in the cluster that has been provisioned by an administrator or dynamically provisioned using Storage Classes.
+> - Independent lifecycle of any Pod that uses the PV
+> - Two types of provisioning
+>   - Static
+>   - Dynamic
+>     - No match for user's PVC request
+>     - Based on `StorageClass`, the PVC request must refer a storage class
+>     - Administrator must have created and configured that class for dynamic provisioning
+>     - Claims that request the class `""` effectively disable dynamic provisioning for themselves.
+> - A PVC to PV binding is a **one-to-one mapping**, using a ClaimRef which is a bi-directional binding between the PV and the PVC
+> - Reserve a PV
+>   - Specifying a PV inside PVC
+>   - Semi-Reserve: using `labels` in PV and `selectors` in PVC (not in the REF) 
+> - PVC
+>   - Request for storage by a user and consume PV resources
+>   - Setting `label` on PV can be ignored for matching, however the `selector` is considered during matching
+
 ```yaml
 apiVersion: v1
 kind: PersistentVolume
@@ -301,7 +319,7 @@ NAME        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORA
 sample-pv   1Gi        RWO,RWX        Retain           Available                                   65s
 ```
 
-### PVC
+### 
 ```yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
