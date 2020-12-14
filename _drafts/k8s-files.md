@@ -21,15 +21,19 @@ spec:
 
 **`apiVersion` ~ `kind` mapping**
 
-Kind                  | API Version
-----------------------|------------
-Pod                   | v1
-ReplicationController | v1
-ReplicaSet            | apps/v1
-Deployment            | apps/v1
-Service               | v1
-PersistentVolume      | v1
-PersistentVolumeClaim | v1
+Kind                  | API Version | Short Name
+----------------------|-------------|-------------
+Pod                   | v1          | po
+ReplicationController | v1          | rc
+ReplicaSet            | apps/v1     | rs
+Deployment            | apps/v1     | deploy
+Service               | v1          | svc
+PersistentVolume      | v1          | pv
+PersistentVolumeClaim | v1          | pvc
+Namespace             | v1          | ns
+ConfigMap             |             | cm
+
+- [[Short.Name.REF](https://blog.heptio.com/kubectl-resource-short-names-heptioprotip-c8eff9fb7202)]
 
 ## Pod
 ```yaml
@@ -59,6 +63,79 @@ Proto Recv-Q Send-Q Local Address           Foreign Address         State       
 tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN      -
 tcp        0      0 :::80                   :::*                    LISTEN      -
 ```
+- EXPOSE as SERVICE - `kubectl expose pod sample-pod --name=sample-srv --port=8080 --target-port=80`
+
+**Note:** `kubectl run redis --image=redis --restart=Never --dry-run -o yamle > redis-pod.yml`
+
+### Config Map
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sample-cm
+data:
+  K1: V1
+  K2: V2
+  other.txt: |
+    This is a text content, stored in file via ConfigMap volume!
+
+---
+
+apiVersion: v1 
+kind: Pod
+metadata:
+  name: sample-pod-cm
+spec:
+  containers:
+    - name: busybox
+      image: busybox:1.32
+      tty: true
+      envFrom:
+        - configMapRef:
+            name: sample-cm     # INCLUDE ALL KEYS
+      env:
+        - name: K11
+          valueFrom:
+            configMapKeyRef:
+              name: sample-cm
+              key: K1           # JUST GET THE KEY
+  volumes:
+    - name: cmdata
+      configMap:
+        name: sample-cm
+```
+
+- `kubectl exec -it sample-pod-cm -- env`
+```
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOSTNAME=sample-pod-cm
+TERM=xterm
+K1=V1
+K2=V2
+K11=V1
+KUBERNETES_PORT_443_TCP_ADDR=10.43.0.1
+KUBERNETES_SERVICE_HOST=10.43.0.1
+KUBERNETES_SERVICE_PORT=443
+KUBERNETES_SERVICE_PORT_HTTPS=443
+KUBERNETES_PORT=tcp://10.43.0.1:443
+KUBERNETES_PORT_443_TCP=tcp://10.43.0.1:443
+KUBERNETES_PORT_443_TCP_PROTO=tcp
+KUBERNETES_PORT_443_TCP_PORT=443
+HOME=/root
+```
+
+- `kubectl exec -it sample-pod-cm -- sh`
+```
+# ls -l /opt/config-map
+total 0
+lrwxrwxrwx    1 root     root             9 Dec 14 09:12 K1 -> ..data/K1
+lrwxrwxrwx    1 root     root             9 Dec 14 09:12 K2 -> ..data/K2
+lrwxrwxrwx    1 root     root            16 Dec 14 09:12 other.txt -> ..data/other.txt
+
+# cat /opt/config-map/other.txt
+This is a text content, stored in file via ConfigMap volume!
+```
+
 
 ## Replication Controller
 ```yaml
@@ -209,8 +286,9 @@ spec:
     - `sample-srv-cip.default`
     - `sample-srv-cip.default.svc`
     - `sample-srv-cip.default.svc.cluster.local`
+- **FORMAT** `SERVICE_NAME.NAMESPACE.svc.DOMAIN`
 - Now copy deployment and service as `sample-dep2` and `sample-srv-cip2`, and apply them.
-  - You can `ping` and `wget` each other's services from the pods. 
+  - You can `ping` and `wget` other services from the pods.
 
 ### Node Port
 ```yaml
@@ -230,8 +308,7 @@ spec:
 ```
 - Access `http://NODE:31111`
 
-
-## Volume
+ ## Volume
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -375,3 +452,34 @@ spec:
             claimName: sample-pvc
 ```
 - It seems a PVC can only be used once in a Pod(?)
+
+## Namespace
+
+```yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: sample-ns
+```
+- OR `kubectl create namespace smaple-ns`
+- `kubectl config set-context $(kubectl config current-context) --namespace=sample-ns` - Update default namesapce for `kubectl`
+
+### Resource Quota
+- Provides constraints that limit **aggregate** resource consumption per namespace
+- Pod resource must be specified on enabled compute resources quota like `cpu` and `memory`
+- [[REF](https://kubernetes.io/docs/concepts/policy/resource-quotas/)]
+ 
+```yaml
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: sample-rq
+  namespace: sample-ns
+spec:
+  hard:
+    pods: "10"
+    requests.cpu: "4"
+    requests.memory: 5Gi
+    limits.cpu: "4"
+    limits.memory: 5Gi
+```
