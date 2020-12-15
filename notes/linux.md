@@ -102,7 +102,7 @@ iface eth0 inet static
 ### ssh cmd
 - SSH Keygen
   - `ssh-keygen -t rsa -b 4096 -f ~/.ssh/NAME`
-  - `cat ~/.ssh/NAME.pub | ssh USER@HOST "mkdir -d ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys"`
+  - `cat ~/.ssh/NAME.pub | ssh USER@HOST "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys"`
   - `ssh -i ~/.ssh/NAME USER@HOST`
 - Port Forwarding - [`DEST:PORT`] <- [`MIDDLE:PORT`] <- [`SRC:PORT`]
   - On [`DEST`]
