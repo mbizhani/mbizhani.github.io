@@ -14,9 +14,23 @@ Due to [[REF](https://aws.amazon.com/blogs/database/managing-postgresql-users-an
 ## Create
 
 ```sql
-create role ROLE with login password 'PASS'
-create database DB with owner ROLE ;
+create role ROLE 
+    [with
+        [superuser]
+        [createdb]
+        [login password 'PASS']
+    ]
+
+create database DB 
+    [with 
+        [owner = ROLE]
+    ]
 ```
+
+- [[Create Role](https://www.postgresql.org/docs/13/sql-createrole.html)]
+- [[Create DB](https://www.postgresql.org/docs/13/sql-createdatabase.html)]
+- `select * from pg_catalog.pg_collation` for list of `lc_collate`
+
 
 ## Meta Data
 

@@ -136,7 +136,6 @@ lrwxrwxrwx    1 root     root            16 Dec 14 09:12 other.txt -> ..data/oth
 This is a text content, stored in file via ConfigMap volume!
 ```
 
-
 ## Replication Controller
 ```yaml
 apiVersion: v1
@@ -308,7 +307,7 @@ spec:
 ```
 - Access `http://NODE:31111`
 
- ## Volume
+## Volume
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
