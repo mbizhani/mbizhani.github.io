@@ -136,6 +136,28 @@ lrwxrwxrwx    1 root     root            16 Dec 14 09:12 other.txt -> ..data/oth
 This is a text content, stored in file via ConfigMap volume!
 ```
 
+### Secret
+- `echo 'Sample File for Secret' > myfile.txt`
+- `kubectl create secret generic sample-sec`
+```yaml
+apiVersion: v1 
+kind: Pod
+metadata:
+  name: sample-pod-sec
+spec:
+  containers:
+    - name: busybox
+      image: busybox:1.32
+      tty: true
+      volumeMounts:
+        - name: secdata
+          mountPath: "/etc/sec-data"
+  volumes:
+    - name: secdata
+      secret:
+        secretName: sample-sec
+```
+
 ## Replication Controller
 ```yaml
 apiVersion: v1
