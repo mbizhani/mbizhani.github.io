@@ -31,7 +31,8 @@ Service               | v1          | svc
 PersistentVolume      | v1          | pv
 PersistentVolumeClaim | v1          | pvc
 Namespace             | v1          | ns
-ConfigMap             |             | cm
+ConfigMap             | v1          | cm
+Secret                | v1          | -
 
 - [[Short.Name.REF](https://blog.heptio.com/kubectl-resource-short-names-heptioprotip-c8eff9fb7202)]
 
@@ -67,96 +68,6 @@ tcp        0      0 :::80                   :::*                    LISTEN      
 
 **Note:** `kubectl run redis --image=redis --restart=Never --dry-run -o yamle > redis-pod.yml`
 
-### Config Map
-```yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: sample-cm
-data:
-  K1: V1
-  K2: V2
-  other.txt: |
-    This is a text content, stored in file via ConfigMap volume!
-
----
-
-apiVersion: v1 
-kind: Pod
-metadata:
-  name: sample-pod-cm
-spec:
-  containers:
-    - name: busybox
-      image: busybox:1.32
-      tty: true
-      envFrom:
-        - configMapRef:
-            name: sample-cm     # INCLUDE ALL KEYS
-      env:
-        - name: K11
-          valueFrom:
-            configMapKeyRef:
-              name: sample-cm
-              key: K1           # JUST GET THE KEY
-  volumes:
-    - name: cmdata
-      configMap:
-        name: sample-cm
-```
-
-- `kubectl exec -it sample-pod-cm -- env`
-```
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-HOSTNAME=sample-pod-cm
-TERM=xterm
-K1=V1
-K2=V2
-K11=V1
-KUBERNETES_PORT_443_TCP_ADDR=10.43.0.1
-KUBERNETES_SERVICE_HOST=10.43.0.1
-KUBERNETES_SERVICE_PORT=443
-KUBERNETES_SERVICE_PORT_HTTPS=443
-KUBERNETES_PORT=tcp://10.43.0.1:443
-KUBERNETES_PORT_443_TCP=tcp://10.43.0.1:443
-KUBERNETES_PORT_443_TCP_PROTO=tcp
-KUBERNETES_PORT_443_TCP_PORT=443
-HOME=/root
-```
-
-- `kubectl exec -it sample-pod-cm -- sh`
-```
-# ls -l /opt/config-map
-total 0
-lrwxrwxrwx    1 root     root             9 Dec 14 09:12 K1 -> ..data/K1
-lrwxrwxrwx    1 root     root             9 Dec 14 09:12 K2 -> ..data/K2
-lrwxrwxrwx    1 root     root            16 Dec 14 09:12 other.txt -> ..data/other.txt
-
-# cat /opt/config-map/other.txt
-This is a text content, stored in file via ConfigMap volume!
-```
-
-### Secret
-- `echo 'Sample File for Secret' > myfile.txt`
-- `kubectl create secret generic sample-sec`
-```yaml
-apiVersion: v1 
-kind: Pod
-metadata:
-  name: sample-pod-sec
-spec:
-  containers:
-    - name: busybox
-      image: busybox:1.32
-      tty: true
-      volumeMounts:
-        - name: secdata
-          mountPath: "/etc/sec-data"
-  volumes:
-    - name: secdata
-      secret:
-        secretName: sample-sec
-```
 
 ## Replication Controller
 ```yaml
@@ -330,6 +241,7 @@ spec:
 - Access `http://NODE:31111`
 
 ## Volume
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -417,7 +329,7 @@ NAME        CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORA
 sample-pv   1Gi        RWO,RWX        Retain           Available                                   65s
 ```
 
-### 
+### PVC
 ```yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -473,6 +385,143 @@ spec:
             claimName: sample-pvc
 ```
 - It seems a PVC can only be used once in a Pod(?)
+
+
+## Configuration Data
+
+### Config Map
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sample-cm
+data:
+  K1: V1
+  K2: V2
+  other.txt: |
+    This is a text content, stored in file via ConfigMap volume!
+
+---
+
+apiVersion: v1 
+kind: Pod
+metadata:
+  name: sample-pod-cm
+spec:
+  containers:
+    - name: busybox
+      image: busybox:1.32
+      tty: true
+      envFrom:
+        - configMapRef:
+            name: sample-cm     # INCLUDE ALL KEYS
+      env:
+        - name: K11
+          valueFrom:
+            configMapKeyRef:
+              name: sample-cm
+              key: K1           # JUST GET THE KEY
+  volumes:
+    - name: cmdata
+      configMap:
+        name: sample-cm
+```
+
+- `kubectl exec -it sample-pod-cm -- env`
+  ```
+  PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  HOSTNAME=sample-pod-cm
+  TERM=xterm
+  K1=V1
+  K2=V2
+  K11=V1
+  KUBERNETES_PORT_443_TCP_ADDR=10.43.0.1
+  KUBERNETES_SERVICE_HOST=10.43.0.1
+  KUBERNETES_SERVICE_PORT=443
+  KUBERNETES_SERVICE_PORT_HTTPS=443
+  KUBERNETES_PORT=tcp://10.43.0.1:443
+  KUBERNETES_PORT_443_TCP=tcp://10.43.0.1:443
+  KUBERNETES_PORT_443_TCP_PROTO=tcp
+  KUBERNETES_PORT_443_TCP_PORT=443
+  HOME=/root
+  ```
+
+- `kubectl exec -it sample-pod-cm -- sh`
+  ```
+  # ls -l /opt/config-map
+  total 0
+  lrwxrwxrwx    1 root     root             9 Dec 14 09:12 K1 -> ..data/K1
+  lrwxrwxrwx    1 root     root             9 Dec 14 09:12 K2 -> ..data/K2
+  lrwxrwxrwx    1 root     root            16 Dec 14 09:12 other.txt -> ..data/other.txt
+
+  # cat /opt/config-map/other.txt
+  This is a text content, stored in file via ConfigMap volume!
+  ```
+
+### Secret
+- Store and manage sensitive information
+- Secret vs ConfigMap [[Ref1](https://medium.com/google-cloud/kubernetes-configmaps-and-secrets-68d061f7ab5b), [Ref2](https://stackoverflow.com/questions/36912372/kubernetes-secrets-vs-configmaps)]
+> The big difference between Secrets and ConfigMaps are that Secrets are obfuscated with a Base64 encoding. 
+> There may be more differences in the future, but it is good practice to use Secrets for confidential data 
+> (like API keys) and ConfigMaps for non-confidential data (like port numbers).
+
+- Secret can simply be created by CLI or file:
+  - CLI (imperative)
+    - `echo 'Sample File for Secret' > myfile.txt`
+    - `kubectl create secret generic sample-sec --from-file=message.txt=myfile.txt --from-literal=K1=V1`
+  - File
+  ```yaml
+  apiVersion: v1
+  kind: Secret
+  metadata:
+    name: sample-sec
+  type: Opaque  # DEFAULT
+  data:
+    K1: V1
+    message.txt: |
+      Sample File for Secret
+  ```
+
+```yaml
+apiVersion: v1 
+kind: Pod
+metadata:
+  name: sample-pod-sec
+spec:
+  containers:
+    - name: busybox
+      image: busybox:1.32
+      tty: true
+      env:
+        - name: KEY1
+          valueFrom:
+            secretKeyRef:
+              name: sample-sec
+              key: K1
+      volumeMounts:
+        - name: secdata
+          mountPath: "/etc/sec-data"
+  volumes:
+    - name: secdata
+      secret:
+        secretName: sample-sec
+        items:
+          - key: message.txt
+            path: message.txt 
+```
+
+- `kubectl exec -it sample-pod-sec -- sh`
+  ```text
+  / # ls -l /etc/sec-data/
+  total 0
+  lrwxrwxrwx    1 root     root            18 Dec 24 10:08 message.txt -> ..data/message.txt
+
+  / # env
+  KEY1=V1
+  KUBERNETES_PORT=tcp://10.43.0.1:443
+  ...
+  ```
+
 
 ## Namespace
 
