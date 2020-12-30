@@ -29,9 +29,11 @@ toc: true
 
 ## String Operation
 
-### Conversion
+### Variables
 - `${VAR,,}` - to lower case
 - `${VAR^^}` - to upper case
+- `${VAR/PAT/STR}` - replace **first** `PAT` with `STR`
+- `${VAR//PAT/STR}` - replace **all** `PAT` with `STR` (second `/`)
 
 ### Split by Delimiter
 1. Set `IFS` variable to delimiter
@@ -100,6 +102,30 @@ RESULT=$(add "3" "6")
 ```
 
 ## Samples
+
+### Assert Env Var
+
+```bash
+E2=b
+
+ENV_VARS="
+E1
+E2
+E3
+"
+
+function assertEnvVars() {
+    VARS="$1"
+    for VAR in ${VARS}; do  # ITERATE OVER WORDS IN STRING
+      echo "${VAR}"
+      if [[ ! "${!VAR}" ]]; then       # USING ${!} STRING EXPANSION
+        echo "Var Not Defined: ${VAR}"
+      fi
+    done
+}
+
+assertEnvVars "${ENV_VARS}"  # DOUBLE-QUOTE REQUIRED
+```
 
 ### Command with Proxy
 A simple script to set `http_proxy` env variable in current shell and then executes passed parameters as commands.
