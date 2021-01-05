@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "Kubernetes Files in a Nutshell"
+title: "Kubernetes Objects in a Nutshell"
 categories: article tech
-excerpt: Simple notes on Kubernetes files
+excerpt: Simple notes on Kubernetes Objects
 ---
 
 ## Basic
@@ -34,7 +34,7 @@ Namespace             | v1          | ns
 ConfigMap             | v1          | cm
 Secret                | v1          | -
 
-- [[Short.Name.REF](https://blog.heptio.com/kubectl-resource-short-names-heptioprotip-c8eff9fb7202)]
+- `kubectl api-resources` - shows complete list of above table
 
 ## Pod
 ```yaml
@@ -68,6 +68,43 @@ tcp        0      0 :::80                   :::*                    LISTEN      
 
 **Note:** `kubectl run redis --image=redis --restart=Never --dry-run -o yamle > redis-pod.yml`
 
+### Container Lifecycle Events
+```yaml
+apiVersion: v1 
+kind: Pod
+metadata:
+  name: sample-pod
+  labels:
+    app: test-pod
+
+spec:
+  containers:
+    - name: busybox
+      image: busybox:1.32
+      tty: true
+      lifecycle:
+        postStart:
+          exec:
+            command:
+              - sh
+              - -c
+              - |
+                for i in $(seq 1 1 10); do
+                  echo "Line: $i" >> /var/lines.log
+                  sleep 2
+                done
+```
+- `watch -t "kubectl get po; echo '\n----------\n'; kubectl exec -it sample-pod -- cat /var/lines.log"`
+- After apply, the status of pod is `ContainerCreating`. After 20 seconds, the status becomes `Running`.
+- Two Events [[REF](https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/)]
+  - `postStart`
+    - no guarantee that the hook will execute before the container `ENTRYPOINT`
+    - runs asynchronously relative to the Container's code
+  - `preStop`
+  - For each, **only use one** of the followings
+    - `exec`
+    - `httpGet`
+    - `tcpSocket`
 
 ## Replication Controller
 ```yaml
