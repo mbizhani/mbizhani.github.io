@@ -25,4 +25,8 @@
   </script>
   <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML' async></script>
   {% endif %}
+  {% if page.asciinema == true %}
+  <link rel="stylesheet" type="text/css" href="/assets/asciinema/asciinema-player.css" />
+  <script src="/assets/asciinema/asciinema-player.js"></script>
+  {% endif %}
 </head>
