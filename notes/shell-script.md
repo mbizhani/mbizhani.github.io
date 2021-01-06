@@ -27,6 +27,28 @@ toc: true
 `[ -w "$VAR" ]` | Regular file exists with write permission
 `[ -x "$VAR" ]` | Regular file exists with exec permission
 
+## Loop
+
+### `for`
+```sh
+# iterate over CMD output using $() 
+for i in $(seq 1 1 10); do
+  echo "i = $i"
+done
+
+# iterate on words: 'Hi!', 'Visit', 'https://devocative.org', and '!'
+STR="Hi! Visit https://devocative.org !"
+for w in ${STR}; do
+  echo "w = $w"
+done
+
+# iterate over files
+for f in /usr/lib*; do
+  echo "f = $f"
+done
+```
+
+
 ## String Operation
 
 ### Variables
@@ -58,7 +80,8 @@ fi
 ```
 
 ## Function
-- Good [Ref](https://linuxize.com/post/bash-functions/)
+- Good [[Ref](https://linuxize.com/post/bash-functions/)]
+- **Note**: `function` keyword not valid for POSIX sh. For `bash` is also optional. 
 
 ```sh
 # check required param
@@ -95,10 +118,10 @@ function add() {
     PARAM1="$1"
     PARAM2="$2"
 
-    echo $(($PARAM1 + $PARAM2))
+    echo $((PARAM1 + PARAM2))  # No need to use $ for variables inside '(())'! 
 }
 
-RESULT=$(add "3" "6")
+echo "3 + 6 = $(add "3" "6")"
 ```
 
 ## Samples
