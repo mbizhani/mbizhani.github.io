@@ -12,8 +12,8 @@ toc: true
 
 `[ "$VAR" ]` | String not empty
 `[ -z "$VAR" ]` or `[ ! "$VAR" ]` | String is empty
-`[ "$VAR1" = "$VAR2" ]` | Equal string - case sensitive
-`[ "${VAR1,,}" = "${VAR2,,}" ]` | Equal string - case insensitive
+`[ "$VAR1" = "$VAR2" ]` | Equal string - case-sensitive
+`[ "${VAR1,,}" = "${VAR2,,}" ]` | Equal string - case-insensitive
 `[ "$VAR1" != "$VAR2" ]` | Not equal string
 `[[ "$VAR" =~ "REGEX" ]]` | String matches `REGEX`
 
@@ -125,6 +125,33 @@ echo "3 + 6 = $(add "3" "6")"
 ```
 
 ## Samples
+
+### Inline Code Block in Background (*)
+```sh
+{
+  for i in $(seq 1 1 5); do
+    echo "block = $i"
+    sleep 1
+  done
+} &
+
+for i in $(seq 1 1 5); do
+  echo "main = $i"
+  sleep 2
+done
+
+##
+## example from following REF! Note using 'wait' command!
+{
+    echo "sleeping for 5 seconds"
+    sleep 5
+    echo "woke up"
+} &
+echo "waiting"
+wait
+echo "proceed"
+```
+[[REF](https://stackoverflow.com/questions/4511704/shell-script-run-a-block-of-code-in-the-background-without-defining-a-new-funct)]
 
 ### Assert Env Var
 - For `bash`
