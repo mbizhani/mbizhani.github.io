@@ -269,20 +269,21 @@ deb http://security.debian.org testing-security main contrib non-free
 
 ### Utility Apps
 
-Function         | App                                                                
------------------|---
-Media Converter  | `HandBrake` `WinFF`(using `ffmpeg` library)
-Screen Snapshot  | `Flameshot`
-Screen Recorder  | `obs-studio` `kazam` `vokoscreen` - ([Ref](https://itsfoss.com/best-linux-screen-recorders/))
-Screen Annotate  | `gromit-mpx`
-Code Editor      | `Intellij Idea` `VSCode` `Atom` `Sublime Text`
-Diff/Merge Files | `meld`
-Note/Wiki Editor | `Zim`
-PDF              | `Foxit Reader` `unoconv`(doc converter)
-Photo Editor     | SIMPLE: <u><code>PhotoFlare</code></u> ADVANCED: <u><code>Gimp</code></u>, `Inkscape`, `RawTherapee`, `Krita`
-Diagram Editor   | `drow.io` [[Desktop](https://github.com/jgraph/drawio-desktop/releases)] [[Web](https://www.draw.io/)]
-Download Manager | `XDM`
-Remoting Client  | `remmina`
-Shell Monitoring | System: `htop` <br/> Network: `iptraf`, `tcptrack`
-Shell Utility    | `multitail`
+Function          | App                                                                
+------------------|-----
+Media Converter   | `HandBrake` `WinFF`(using `ffmpeg` library)
+Screen Snapshot   | **`Flameshot`**
+Screen Recorder   | **`obs-studio`** **`asciinema`**[[player](https://github.com/asciinema/asciinema-player)]
+Screen Annotate   | `gromit-mpx`
+Code Editor       | **`Intellij Idea`** `VSCode` `Atom` `Sublime Text`
+Kubernetes Editor | [**`k8slens.dev`**](https://k8slens.dev/)
+Diff/Merge Files  | `meld` `vimdiff`
+Note/Wiki Editor  | `Zim`
+PDF               | `Foxit Reader` `unoconv`(doc converter)
+Photo Editor      | **`Krita`**, `Inkscape`, `RawTherapee`
+Diagram Editor    | `drow.io` [[Desktop](https://github.com/jgraph/drawio-desktop/releases) - [Web](https://www.draw.io/)]
+Download Manager  | [**`XDM`**](https://github.com/subhra74/xdm)
+Remoting Client   | `remmina`
+Shell Monitoring  | System: `htop` <br/> Network: `iptraf` `tcptrack`
+Shell Utility     | **`tmux`** `multitail`
 
