@@ -29,3 +29,4 @@ toc: true
 
 - `{% raw %}{{- /* ... */}}{% endraw %}` - Comment
 - `{% raw %}{{- .Values.VAR | b64enc | quote }}{% endraw %}` - Encode Base64 and Quote it
+- `{% raw %}{{ printf "%s/%s-tls-cert.pem" .Values.VAR1 .Values.VAR2 | quote }}{% endraw %}` - Using `printf`
