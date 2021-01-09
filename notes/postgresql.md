@@ -4,6 +4,15 @@ title: PostgreSQL
 toc: true
 ---
 
+## Client
+- `apt install postgresql-client`
+- `psql`
+  ```sh
+  export PGPASSWORD=PASSWORD
+  
+  psql -h HOST -U USER -d DATABASE [-f SQL_FILE]
+  ```
+
 ## Users & Roles
 
 Due to [[REF](https://aws.amazon.com/blogs/database/managing-postgresql-users-and-roles/)]
