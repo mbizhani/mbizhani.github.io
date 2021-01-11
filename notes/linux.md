@@ -12,14 +12,19 @@ toc: true
 	- `-t` : Turn off the header showing the interval, command, and current time at the top of the display
   - Multiple commands - `watch "CMD1; echo '\n'; CMD2; ..."`
 
-------------------------------------|---
-`echo $(date +'%Y-%m-%d_%H-%M-%S')` | Formatted Date 
+------------------------------------|----------------
+`echo $(date +'%Y-%m-%d_%H-%M-%S')` | Formatted Date
 `seq -f "MSG_ID: %03g" 20`          | String Generator
 `w`                                 | Shows brief info of system and current logged in users
 `dpkg -S ABSOLUTE_FILE_NAME`        | Search for a filename from installed packages. (note: can't work on symlinks)
 `systemctl show SERVICE`            | Show properties of one or more units, jobs, or the manager itself.
-`dmidecode --type 17 | less`        | RAM Modules Information 
-`hdparm -I /dev/sda | less`         | HDD Information 
+`dmidecode --type 17 | less`        | RAM Modules Information
+`hdparm -I /dev/sda | less`         | HDD Information
+
+- Filesystem Navigation [[REF](https://linuxize.com/post/popd-and-pushd-commands-in-linux/)]
+  - `pushd DIR` - push the current directory to stack and change directory to `DIR`
+  - `popd` - pop last directory from stack and change to it
+  - `dirs -l -v` - list of directories in stack 
 
 ### find cmd
   - By default, it searches in subdirectories recursively, unless `-maxdepth` option is set.
@@ -66,6 +71,7 @@ find /path/to/folders/* -type d \
 
 
 ## Network
+
 ### General
 - `hostnamectl --static set-hostname <HOSTNAME>`
 - `export http_proxy=http://[USERNAME:PASSWORD@]PROXY_SERVER[:PORT]` ([Ref](https://www.cyberciti.biz/faq/linux-unix-set-proxy-environment-variable/))
@@ -277,11 +283,11 @@ Screen Recorder   | **`obs-studio`** **`asciinema`**[[player](https://github.com
 Screen Annotate   | `gromit-mpx`
 Code Editor       | **`Intellij Idea`** `VSCode` `Atom` `Sublime Text`
 Kubernetes Editor | [**`k8slens.dev`**](https://k8slens.dev/)
-Diff/Merge Files  | `meld` `vimdiff`
+Diff/Merge Files  | **`meld`** `vimdiff`
 Note/Wiki Editor  | `Zim`
 PDF               | `Foxit Reader` `unoconv`(doc converter)
 Photo Editor      | **`Krita`**, `Inkscape`, `RawTherapee`
-Diagram Editor    | `drow.io` [[Desktop](https://github.com/jgraph/drawio-desktop/releases) - [Web](https://www.draw.io/)]
+Diagram Editor    | [`draw.io`](https://www.draw.io/)
 Download Manager  | [**`XDM`**](https://github.com/subhra74/xdm)
 Remoting Client   | `remmina`
 Shell Monitoring  | System: `htop` <br/> Network: `iptraf` `tcptrack`
