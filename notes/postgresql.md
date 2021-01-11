@@ -61,5 +61,22 @@ FROM pg_catalog.pg_user
 ORDER BY role_name desc
 ```
 
+### Session
+[[REF](https://dataedo.com/kb/query/postgresql/kill-session)]
+```sql
+-- List Sessions
+select *
+from pg_stat_activity
+
+-- Kill Session - pg_terminate_backend()
+select pg_terminate_backend(pid) 
+from pg_stat_activity
+where 
+  pid = '18765'
+  usename = 'USER'
+  datname = 'DB_NAME'
+  client_addr = 'CLIENT_IP'
+```
+
 ## BackUp
 - [[Incremental backups work in PostgreSQL](https://kcaps.medium.com/how-incremental-backups-work-in-postgresql-and-how-to-implement-them-in-10-minutes-d3689e8414d9)]
