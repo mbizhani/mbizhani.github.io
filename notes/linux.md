@@ -138,6 +138,11 @@ iface eth0 inet static
     ```
     Now, `systemctl enable myssh` and `systemctl start myssh`. Check the service by `systemctl status myssh`. 
 
+### rsync
+[[REF1](https://www.digitalocean.com/community/tutorials/how-to-copy-files-with-rsync-over-ssh)]
+- Create an SSH key, described in previous section
+- `rsync -av -e "ssh -i ~/.ssh/NAME" DIR USER@HOST:DEST_DIR` - on source server
+
 ### NFS
 On Server:
 - `apt install nfs-kernel-server`
