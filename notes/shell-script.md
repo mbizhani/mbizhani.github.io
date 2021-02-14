@@ -235,3 +235,49 @@ Usage: `mytmux.sh CMD...`
 <div>
 <script src="/assets/embed.js?target=https://github.com/mbizhani/Dockage/blob/master/Script/mytmux.sh"></script>
 </div>
+
+### Pars Parametric Text File
+[[REF](https://stackoverflow.com/questions/415677/how-to-replace-placeholders-in-a-text-file)]
+```sh
+# Create a simple text file
+#  > means create, >> means create/append
+#  it should be double <<
+#  EOF means parametric string, while 'EOF' means pure string
+#  CR should be after first EOF and before second one
+cat > myfile.txt << 'EOF'
+Hello "${MSG}"!
+'${MSG}' has "$(printf '${MSG}' | wc -m)" chars :-)
+EOF
+
+MSG="World"
+
+printf "*** Using 'eval & cat':\n"
+eval "cat <<EOF
+$(<myfile.txt)
+EOF" | cat
+
+printf "\n*** Using 'eval & echo':\n"
+eval "echo \"$(<myfile.txt)\"" | cat
+
+printf "\n*** Using 'envsubst':\n"
+export MSG
+envsubst < myfile.txt | cat
+
+rm -f myfile.txt
+```
+**Note:** `| cat` in all above is just for simulation of another action on the processed file, so it is rudimentary.
+
+Output is
+```text
+*** Using 'eval & cat':
+Hello "World"!
+'World' has "6" chars :-)
+
+*** Using 'eval & echo':
+Hello World!
+'World' has 6 chars :-)
+
+*** Using 'envsubst':
+Hello "World"!
+'World' has "$(printf 'World' | wc -m)" chars :-)
+```
