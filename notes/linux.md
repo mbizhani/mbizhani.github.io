@@ -14,6 +14,7 @@ toc: true
 
 ------------------------------------|----------------
 `echo $(date +'%Y-%m-%d_%H-%M-%S')` | Formatted Date
+`timedatectl set-timezone UTC`      | Set timezone to UTC
 `seq -f "MSG_ID: %03g" 20`          | String Generator
 `w`                                 | Shows brief info of system and current logged in users
 `dpkg -S ABSOLUTE_FILE_NAME`        | Search for a filename from installed packages. (note: can't work on symlinks)
@@ -214,6 +215,26 @@ PV         VG        Fmt  Attr PSize   PFree
   ```
 
 
+## Debian
+### Image Address
+- [Stable](https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/)
+- [Testing/Weekly-Builds](https://cdimage.debian.org/cdimage/weekly-builds/amd64/iso-dvd/)
+- [Testing/Weekly-Builds + Non-free](https://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware/weekly-builds/amd64/iso-dvd/)
+- [Live](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/)
+
+### Config
+- Stable (Buster) `/etc/apt/sources.list`
+```
+deb http://deb.debian.org/debian buster main contrib
+deb http://security.debian.org/debian-security buster/updates main contrib
+```
+- Testing (Bullseye) `/etc/apt/sources.list`
+```
+deb http://deb.debian.org/debian testing main contrib non-free
+deb http://security.debian.org testing-security main contrib non-free
+```
+
+
 ## Misc
 - Create application menu in XFCE
 ```sh
@@ -230,53 +251,42 @@ EOL
 ```
 - `Alt + Mouse Scroll` in XFCE results in zoom in/out
 
-### Debian
-#### Image Address
-- [Stable](https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/)
-- [Testing/Weekly-Builds](https://cdimage.debian.org/cdimage/weekly-builds/amd64/iso-dvd/)
-- [Testing/Weekly-Builds + Non-free](https://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware/weekly-builds/amd64/iso-dvd/)
-- [Live](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/)
-
-#### Config
-- Stable (Buster) `/etc/apt/sources.list`
-```
-deb http://deb.debian.org/debian buster main contrib
-deb http://security.debian.org/debian-security buster/updates main contrib
-```
-- Testing (Bullseye) `/etc/apt/sources.list`
-```
-deb http://deb.debian.org/debian testing main contrib non-free
-deb http://security.debian.org testing-security main contrib non-free
-```
-
 ### VMWare
+- VM Tools
   - `apt install open-vm-tools` - Open VMware Tools for virtual machines hosted on VMware (CLI)
   - `apt install open-vm-tools-desktop` - Open VMware Tools for virtual machines hosted on VMware (GUI)
-  - After Kernel update, Workstation crashes due to some module problem => ([Solution](https://github.com/mkubecek/vmware-host-modules/)) ([Releases](https://github.com/mkubecek/vmware-host-modules/releases))
-    The following script automates the patching:
-    ```sh
-    #!/bin/bash
-    
-    #This needs to be the actual name of the appropriate branch in mkubecek's GitHub repo for your purposes
-    VMWARE_VERSION=workstation-???
-    
-    TMP_FOLDER=/tmp/patch-vmware
-    rm -fdr $TMP_FOLDER
-    mkdir -p $TMP_FOLDER
-    cd $TMP_FOLDER
-    
-    git clone https://github.com/mkubecek/vmware-host-modules.git
-    # Use `git branch -a` to find all available branches and find the one that's appropriate for you
-    
-    cd $TMP_FOLDER/vmware-host-modules
-    git checkout $VMWARE_VERSION
-    git fetch
-    make
-    make install
-    rm /usr/lib/vmware/lib/libz.so.1/libz.so.1
-    ln -s /lib/x86_64-linux-gnu/libz.so.1 /usr/lib/vmware/lib/libz.so.1/libz.so.1
-    systemctl restart vmware 
+  - `systemctl enable open-vm-tools.service`
+  - `systemctl start open-vm-tools.service`
+  - Update `/etc/vmware-tools/tools.conf`
+    ```text
+    [guestinfo]
+    primary-nics=ens*
     ```
+- After Kernel update, Workstation crashes due to some module problem => ([Solution](https://github.com/mkubecek/vmware-host-modules/)) ([Releases](https://github.com/mkubecek/vmware-host-modules/releases))
+  The following script automates the patching:
+  ```sh
+  #!/bin/bash
+  
+  #This needs to be the actual name of the appropriate branch in mkubecek's GitHub repo for your purposes
+  VMWARE_VERSION=workstation-???
+  
+  TMP_FOLDER=/tmp/patch-vmware
+  rm -fdr $TMP_FOLDER
+  mkdir -p $TMP_FOLDER
+  cd $TMP_FOLDER
+  
+  git clone https://github.com/mkubecek/vmware-host-modules.git
+  # Use `git branch -a` to find all available branches and find the one that's appropriate for you
+  
+  cd $TMP_FOLDER/vmware-host-modules
+  git checkout $VMWARE_VERSION
+  git fetch
+  make
+  make install
+  rm /usr/lib/vmware/lib/libz.so.1/libz.so.1
+  ln -s /lib/x86_64-linux-gnu/libz.so.1 /usr/lib/vmware/lib/libz.so.1/libz.so.1
+  systemctl restart vmware 
+  ```
 
 ### Utility Apps
 
