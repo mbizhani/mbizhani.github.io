@@ -74,15 +74,15 @@ find /path/to/folders/* -type d \
 ## Network
 
 ### General
-- `hostnamectl --static set-hostname <HOSTNAME>`
+- `hostnamectl --static set-hostname HOSTNAME`
 - `export http_proxy=http://[USERNAME:PASSWORD@]PROXY_SERVER[:PORT]` ([Ref](https://www.cyberciti.biz/faq/linux-unix-set-proxy-environment-variable/))
   - connect text based session and/or applications via the proxy server
   - apps like `apt`, `lynx`, `wget`, ...
 - `/etc/network/interfaces` (in Debian)
 ```
 iface eth0 inet static
-    address <IP>/24
-    gateway <IP>
+    address IP/24
+    gateway IP
     dns-nameservers 8.8.8.8 8.8.4.4
 ```
   - Using `sed` to update
@@ -236,6 +236,8 @@ deb http://security.debian.org testing-security main contrib non-free
 
 
 ## Misc
+
+### X
 - Create application menu in XFCE
 ```sh
 cat > ~/.local/share/applications/APP.desktop << EOL
@@ -250,6 +252,11 @@ Categories=CATEGORY;
 EOL
 ```
 - `Alt + Mouse Scroll` in XFCE results in zoom in/out
+
+### Multimedia
+- Split MP3 - `mp3splt` [[REF](https://manpages.debian.org/testing/mp3splt/mp3splt.1.en.html)]
+  - `mp3splt -f -a -t MIN.SEC FILE` - Split by Time
+  - `mp3splt -f -a -S NUMBERS FILE` - Split by Parts
 
 ### VMWare
 - VM Tools
