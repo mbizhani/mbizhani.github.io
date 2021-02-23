@@ -7,23 +7,36 @@ toc: true
 ## Command
 
 - `helm create NAME`
-  - create folder `NAME` with initial templates
+  - Create folder `NAME` with initial templates
 - `helm lint ./NAME/`
-  - runs a series of tests to verify that the chart is well-formed
+  - Runs a series of tests to verify that the chart is well-formed
 - `helm template INTANCE_NAME ./NAME`
-  - render chart templates locally and display the output.
+  - Render chart templates locally and display the output.
   - `--output-dir OUT`
-  - examples
+  - `-f VALUE_FILE.yaml`
+  - Examples
     - `helm template test ./NAME --output-dir OUT`
 - `helm install INSTANCE_NAME ./NAME`
-  - `-f VALUE_FILE`
+  - `-f VALUE_FILE.yaml`
 - `helm list`
-  - list instances
-  - `-f STRING` - filter instances by `NAME` matching `STRING` using regex
-  - `-a` - show all
-  - `-d` - sort by date
-  - `-r` - reverse sort
+  - List instances
+  - `-f STRING` - Filter instances by `NAME` matching `STRING` using regex
+  - `-a` - Show all
+  - `-d` - Sort by date
+  - `-r` - Reverse sort
 - `helm uninstall INSTANCE_NAME`
+
+
+## Repo
+- `helm repo list`
+- `helm repo add NAME URL [FLAGS]`
+  - `helm repo add owkin https://owkin.github.io/charts`
+  - `helm repo add bitnami https://charts.bitnami.com/bitnami`
+  - `helm repo add rancher-stable https://releases.rancher.com/server-charts/stable`
+- `helm pull REPO/NAME [--untar] [--version=VER]`
+  - `helm pull rancher-stable/rancher --untar --version=2.5.5`
+- `helm repo update`
+
 
 ## Template
 
