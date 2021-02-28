@@ -21,7 +21,8 @@ toc: true
 - `helm list`
   - List instances
   - `-f STRING` - Filter instances by `NAME` matching `STRING` using regex
-  - `-a` - Show all
+  - `-A` - Across all namespaces
+  - `-a` - Show all releases without any filter
   - `-d` - Sort by date
   - `-r` - Reverse sort
 - `helm uninstall INSTANCE_NAME`
