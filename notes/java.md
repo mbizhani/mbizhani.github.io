@@ -6,6 +6,11 @@ toc: true
 
 ## API
 
+### String
+- `str.repeate(count): String` (J11)
+- `str.isBlank(): Boolean` (J11)
+- `str.lines(): Stream<String>` (J11)
+
 ### I/O
 - **`Files`** (J7)
   - `Files.readAllBytes(Path): byte[]`
