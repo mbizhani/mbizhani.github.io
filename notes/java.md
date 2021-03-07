@@ -116,3 +116,11 @@ Note: `org.hibernate.dialect` is Hibernate package for dialects.
   
   </settings>
   ```
+- Java version (e.g. `1.8`, `11`), and other properties
+  ```xml
+  <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <maven.compiler.source>11</maven.compiler.source>
+      <maven.compiler.target>11</maven.compiler.target>
+  </properties>
+  ```

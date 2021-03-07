@@ -238,6 +238,7 @@ deb http://security.debian.org testing-security main contrib non-free
 ## Misc
 
 ### X
+- `Alt + Mouse Scroll` in XFCE results in zoom in/out
 - Create application menu in XFCE
 ```sh
 cat > ~/.local/share/applications/APP.desktop << EOL
@@ -251,12 +252,17 @@ Type=Application
 Categories=CATEGORY;
 EOL
 ```
-- `Alt + Mouse Scroll` in XFCE results in zoom in/out
 
 ### Multimedia
-- Split MP3 - `mp3splt` [[REF](https://manpages.debian.org/testing/mp3splt/mp3splt.1.en.html)]
+- `mp3splt` [[REF](https://manpages.debian.org/testing/mp3splt/mp3splt.1.en.html)]
   - `mp3splt -f -a -t MIN.SEC FILE` - Split by Time
   - `mp3splt -f -a -S NUMBERS FILE` - Split by Parts
+- `youtube-dl URL`
+  - `-F` - list all formats
+  - `-f 22` - download best format (both audio and video)
+  - `--skip-download` - no download, just for subtitle
+  - `--write-auto-sub` - download subtitle
+  - `--sub-lang en` - english subtitle
 
 ### VMWare
 - VM Tools
