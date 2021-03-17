@@ -96,7 +96,7 @@ iface eth0 inet static
 
 ### ip cmd
 
-`ip` vs other net tools [link1](https://p5r.uk/blog/2010/ifconfig-ip-comparison.html) and [cyberciti](https://www.cyberciti.biz/faq/linux-ip-command-examples-usage-syntax)
+- `ip` vs other net tools [[REF1](https://p5r.uk/blog/2010/ifconfig-ip-comparison.html)] [[REF2](https://www.cyberciti.biz/faq/linux-ip-command-examples-usage-syntax)]
 
 | Function                                 | New                   | Old                             |
 |:-----------------------------------------|:----------------------|:--------------------------------|
@@ -105,6 +105,8 @@ iface eth0 inet static
 | Show routed eth device for a specific IP | `ip r get IP`         |                                 |
 | Show neighbour (ARP)                     | `ip n` or `ip neigh`  | `arp -a`                        |
 | Show socket statics/info                 | `ss -lntp` `ss -antp` | `netstat -lntp` `netstat -antp` |
+
+- `ip a | awk '/inet.*brd/{print $NF; exit}'` - find first (main) active network interface name [[REF](https://unix.stackexchange.com/questions/270008/retrieve-name-of-the-active-network-interface-only)]
 
 ### ssh cmd
 - SSH Keygen

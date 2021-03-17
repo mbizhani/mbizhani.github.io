@@ -31,18 +31,31 @@ toc: true
 
 ### `for`
 ```sh
-# iterate over CMD output using $() 
+## Iterate over CMD output using $() 
 for i in $(seq 1 1 10); do
   echo "i = $i"
 done
 
-# iterate on words: 'Hi!', 'Visit', 'https://devocative.org', and '!'
+## Iterate on words: 'Hi!', 'Visit', 'https://devocative.org', and '!'
 STR="Hi! Visit https://devocative.org !"
 for w in ${STR}; do
   echo "w = $w"
 done
 
-# iterate over files
+## Iterate over lines
+LINES=$(cat << 'EOF'   # EOF must be enclosed in single quote
+export LS_OPTIONS='--color=auto'
+eval "`dircolors`"
+alias ll='ls $LS_OPTIONS -l'
+EOF
+) # closed parenthesis must be in the next line
+
+IFS=$'\n'
+for l in ${LINES}; do
+  echo "LINE = $l"
+done
+
+## Iterate over files
 for f in /usr/lib*; do
   echo "f = $f"
 done
@@ -55,7 +68,7 @@ done
 - `${VAR,,}` - to lower case
 - `${VAR^^}` - to upper case
 - `${VAR/PAT/STR}` - replace **first** `PAT` with `STR`
-- `${VAR//PAT/STR}` - replace **all** `PAT` with `STR` (second `/`)
+- `${VAR//PAT/STR}` - replace **all** `PAT` with `STR` (double `/`)
 
 ### Split by Delimiter
 1. Set `IFS` variable to delimiter
