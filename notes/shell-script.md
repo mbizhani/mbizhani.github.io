@@ -59,6 +59,13 @@ done
 for f in /usr/lib*; do
   echo "f = $f"
 done
+
+## Iterate over input parameters
+for var in "${@}"; do
+  EXP="${var//[\/:]/_}.tar"
+  echo "Exporting: ${var} to ${EXP}"
+  docker save ${var} -o ${EXP}
+done
 ```
 
 
