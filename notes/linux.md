@@ -146,29 +146,15 @@ iface eth0 inet static
 - Create an SSH key, described in previous section
 - `rsync -av -e "ssh -i ~/.ssh/NAME" DIR USER@HOST:DEST_DIR` - on source server
 
-### NFS
-On Server:
-- `apt install nfs-kernel-server`
-- Edit `/etc/exports`
-```
-DIR     192.168.1.0/24(rw,sync,no_root_squash,no_subtree_check)
-DIR     172.16.15.124(ro)
-```
-- **Note:** In case of VMware Workstation VM's NAT, use `insecure`
-```
-DIR     HOST_IP(rw,sync,no_root_squash,no_subtree_check,insecure)
-```
+## Storage
 
-On Client(optional):
-- `apt install nfs-common`
-- `showmount -e SERVER`
-- `mount -t nfs SERVER:DIR LOCAL_DIR`
-
-## LVM
-- **Note**: Rescan the SCSI bus to add a SCSI device without rebooting the VM ([Ref](https://www.cyberciti.biz/tips/vmware-add-a-new-hard-disk-without-rebooting-guest.html))
+### Common
+- `lsblk -f`
+- `fdisk -l`
+- **Note**: Rescan the SCSI bus to find SCSI device(s) without rebooting the VM [[REF](https://www.cyberciti.biz/tips/vmware-add-a-new-hard-disk-without-rebooting-guest.html)]
   - `find /sys/class/scsi_host/ -name "host*" -exec sh -c "echo '- - -' > {}/scan" \;`
-  - `fdisk -l` and find the newly added device
 
+### LVM
 - Components ([Ref](https://wiki.debian.org/LVM))![LVM](/assets/images/linux/lvm.png)
 
 - **LV - Logical Volumes**
@@ -196,6 +182,78 @@ PV         VG        Fmt  Attr PSize   PFree
 /dev/sda5  debian-vg lvm2 a--  <29.76g    0
 ```
 
+### NFS
+**On Server**
+- `apt install nfs-kernel-server`
+- Edit `/etc/exports`
+```
+DIR     192.168.1.0/24(rw,sync,no_root_squash,no_subtree_check)
+DIR     172.16.15.124(ro)
+```
+- **Note:** In case of VMware Workstation VM's NAT, use `insecure`
+```
+DIR     HOST_IP(rw,sync,no_root_squash,no_subtree_check,insecure)
+```
+
+**On Client**
+- `apt install nfs-common`
+- `showmount -e SERVER`
+- `mount -t nfs SERVER:DIR LOCAL_DIR`
+
+### iSCSI
+Target (server), Initiator(client) [[REF](https://www.tecmint.com/setup-iscsi-target-and-initiator-on-debian-9/)]
+
+#### Installation
+**-- Target --**
+- Create a VG & LV
+  - `vgcreate vg_iscsi BLOCK_DEV`
+  - `lvcreate -l 100%FREE -n lv_iscsi vg_iscsi`
+- `apt-get install tgt -y`
+- Create a config file in `/etc/tgt/conf.d` (`man 5 targets.conf`)
+
+```shell
+cat > /etc/tgt/conf.d/iscsi01.conf << 'EOF'
+<target iqn.YYYY-MM.SERVER:LUN>
+  backing-store /dev/mapper/vg_iscsi-lv_iscsi
+  #initiator-address IP
+  incominguser TARGET_USER TARGET_PASSWORD
+  outgoinguser INITIATOR_USER INITIATOR_PASSWORD
+</target>
+EOF
+```
+- `systemctl restart tgt`
+- `tgtadm --mode target --op show` - verify the LUN
+
+**-- Initiator --**
+- `apt-get install open-iscsi -y`
+- `iscsiadm -m discovery -t st -p TARGET_HOST`
+- Update LUN config in the path with pattern `/etc/iscsi/nodes/../default`
+  - Add following line (note first line existed with `None` value)
+```text
+node.session.auth.authmethod = CHAP
+node.session.auth.username = TARGET_USER
+node.session.auth.password = TARGET_PASSWORD
+node.session.auth.username_in = INITIATOR_USER
+node.session.auth.password_in = INITIATOR_PASSWORD
+```
+- Update `node.startup = automatic`
+- `systemctl restart open-iscsi`
+
+#### Verification
+- `tgtadm --mode conn --op show --tid 1` - TARGET
+- `iscsiadm -m session` - INITIATOR
+
+#### Expansion
+
+**-- Target --**
+- Update VG & LV
+  - `vgextend vg_iscsi BLOCK_DEVICE`
+  - `lvextend -l +100%FREE /dev/vg_iscsi/lv_iscsi`
+- `systemctl restart tgt`
+
+**-- Initiator --**
+- `iscsiadm -m node --targetname LUN_FQDN -R`
+
 
 ## Config Files
 - `/etc/environment`
@@ -218,13 +276,13 @@ PV         VG        Fmt  Attr PSize   PFree
 
 
 ## Debian
-### Image Address
+**-- ISO Image Addresses --**
 - [Stable](https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/)
 - [Testing/Weekly-Builds](https://cdimage.debian.org/cdimage/weekly-builds/amd64/iso-dvd/)
 - [Testing/Weekly-Builds + Non-free](https://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware/weekly-builds/amd64/iso-dvd/)
 - [Live](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/)
 
-### Config
+**-- APT Config --**
 - Stable (Buster) `/etc/apt/sources.list`
 ```
 deb http://deb.debian.org/debian buster main contrib
