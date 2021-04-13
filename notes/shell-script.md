@@ -27,6 +27,44 @@ toc: true
 `[ -w "$VAR" ]` | Regular file exists with write permission
 `[ -x "$VAR" ]` | Regular file exists with exec permission
 
+
+## String Operation
+
+### Shell Parameter Expansion
+- [[REF](https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html)]
+
+`${VAR:-DEFAULT}` | If `VAR` is unset or null, `DEFAULT` is returned
+`${VAR:=DEFAULT}` | If `VAR` is unset or null, `DEFAULT` is returned and set to `VAR` itself
+`${VAR:IDX[:LEN]}` | `VAR.substr(IDX [,LEN])`
+`${VAR,,}` | `VAR.toLowercase`      
+`${VAR^^}` | `VAR.toUppercase`      
+`${VAR/PAT/STR}` | `VAR.replaceFirst(PAT, STR)`
+`${VAR//PAT/STR}` | `VAR.replaceAll(PAT, STR)`
+`${!VAR}` | consider it as `${${VAR}}`
+
+### Split by Delimiter
+1. Set `IFS` variable to delimiter
+2. `read -ra ARRAY <<< STRING`
+  - `-r` - Backslash does not act as an escape character
+  - `-a ARRAY` - The words, separated by `IFS`, are assigned to the sequential index of array `ARRAY` beginning at zero.
+3. Access 
+  - By Index - `${ARRAY[0]}`, and so on
+  - Iteration - `for i in "${ARRAY[@]}"; do ...`
+
+```shell
+if [[ "${SCHEMA}" =~ "|" ]]; then
+    IFS="|"
+    read -ra PARTS <<< "${SCHEMA}"
+    SCHEMA_PARAM="schemas=${PARTS[0]} remap_schema=${PARTS[1]}"
+else
+    SCHEMA_PARAM="schemas=${SCHEMA}"
+    if [[ "${SCHEMA}" =~ ":" ]]; then
+        SCHEMA_PARAM="remap_schema=${SCHEMA}"
+    fi
+fi
+```
+
+
 ## Loop
 
 ### `for`
@@ -68,36 +106,6 @@ for var in "${@}"; do
 done
 ```
 
-
-## String Operation
-
-### Variables
-- `${VAR,,}` - to lower case
-- `${VAR^^}` - to upper case
-- `${VAR/PAT/STR}` - replace **first** `PAT` with `STR`
-- `${VAR//PAT/STR}` - replace **all** `PAT` with `STR` (double `/`)
-
-### Split by Delimiter
-1. Set `IFS` variable to delimiter
-2. `read -ra ARRAY <<< STRING`
-  - `-r` - Backslash does not act as an escape character
-  - `-a ARRAY` - The words, separated by `IFS`, are assigned to the sequential index of array `ARRAY` beginning at zero.
-3. Access 
-  - By Index - `${ARRAY[0]}`, and so on
-  - Iteration - `for i in "${ARRAY[@]}"; do ...`
-
-```shell
-if [[ "${SCHEMA}" =~ "|" ]]; then
-    IFS="|"
-    read -ra PARTS <<< "${SCHEMA}"
-    SCHEMA_PARAM="schemas=${PARTS[0]} remap_schema=${PARTS[1]}"
-else
-    SCHEMA_PARAM="schemas=${SCHEMA}"
-    if [[ "${SCHEMA}" =~ ":" ]]; then
-        SCHEMA_PARAM="remap_schema=${SCHEMA}"
-    fi
-fi
-```
 
 ## Function
 - Good [[Ref](https://linuxize.com/post/bash-functions/)]

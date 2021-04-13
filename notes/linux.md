@@ -97,6 +97,7 @@ iface eth0 inet static
 ### ip cmd
 
 - `ip` vs other net tools [[REF1](https://p5r.uk/blog/2010/ifconfig-ip-comparison.html)] [[REF2](https://www.cyberciti.biz/faq/linux-ip-command-examples-usage-syntax)]
+  - **`-c`** - show color, use before command (i.e. `ip -c a`)
 
 | Function                                 | New                   | Old                             |
 |:-----------------------------------------|:----------------------|:--------------------------------|
@@ -150,9 +151,12 @@ iface eth0 inet static
 
 ### Common
 - `lsblk -f`
-- `fdisk -l`
+- `fdisk -l` or `parted -l`
 - **Note**: Rescan the SCSI bus to find SCSI device(s) without rebooting the VM [[REF](https://www.cyberciti.biz/tips/vmware-add-a-new-hard-disk-without-rebooting-guest.html)]
   - `find /sys/class/scsi_host/ -name "host*" -exec sh -c "echo '- - -' > {}/scan" \;`
+- Create a partition over a block device
+  - `parted /dev/sdb --script -- mklabel msdos`
+  - `parted -a optimal /dev/sdb --script -- mkpart primary 0% 100%` - param `-a` is important
 
 ### LVM
 - Components ([Ref](https://wiki.debian.org/LVM))![LVM](/assets/images/linux/lvm.png)
