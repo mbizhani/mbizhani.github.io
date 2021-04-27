@@ -34,9 +34,11 @@ toc: true
   - `helm repo add owkin https://owkin.github.io/charts`
   - `helm repo add bitnami https://charts.bitnami.com/bitnami`
   - `helm repo add rancher-stable https://releases.rancher.com/server-charts/stable`
+- `helm search repo KEYWORD [--devel] [-l] [-- version VER]`
+  - `-l` - show the long listing with all versions
+- `helm repo update` - update repo(s) metadata (i.e `apt update`)
 - `helm pull REPO/NAME [--untar] [--version=VER]`
   - `helm pull rancher-stable/rancher --untar --version=2.5.5`
-- `helm repo update`
 
 
 ## Template
