@@ -309,3 +309,17 @@ Hello World!
 Hello "World"!
 'World' has "$(printf 'World' | wc -m)" chars :-)
 ```
+
+### Iterate over JSON Array
+[[REF](https://www.starkandwayne.com/blog/bash-for-loop-over-json-array-using-jq/)]
+```sh
+sample='[{"name":"foo"},{"name":"bar"}]'
+
+for obj in $(echo "${sample}" | jq -r '.[] | @base64'); do
+  _jq() {
+    echo ${obj} | base64 --decode | jq -r ${1}
+  }
+  
+  echo $(_jq '.name')
+done
+```
