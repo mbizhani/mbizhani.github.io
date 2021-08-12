@@ -1,29 +1,24 @@
 <!ELEMENT artemis (vars?,scenario+)>
-<!ELEMENT vars (var+)>
-<!ELEMENT var EMPTY>
-<!ATTLIST var
-		name CDATA #REQUIRED
-		value CDATA #REQUIRED>
 <!ELEMENT scenario (get|post|put|delete)+>
 <!ATTLIST scenario
 		name CDATA #REQUIRED
 		enabled (true|false) #IMPLIED>
-<!ELEMENT get (vars?,headers?,assertRs)>
+<!ELEMENT get (vars?,headers?,urlParams?,assertRs)>
 <!ATTLIST get
 		url CDATA #REQUIRED
 		id CDATA #IMPLIED
 		call CDATA #IMPLIED>
-<!ELEMENT post (vars?,headers?,body,assertRs)>
+<!ELEMENT post (vars?,headers?,urlParams?,body?,formParams?,assertRs)>
 <!ATTLIST post
 		url CDATA #REQUIRED
 		id CDATA #IMPLIED
 		call CDATA #IMPLIED>
-<!ELEMENT put (vars?,headers?,body,assertRs)>
+<!ELEMENT put (vars?,headers?,urlParams?,body?,formParams?,assertRs)>
 <!ATTLIST put
 		url CDATA #REQUIRED
 		id CDATA #IMPLIED
 		call CDATA #IMPLIED>
-<!ELEMENT delete (vars?,headers?,assertRs)>
+<!ELEMENT delete (vars?,headers?,urlParams?,assertRs)>
 <!ATTLIST delete
 		url CDATA #REQUIRED
 		id CDATA #IMPLIED
@@ -36,8 +31,19 @@
 		status CDATA #REQUIRED
 		body (json|text|empty) #IMPLIED
 		properties CDATA #IMPLIED>
+<!ELEMENT vars (var+)>
+<!ELEMENT var EMPTY>
+<!ATTLIST var
+		name CDATA #REQUIRED
+		value CDATA #REQUIRED>
 <!ELEMENT headers (header+)>
 <!ELEMENT header EMPTY>
 <!ATTLIST header
+		name CDATA #REQUIRED
+		value CDATA #REQUIRED>
+<!ELEMENT formParams (param+)>
+<!ELEMENT urlParams (param+)>
+<!ELEMENT param EMPTY>
+<!ATTLIST param
 		name CDATA #REQUIRED
 		value CDATA #REQUIRED>
