@@ -1,5 +1,8 @@
 <!ELEMENT artemis (vars?,scenario+)>
-<!ELEMENT scenario (get|post|put|delete)+>
+<!ATTLIST artemis
+		loop CDATA #IMPLIED
+		parallel CDATA #IMPLIED>
+<!ELEMENT scenario (vars?,(get|post|put|delete)+)>
 <!ATTLIST scenario
 		name CDATA #REQUIRED
 		enabled (true|false) #IMPLIED>
