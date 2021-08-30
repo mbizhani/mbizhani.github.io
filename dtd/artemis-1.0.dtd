@@ -33,7 +33,8 @@
 <!ATTLIST assertRs
 		status CDATA #REQUIRED
 		body (json|text|empty) #IMPLIED
-		properties CDATA #IMPLIED>
+		properties CDATA #IMPLIED
+		store CDATA #IMPLIED>
 <!ELEMENT vars (var+)>
 <!ELEMENT var EMPTY>
 <!ATTLIST var
