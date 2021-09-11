@@ -10,22 +10,22 @@
 <!ATTLIST get
 		url CDATA #REQUIRED
 		id CDATA #IMPLIED
-		call CDATA #IMPLIED>
+		call (true|false) #IMPLIED>
 <!ELEMENT post (vars?,headers?,urlParams?,body?,formParams?,assertRs)>
 <!ATTLIST post
 		url CDATA #REQUIRED
 		id CDATA #IMPLIED
-		call CDATA #IMPLIED>
+		call (true|false) #IMPLIED>
 <!ELEMENT put (vars?,headers?,urlParams?,body?,formParams?,assertRs)>
 <!ATTLIST put
 		url CDATA #REQUIRED
 		id CDATA #IMPLIED
-		call CDATA #IMPLIED>
+		call (true|false) #IMPLIED>
 <!ELEMENT delete (vars?,headers?,urlParams?,assertRs)>
 <!ATTLIST delete
 		url CDATA #REQUIRED
 		id CDATA #IMPLIED
-		call CDATA #IMPLIED>
+		call (true|false) #IMPLIED>
 <!ELEMENT body (#PCDATA)>
 <!ATTLIST body
 		type (json|text) #IMPLIED>
@@ -33,6 +33,7 @@
 <!ATTLIST assertRs
 		status CDATA #REQUIRED
 		body (json|text|empty) #IMPLIED
+		call (true|false) #IMPLIED
 		properties CDATA #IMPLIED
 		store CDATA #IMPLIED>
 <!ELEMENT vars (var+)>
