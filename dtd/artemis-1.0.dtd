@@ -2,7 +2,7 @@
 <!ATTLIST artemis
 		loop CDATA #IMPLIED
 		parallel CDATA #IMPLIED>
-<!ELEMENT scenario (vars?,(get|post|put|delete)+)>
+<!ELEMENT scenario (vars?,(get|post|put|patch|delete)+)>
 <!ATTLIST scenario
 		name CDATA #REQUIRED
 		enabled (true|false) #IMPLIED>
@@ -18,6 +18,11 @@
 		call (true|false) #IMPLIED>
 <!ELEMENT put (vars?,headers?,urlParams?,body?,formParams?,assertRs)>
 <!ATTLIST put
+		url CDATA #REQUIRED
+		id CDATA #IMPLIED
+		call (true|false) #IMPLIED>
+<!ELEMENT patch (vars?,headers?,urlParams?,body?,formParams?,assertRs)>
+<!ATTLIST patch
 		url CDATA #REQUIRED
 		id CDATA #IMPLIED
 		call (true|false) #IMPLIED>
