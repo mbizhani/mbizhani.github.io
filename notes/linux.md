@@ -147,6 +147,31 @@ iface eth0 inet static
 - Create an SSH key, described in previous section
 - `rsync -av -e "ssh -i ~/.ssh/NAME" DIR USER@HOST:DEST_DIR` - on source server
 
+### iptables
+- `iptables -L [chain]` - List all rules (in selected `chain`, such as `INPUT`, `OUTPUT`, etc)
+- `iptables -S` - List active rules by specification
+- `iptables -D rule` - Remove rule (copy rule from above command) 
+- `iptables -A chain rule` - Append rule to `chain`
+- `INPUT` chain
+  - First adding specific acceptance rules
+    - `iptables -A INPUT -s IP        -p tcp --dport 22 -j ACCEPT` - accept incoming traffic from the source (`-s`) `IP`
+  - Then, adding general prevention rules
+    - `iptables -A INPUT -s 0.0.0.0/0 -p tcp --dport 22 -j DROP` - prevent incoming traffic from all IPs 
+- `OUTPUT` chain
+  - `iptables -A OUTPUT -d IP -j DROP` - prevent outgoing traffic to the destination (`-d`) `IP`
+- Switches
+  - `-j TARGET` - most usable targets are `ACCEPT` or `DROP`
+  - `-p PROTOCOL` - define the protocol, such as `tcp` or `udp`
+    - `--dport NUM` - port number for `tcp` or `udp` (`-p` is required)
+
+**Note:** Create an executable script in `/etc/network/if-pre-up.d`, and define your rules in cmd format in it 
+to automate defining custom rules on system's restart.
+
+REFS
+  - [How To List and Delete Iptables Firewall Rules](https://www.digitalocean.com/community/tutorials/how-to-list-and-delete-iptables-firewall-rules)
+  - [How do you edit a rule in iptables?](https://stackoverflow.com/questions/33465937/how-do-you-edit-a-rule-in-iptables)
+
+
 ## Storage
 
 ### Common
