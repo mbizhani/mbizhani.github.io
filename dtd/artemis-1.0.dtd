@@ -1,8 +1,5 @@
 <!ELEMENT artemis (vars?,scenario+)>
-<!ATTLIST artemis
-		loop CDATA #IMPLIED
-		parallel CDATA #IMPLIED>
-<!ELEMENT scenario (vars?,(get|post|put|patch|delete)+)>
+<!ELEMENT scenario (vars?,(get|post|put|patch|delete|break-point)+)>
 <!ATTLIST scenario
 		name CDATA #REQUIRED
 		enabled (true|false) #IMPLIED>
@@ -31,6 +28,7 @@
 		url CDATA #REQUIRED
 		id CDATA #IMPLIED
 		call (true|false) #IMPLIED>
+<!ELEMENT break-point EMPTY>
 <!ELEMENT body (#PCDATA)>
 <!ATTLIST body
 		type (json|text) #IMPLIED>
