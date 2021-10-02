@@ -51,6 +51,7 @@ find /path/to/folders/* -type d \
 `docker ps -a -f "status=exited" | awk '$3 ~ /runner/ {print "docker rm "$1}' | bash` | remove GitLab Runner exited containers
 `docker images -q -f "dangling=true" | awk '{print "docker rmi -f "$1}' | bash` | remove dangling Docker images
 `docker images | grep rancher | awk '{I=$1; gsub("/", "_", $1); print "docker save -o "$1"_"$2".tar "I":"$2}' | bash` | export images as tar
+`apt list firefox* | grep firefox | awk -F '/' '{print "apt-mark hold "$1}' | bash` | hold all `firefox` packages
 
 
 ## User Management
