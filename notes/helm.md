@@ -43,6 +43,27 @@ toc: true
 
 ## Template
 
-- `{% raw %}{{- /* ... */}}{% endraw %}` - Comment
-- `{% raw %}{{- .Values.VAR | b64enc | quote }}{% endraw %}` - Encode Base64 and Quote it
+- `{% raw %}{{- /* ... */}}{% endraw %}` - Multiline comment
 - `{% raw %}{{ printf "%s/%s-tls-cert.pem" .Values.VAR1 .Values.VAR2 | quote }}{% endraw %}` - Using `printf`
+- `{% raw %}{{- .Values.VAR | b64enc | quote }}{% endraw %}` - Encode Base64 and Quote it
+- `{% raw %}{{- .Values.VAR | default "\"\"" }}{% endraw %}` - If no value for `.Value.VAR`, use the default value
+- Conditions - `{% raw %}{{- if CONDITION }}{% endraw %}`, and samples are
+  - `eq .Values.VAR "STR"`
+  - `empty .Values.VAR`
+  - `and BOOL_EXPR1 BOOL_EXPR2`
+  - `not BOOL_EXPR`
+
+
+## Examples
+
+### Create List, Append, and Join
+
+```text
+{% raw %}{{- $cmps := list }}
+{{- range .orderers }}
+    {{- $cmps = append $cmps (printf "{\"type\":\"orderer\",\"name\":\"%s\",\"fqdn\":\"%s\"}" .name .fqdn) }}
+{{- end }}
+export CMPS='{{ printf "[%s]" (join "," $cmps) }}'{% endraw %}
+```
+
+
