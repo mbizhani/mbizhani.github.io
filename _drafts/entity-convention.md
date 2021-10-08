@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "A Convention for Entities"
+title: "Conventions & Hints for JPA Entities & Spring Data"
 categories: article tech
 excerpt: Conventions and hints for JPA entities, both RDBMS and Java side
 ---
