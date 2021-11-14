@@ -27,6 +27,15 @@ toc: true
 `[ -w "$VAR" ]` | Regular file exists with write permission
 `[ -x "$VAR" ]` | Regular file exists with exec permission
 
+### Elvis Operator (Ternary)
+
+[[REF](https://stackoverflow.com/questions/3953645/ternary-operator-in-bash)]
+
+`$(( $ORG == 1 ? ${VAL1} : ${VAL2} ))` | inline expression & variable assignment
+`$( [ $ORG == "1" ] && echo ${VAL1} || echo ${VAL2} )` | inline expression & variable assignment 
+`[ $ORG == "1" ] && VAR="1" || VAR="2"` | only variable assignment
+`${VAR:-DEFAULT}` | if `VAR` is unset or null, `DEFAULT` is returned
+`${VAR:=DEFAULT}` | if `VAR` is unset or null, `DEFAULT` is returned and set to `VAR` itself
 
 ## String Operation
 
