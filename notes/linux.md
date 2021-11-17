@@ -212,6 +212,8 @@ PV         VG        Fmt  Attr PSize   PFree
 /dev/sda5  debian-vg lvm2 a--  <29.76g    0
 ```
 
+**Note:** [[Script](https://www.devocative.org/notes/shell-script#lvm-partition-smart-expand)] proposes a smart code to extend logical volume.  
+
 ### NFS
 **On Server**
 - `apt install nfs-kernel-server`
