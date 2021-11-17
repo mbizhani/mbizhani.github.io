@@ -332,3 +332,25 @@ for obj in $(echo "${sample}" | jq -r '.[] | @base64'); do
   echo $(_jq '.name')
 done
 ```
+
+### LVM Partition Smart Expand
+
+Setting the partition name, following script find a block device and extend the associated logical volume.
+
+```sh
+P_EXTEND="/var"
+
+if [ "${P_EXTEND}" ]; then
+  echo "Extending Partition: ${P_EXTEND}"
+  MAP="$(df --output=source ${P_EXTEND}  | sed 1d)"
+  VG="$(lvs -o vg_name,lv_path,lv_dmpath --noheadings | grep "${MAP}" | awk '{print $1}')"
+  LV="$(lvs -o vg_name,lv_path,lv_dmpath --noheadings | grep "${MAP}" | awk '{print $2}')"
+  echo "VG = ${VG}, LV = ${LV}, MAP = ${MAP}"
+  B_DEV="$(pvs -a --noheadings | grep -v ${VG} | awk '{print $1}')"
+  echo "BLOCK_DEV = ${B_DEV}"
+  if [ "${B_DEV}" ]; then
+    vgextend ${VG} ${B_DEV}
+    lvextend -r -l +100%FREE ${LV}
+  fi
+fi
+```
