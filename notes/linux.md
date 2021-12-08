@@ -12,6 +12,7 @@ toc: true
 	- `-t` : Turn off the header showing the interval, command, and current time at the top of the display
   - Multiple commands - `watch "CMD1; echo '\n'; CMD2; ..."`
 
+Command                             | Description
 ------------------------------------|----------------
 `echo $(date +'%Y-%m-%d_%H-%M-%S')` | Formatted Date
 `timedatectl set-timezone UTC`      | Set timezone to UTC
@@ -30,6 +31,8 @@ toc: true
 ### find cmd
   - By default, it searches in subdirectories recursively, unless `-maxdepth` option is set.
 
+Command                   | Description
+--------------------------|----------------
 `find DIR -name "SEARCH"` | case sensitive SEARCH in DIR
 `find DIR -iname "*.rar" -printf "%f\n"` <br/> `find DIR -iname "*.rar" -exec basename {} \;` <br/> `find DIR -iname "*.rar" | awk -F "/" '{print $(NF)}'` | just print filename (without parent dirs)
 `find DIR -type d -iname "SEARCH"` | case insensitive SEARCH only folders in DIR
@@ -47,30 +50,34 @@ find /path/to/folders/* -type d \
 
 ### awk cmd
 
-`find . -iname "*.rar" -printf "%f\n" | awk -F ".part" '{print $1}' | sort | uniq` | list rar-parted files
-`docker ps -a -f "status=exited" | awk '$3 ~ /runner/ {print "docker rm "$1}' | bash` | remove GitLab Runner exited containers
-`docker images -q -f "dangling=true" | awk '{print "docker rmi -f "$1}' | bash` | remove dangling Docker images
+Command                                                                                                               | Description
+----------------------------------------------------------------------------------------------------------------------|----------------
+`find . -iname "*.rar" -printf "%f\n" | awk -F ".part" '{print $1}' | sort | uniq`                                    | list rar-parted files
+`docker ps -a -f "status=exited" | awk '$3 ~ /runner/ {print "docker rm "$1}' | bash`                                 | remove GitLab Runner exited containers
+`docker images -q -f "dangling=true" | awk '{print "docker rmi -f "$1}' | bash`                                       | remove dangling Docker images
 `docker images | grep rancher | awk '{I=$1; gsub("/", "_", $1); print "docker save -o "$1"_"$2".tar "I":"$2}' | bash` | export images as tar
-`apt list firefox* | grep firefox | awk -F '/' '{print "apt-mark hold "$1}' | bash` | hold all `firefox` packages
+`apt list firefox* | grep firefox | awk -F '/' '{print "apt-mark hold "$1}' | bash`                                   | hold all `firefox` packages
 
 
 ## User Management
 
 ### CRUD
 
-`adduser USERNAME` | add new user
-`usermod -a -G GRP1[,GRP2,...] USERNAME` | append groups to user's groups
-`usermod -g GRP USERNAME` | change user’s primary group
+| Command                                  | Description                    |
+|------------------------------------------|--------------------------------|
+| `adduser USERNAME`                       | add new user                   |
+| `usermod -a -G GRP1[,GRP2,...] USERNAME` | append groups to user's groups |
+| `usermod -g GRP USERNAME`                | change user’s primary group    |
 
 ### Audit
 
 - [Ref](https://www.thegeekdiary.com/5-useful-command-examples-to-monitor-user-activity-under-linux/)
 
-`who -aH` | Users currently logged in to the system
-`last -a` or `lastb -a` | Listing of last logged in users (`lastb` shows bad login attempts) <br/> file = `/var/log/wtmp`
-`laslog` | Most recent login of all users <br/> file = `/var/log/lastlog`
-
-
+| Command                 | Description                                                                                     |
+|-------------------------|-------------------------------------------------------------------------------------------------|
+| `who -aH`               | Users currently logged in to the system                                                         |
+| `last -a` or `lastb -a` | Listing of last logged in users (`lastb` shows bad login attempts) <br/> file = `/var/log/wtmp` |
+| `laslog`                | Most recent login of all users <br/> file = `/var/log/lastlog`                                  |
 
 ## Network
 
@@ -401,21 +408,21 @@ EOL
 
 ### Utility Apps
 
-Function          | App                                                                
-------------------|-----
-Media Converter   | `HandBrake` `WinFF`(using `ffmpeg` library)
-Screen Snapshot   | **`Flameshot`**
-Screen Recorder   | **`obs-studio`** **`asciinema`**[[player](https://github.com/asciinema/asciinema-player)]
-Screen Annotate   | `gromit-mpx`
-Code Editor       | **`Intellij Idea`** `VSCode` `Atom` `Sublime Text`
-Kubernetes Editor | [**`k8slens.dev`**](https://k8slens.dev/)
-Diff/Merge Files  | **`meld`** `vimdiff`
-Note/Wiki Editor  | `Zim`
-PDF               | `Foxit Reader` `unoconv`(doc converter)
-Photo Editor      | **`Krita`**, `Inkscape`, `RawTherapee`
-Diagram Editor    | [`draw.io`](https://www.draw.io/)
-Download Manager  | [**`XDM`**](https://github.com/subhra74/xdm)
-Remoting Client   | `remmina`
-Shell Monitoring  | System: `htop` <br/> Network: `iptraf` `tcptrack`
-Shell Utility     | **`tmux`** `multitail`
+| Function          | App                                                                                       |
+|-------------------|-------------------------------------------------------------------------------------------|
+| Media Converter   | `HandBrake` `WinFF`(using `ffmpeg` library)                                               |
+| Screen Snapshot   | **`Flameshot`**                                                                           |
+| Screen Recorder   | **`obs-studio`** **`asciinema`**[[player](https://github.com/asciinema/asciinema-player)] |
+| Screen Annotate   | `gromit-mpx`                                                                              |
+| Code Editor       | **`Intellij Idea`** `VSCode` `Atom` `Sublime Text`                                        |
+| Kubernetes Editor | [**`k8slens.dev`**](https://k8slens.dev/)                                                 |
+| Diff/Merge Files  | **`meld`** `vimdiff`                                                                      |
+| Note/Wiki Editor  | `Zim`                                                                                     |
+| PDF               | `Foxit Reader` `unoconv`(doc converter)                                                   |
+| Photo Editor      | **`Krita`**, `Inkscape`, `RawTherapee`                                                    |
+| Diagram Editor    | [`draw.io`](https://www.draw.io/)                                                         |
+| Download Manager  | [**`XDM`**](https://github.com/subhra74/xdm)                                              |
+| Remoting Client   | `remmina`                                                                                 |
+| Shell Monitoring  | System: `htop` <br/> Network: `iptraf` `tcptrack`                                         |
+| Shell Utility     | **`tmux`** `multitail`                                                                    |
 

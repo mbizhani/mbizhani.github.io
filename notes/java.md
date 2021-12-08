@@ -40,6 +40,24 @@ toc: true
 - `(?<GRPNAME>...)` group with `GRPNAME` identifier (no space!)
 - `var alert = "12:23".replaceAll("(?<H>[0-2]\\d):(?<M>[0-5]\\d)", "it happened at hour=${H} & minute=${M}")`
 
+### Java 8 Time
+
+| Java 8 Class                         | Function                                             |
+|--------------------------------------|------------------------------------------------------|
+| `java.time.Instant`                  | Moment in UTC                                        |
+| `java.time.ZonedDate`                | Moment with time zone                                |
+| `java.time.OffsetDateTime`           | Moment with offset-from-UTC                          |
+| `java.time.LocalDateTime`            | Date & Time of day (no offset, no zone)              |
+| `java.time.LocalDate`                | Date only (no offset, no zone)                       |
+| `java.time.LocalTime`                | Time of day only (no offset, no zone)                |
+| `java.time.format.DateTimeFormatter` | Formatter for printing and parsing date-time objects |
+
+Following graph shows `java.util.Date`, and other `java.time.*` classes conversions.
+
+<div style="text-align: center; padding-bottom: 10px;">
+<img style="border: 1px solid #e8e8e8" alt="Java8DateTime" src="/assets/images/java/java-date-time.png"/>
+</div>
+
 ## Concurrency
 - **Visibility Problem**: a variable is cached in CPU's cache and its change is not _visible_ to other thread(s) running by other cores
   - Results in _instruction reordering_!
@@ -84,12 +102,12 @@ public static void main(String[] args) throws Exception {
 
 ## JDBC
 
-Driver Class | JDBC URL | Hibernate Dialect | Maven Artifact
--------------|----------|-------------------|---------------
-`org.h2.Driver` | `jdbc:h2:mem:test[;Mode=Oracle]` <br/> `jdbc:h2:~/test[;Mode=Oracle]` | `H2Dialect` | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.h2database/h2/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.h2database/h2)
-`org.hsqldb.jdbc.JDBCDriver` | `jdbc:hsqldb:mem:test[;sql.syntax_ora=true]` | `HSQLDialect` | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.hsqldb/hsqldb/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.hsqldb/hsqldb)
-`oracle.jdbc.driver.OracleDriver` | `jdbc:oracle:thin:@//SERVER:1521/SERVICE` <br/> `jdbc:oracle:thin:@SERVER:1521:SID` | `Oracle12cDialect` | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.oracle.database.jdbc/ojdbc8/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.oracle.database.jdbc/ojdbc8) <br/> [[ojbc8](https://search.maven.org/artifact/com.oracle.database.jdbc/ojdbc8)]
-`com.mysql.cj.jdbc.Driver` | `jdbc:mysql://SERVER:3306/DATABSE[?useUnicode=true&characterEncoding=UTF-8]` | `MySQL57Dialect` or `MySQL8Dialect` | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/mysql/mysql-connector-java/badge.svg)](https://maven-badges.herokuapp.com/maven-central/mysql/mysql-connector-java) <br/> [[All](https://search.maven.org/artifact/mysql/mysql-connector-java)]
+| Driver Class                      | JDBC URL                                                                            | Hibernate Dialect                   | Maven Artifact                                                                                                                                                                                                                                                                      |
+|-----------------------------------|-------------------------------------------------------------------------------------|-------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `org.h2.Driver`                   | `jdbc:h2:mem:test[;Mode=Oracle]` <br/> `jdbc:h2:~/test[;Mode=Oracle]`               | `H2Dialect`                         | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.h2database/h2/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.h2database/h2)                                                                                                                |
+| `org.hsqldb.jdbc.JDBCDriver`      | `jdbc:hsqldb:mem:test[;sql.syntax_ora=true]`                                        | `HSQLDialect`                       | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.hsqldb/hsqldb/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.hsqldb/hsqldb)                                                                                                                |
+| `oracle.jdbc.driver.OracleDriver` | `jdbc:oracle:thin:@//SERVER:1521/SERVICE` <br/> `jdbc:oracle:thin:@SERVER:1521:SID` | `Oracle12cDialect`                  | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.oracle.database.jdbc/ojdbc8/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.oracle.database.jdbc/ojdbc8) <br/> [[ojbc8](https://search.maven.org/artifact/com.oracle.database.jdbc/ojdbc8)] |
+| `com.mysql.cj.jdbc.Driver`        | `jdbc:mysql://SERVER:3306/DATABSE[?useUnicode=true&characterEncoding=UTF-8]`        | `MySQL57Dialect` or `MySQL8Dialect` | [![Maven Central](https://maven-badges.herokuapp.com/maven-central/mysql/mysql-connector-java/badge.svg)](https://maven-badges.herokuapp.com/maven-central/mysql/mysql-connector-java) <br/> [[All](https://search.maven.org/artifact/mysql/mysql-connector-java)]                  |
 
 Note: `org.hibernate.dialect` is Hibernate package for dialects.
 

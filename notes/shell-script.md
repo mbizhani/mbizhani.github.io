@@ -10,46 +10,54 @@ toc: true
 
 ### String
 
-`[ "$VAR" ]` | String not empty
-`[ -z "$VAR" ]` or `[ ! "$VAR" ]` | String is empty
-`[ "$VAR1" = "$VAR2" ]` | Equal string - case-sensitive
-`[ "${VAR1,,}" = "${VAR2,,}" ]` | Equal string - case-insensitive
-`[ "$VAR1" != "$VAR2" ]` | Not equal string
-`[[ "$VAR" =~ "REGEX" ]]` | String matches `REGEX`
+| Expression                        | Description                     |
+|-----------------------------------|---------------------------------|
+| `[ "$VAR" ]`                      | String not empty                |
+| `[ -z "$VAR" ]` or `[ ! "$VAR" ]` | String is empty                 |
+| `[ "$VAR1" = "$VAR2" ]`           | Equal string - case-sensitive   |
+| `[ "${VAR1,,}" = "${VAR2,,}" ]`   | Equal string - case-insensitive |
+| `[ "$VAR1" != "$VAR2" ]`          | Not equal string                |
+| `[[ "$VAR" =~ "REGEX" ]]`         | String matches `REGEX`          |
 
 ### File
 
-`[ -e "$VAR" ]` | File/directory exists
-`[ -d "$VAR" ]` | Directory exists
-`[ -f "$VAR" ]` | Regular file exists
-`[ -s "$VAR" ]` | Regular file exists and not empty
-`[ -r "$VAR" ]` | Regular file exists with read permission
-`[ -w "$VAR" ]` | Regular file exists with write permission
-`[ -x "$VAR" ]` | Regular file exists with exec permission
+| Expression      | Description                               |
+|-----------------|-------------------------------------------|
+| `[ -e "$VAR" ]` | File/directory exists                     |
+| `[ -d "$VAR" ]` | Directory exists                          |
+| `[ -f "$VAR" ]` | Regular file exists                       |
+| `[ -s "$VAR" ]` | Regular file exists and not empty         |
+| `[ -r "$VAR" ]` | Regular file exists with read permission  |
+| `[ -w "$VAR" ]` | Regular file exists with write permission |
+| `[ -x "$VAR" ]` | Regular file exists with exec permission  |
 
 ### Elvis Operator (Ternary)
 
 [[REF](https://stackoverflow.com/questions/3953645/ternary-operator-in-bash)]
 
-`$(( $ORG == 1 ? ${VAL1} : ${VAL2} ))` | inline expression & variable assignment
+ Expression                                            | Description                               
+-------------------------------------------------------|-------------
+`$(( $ORG == 1 ? ${VAL1} : ${VAL2} ))`                 | inline expression & variable assignment
 `$( [ $ORG == "1" ] && echo ${VAL1} || echo ${VAL2} )` | inline expression & variable assignment 
-`[ $ORG == "1" ] && VAR="1" || VAR="2"` | only variable assignment
-`${VAR:-DEFAULT}` | if `VAR` is unset or null, `DEFAULT` is returned
-`${VAR:=DEFAULT}` | if `VAR` is unset or null, `DEFAULT` is returned and set to `VAR` itself
+`[ $ORG == "1" ] && VAR="1" || VAR="2"`                | only variable assignment
+`${VAR:-DEFAULT}`                                      | if `VAR` is unset or null, `DEFAULT` is returned
+`${VAR:=DEFAULT}`                                      | if `VAR` is unset or null, `DEFAULT` is returned and set to `VAR` itself
 
 ## String Operation
 
 ### Shell Parameter Expansion
 - [[REF](https://www.gnu.org/software/bash/manual/html_node/Shell-Parameter-Expansion.html)]
 
-`${VAR:-DEFAULT}` | If `VAR` is unset or null, `DEFAULT` is returned
-`${VAR:=DEFAULT}` | If `VAR` is unset or null, `DEFAULT` is returned and set to `VAR` itself
-`${VAR:IDX[:LEN]}` | `VAR.substr(IDX [,LEN])`
-`${VAR,,}` | `VAR.toLowercase`      
-`${VAR^^}` | `VAR.toUppercase`      
-`${VAR/PAT/STR}` | `VAR.replaceFirst(PAT, STR)`
-`${VAR//PAT/STR}` | `VAR.replaceAll(PAT, STR)`
-`${!VAR}` | consider it as `${${VAR}}`
+| Expression         | Description                                                              |
+|--------------------|--------------------------------------------------------------------------|
+| `${VAR:-DEFAULT}`  | If `VAR` is unset or null, `DEFAULT` is returned                         |
+| `${VAR:=DEFAULT}`  | If `VAR` is unset or null, `DEFAULT` is returned and set to `VAR` itself |
+| `${VAR:IDX[:LEN]}` | `VAR.substr(IDX [,LEN])`                                                 |
+| `${VAR,,}`         | `VAR.toLowercase`                                                        |
+| `${VAR^^}`         | `VAR.toUppercase`                                                        |
+| `${VAR/PAT/STR}`   | `VAR.replaceFirst(PAT, STR)`                                             |
+| `${VAR//PAT/STR}`  | `VAR.replaceAll(PAT, STR)`                                               |
+| `${!VAR}`          | consider it as `${${VAR}}`                                               |
 
 ### Split by Delimiter
 1. Set `IFS` variable to delimiter
