@@ -179,6 +179,16 @@ REFS
   - [How To List and Delete Iptables Firewall Rules](https://www.digitalocean.com/community/tutorials/how-to-list-and-delete-iptables-firewall-rules)
   - [How do you edit a rule in iptables?](https://stackoverflow.com/questions/33465937/how-do-you-edit-a-rule-in-iptables)
 
+### Samba
+
+#### Client
+- `apt install smbclient gvfs-backends`
+  - `smbclient` - connect to SMB share via shell
+  - `gvfs-backends` - using `smb://` in Thunar
+- `smbclient`
+  - `smbclient -L SERVER -U USERNAME -W WORKGROUP` - list shares on `SERVER`
+  - `smbclient '\\SERVER\SHARENAME' -U USERNAME -W WORKGROUP` - interactive shell by connecting to `SHARENAME` on `SERVER`
+    - **Note:** pay attention using single quote character around service   
 
 ## Storage
 
