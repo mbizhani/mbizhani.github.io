@@ -61,6 +61,7 @@
 <script src="/assets/reveal/reveal.js"></script>
 <script src="/assets/reveal/plugin/markdown/markdown.js"></script>
 <script src="/assets/reveal/plugin/zoom/zoom.js"></script>
+<script src="/assets/reveal/plugin/menu/menu.js"></script>
 {% if page.extra and page.extra contains "highlight" -%}
 <script src="/assets/reveal/plugin/highlight/highlight.js"></script>
 {%- endif %}
@@ -82,7 +83,7 @@
         {% else %}
         transition: 'slide', // enumerations: none|fade|slide|convex|concave|zoom
         {% endif %}
-        plugins: [RevealMarkdown, RevealZoom
+        plugins: [RevealMarkdown, RevealZoom, RevealMenu
             {%- if page.extra and page.extra contains "highlight" -%}
             , RevealHighlight
             {%- endif -%}
@@ -92,6 +93,7 @@
     window.onload = function () {
         if (window.location.search.match(/print-pdf/gi)) {
             document.getElementById("m-pdf").style.display = "none";
+            document.getElementsByClassName("slide-menu-button").item(0).style.display = "none";
             setTimeout(function (){
                 window.print();
             }, 1500);
