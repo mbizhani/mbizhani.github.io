@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -13,37 +13,22 @@
     {%- endif -%}
 
     <title>
-        {% if page.caption %}
+        {%- if page.caption -%}
         {{ page.caption }} | {{ site.title }}
-        {% else %}
+        {%- else -%}
         {{ site.title }}
-        {% endif %}
+        {%- endif -%}
     </title>
-
     <link rel="stylesheet" href="/assets/reveal/css/reveal.css">
     <link rel="stylesheet" href="/assets/reveal/css/custom.css">
-    {%if page.theme %}
+    {% if page.theme -%}
     <link rel="stylesheet" href="/assets/reveal/css/theme/{{ page.theme }}.css" id="theme">
-    {% else %}
+    {% else -%}
     <link rel="stylesheet" href="/assets/reveal/css/theme/black.css" id="theme">
-    {% endif %}
-
-    <!-- Theme used for syntax highlighting of code -->
-    <link rel="stylesheet" href="/assets/reveal/lib/css/zenburn.css">
-
-    <!-- Printing and PDF exports -->
-    <script>
-        if (window.location.search.match(/print-pdf/gi)) {
-            var link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.type = 'text/css';
-            link.href = '/assets/reveal/css/print/pdf.css';
-            document.getElementsByTagName('head')[0].appendChild(link);
-        }
-    </script>
-
-    <style>
-    </style>
+    {%- endif -%}
+    {%- if page.extra and page.extra contains "highlight" -%}
+    <link rel="stylesheet" href="/assets/reveal/plugin/highlight/zenburn.css">
+    {%- endif -%}
 </head>
 
 <body>
@@ -73,9 +58,12 @@
     </div>
 </div>
 
-<script src="/assets/reveal/lib/js/head.min.js"></script>
 <script src="/assets/reveal/reveal.js"></script>
-
+<script src="/assets/reveal/plugin/markdown/markdown.js"></script>
+<script src="/assets/reveal/plugin/zoom/zoom.js"></script>
+{% if page.extra and page.extra contains "highlight" -%}
+<script src="/assets/reveal/plugin/highlight/highlight.js"></script>
+{%- endif %}
 <script>
     Reveal.initialize({
         center: true,
@@ -92,26 +80,21 @@
         {% if page.transition %}
         transition: '{{ page.transition }}',
         {% else %}
-        transition: 'slide', // none/fade/slide/convex/concave/zoom
+        transition: 'slide', // enumerations: none|fade|slide|convex|concave|zoom
         {% endif %}
-        dependencies: [
-            {src: '/assets/reveal/plugin/markdown/marked.js'},
-            {src: '/assets/reveal/plugin/markdown/markdown.js'},
-            {src: '/assets/reveal/plugin/notes/notes.js', async: true},
-            {src: '/assets/reveal/plugin/zoom-js/zoom.js', async: true},
-            {src: '/assets/reveal/plugin/menu/menu.js', async: true},
-            {
-                src: '/assets/reveal/plugin/highlight/highlight.js', async: true, callback: function () {
-                    hljs.initHighlightingOnLoad();
-                }
-            }
+        plugins: [RevealMarkdown, RevealZoom
+            {%- if page.extra and page.extra contains "highlight" -%}
+            , RevealHighlight
+            {%- endif -%}
         ]
     });
 
-    window.onload = function (ev) {
+    window.onload = function () {
         if (window.location.search.match(/print-pdf/gi)) {
             document.getElementById("m-pdf").style.display = "none";
-            window.print();
+            setTimeout(function (){
+                window.print();
+            }, 1500);
         }
     };
 </script>
