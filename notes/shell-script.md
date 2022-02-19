@@ -362,3 +362,27 @@ if [ "${P_EXTEND}" ]; then
   fi
 fi
 ```
+
+### Git/Maven Create Next Snapshot
+
+```sh
+#!/bin/bash
+
+if [ ! "$1" ]; then
+  echo "Pass next version: $0 VERSION"
+  exit 1
+fi
+
+if [[ "$1" =~ -SNAPSHOT$ ]]; then
+  NEW_VERSION="$1"
+else
+  NEW_VERSION="$1-SNAPSHOT"
+fi
+
+echo "Next snapshot version: $NEW_VERSION"
+mvn versions:set -DnewVersion="${NEW_VERSION}" -DgenerateBackupPoms=false
+
+git status --porcelain | awk 'match($2, "pom.xml"){print $2}' | xargs git add
+
+git commit -m "Create Next Snapshot: ${NEW_VERSION}"
+```

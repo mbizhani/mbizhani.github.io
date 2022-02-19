@@ -69,6 +69,9 @@ where
 - Create user on CDB
   - Common user - username must start with `c##` and consist only of ASCII characters ([stack](https://stackoverflow.com/questions/22886791/invalid-common-user-or-role-name))
   - Normal user - first `alter session set "_ORACLE_SCRIPT"=true` and then create user
+- Change password for user `sys` [[REF](https://community.oracle.com/tech/apps-infra/discussion/4193723/password-expiration-date-not-changing-for-user-sys)]
+  - Login to CDB
+  - `alter user sys identified by "PASS" container=all;`
 
 ### SqlPlus Command
 - `sqlplus '/ as sysdba'` - connect as `sys`
