@@ -38,6 +38,7 @@
 		body (json|text|empty) #IMPLIED
 		call (true|false) #IMPLIED
 		properties CDATA #IMPLIED
+		cookies CDATA #IMPLIED
 		store CDATA #IMPLIED>
 <!ELEMENT vars (var+)>
 <!ELEMENT var EMPTY>
