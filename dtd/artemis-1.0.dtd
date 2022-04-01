@@ -40,10 +40,10 @@
 		properties CDATA #IMPLIED
 		store CDATA #IMPLIED>
 <!ELEMENT vars (var+)>
-<!ELEMENT var EMPTY>
+<!ELEMENT var (#PCDATA)>
 <!ATTLIST var
 		name CDATA #REQUIRED
-		value CDATA #REQUIRED>
+		value CDATA #IMPLIED>
 <!ELEMENT headers (header+)>
 <!ELEMENT header EMPTY>
 <!ATTLIST header
