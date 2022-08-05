@@ -332,17 +332,23 @@ node.session.auth.password_in = INITIATOR_PASSWORD
 - [Live](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/)
 
 **-- APT Config --**
-- Stable (Buster) `/etc/apt/sources.list`
+File - `/etc/apt/sources.list`
 ```
-deb http://deb.debian.org/debian buster main contrib
-deb http://security.debian.org/debian-security buster/updates main contrib
-```
-- Testing (Bullseye) `/etc/apt/sources.list`
-```
-deb http://deb.debian.org/debian testing main contrib non-free
-deb http://security.debian.org testing-security main contrib non-free
-```
+deb http://deb.debian.org/debian <RELEASE> main contrib non-free
 
+deb http://deb.debian.org/debian <RELEASE>-updates main contrib non-free
+
+deb http://deb.debian.org/debian-security <RELEASE>-security main contrib non-free
+```
+- For testing - `<RELEASE>:=testing`
+- For stable  - `<RELEASE>:=stable|bullseye|buster`
+
+### Hold Packages
+- **hold** - `apt-mark hold code`
+  - `apt-mark hold "^libreoffice"`
+  - `apt-mark hold "^openjdk"`
+- **unhold** - `apt-mark unhold code`
+- **showhold** - `apt-mark showhold`
 
 ## Misc
 
