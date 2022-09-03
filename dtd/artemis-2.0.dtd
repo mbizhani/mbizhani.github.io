@@ -1,8 +1,11 @@
 <!ELEMENT artemis (vars?,scenario+)>
 <!ELEMENT scenario (vars?,(get|post|put|patch|delete|break-point)+)>
 <!ATTLIST scenario
-		name CDATA #REQUIRED
-		enabled (true|false) #IMPLIED>
+		id CDATA #REQUIRED
+		enabled (true|false) #IMPLIED
+		parallel CDATA #IMPLIED
+		loop CDATA #IMPLIED
+		call (true|false) #IMPLIED>
 <!ELEMENT get (vars?,headers?,urlParams?,assertRs)>
 <!ATTLIST get
 		url CDATA #REQUIRED
