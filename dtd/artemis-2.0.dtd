@@ -5,7 +5,8 @@
 		enabled (true|false) #IMPLIED
 		parallel CDATA #IMPLIED
 		loop CDATA #IMPLIED
-		call (true|false) #IMPLIED>
+		call (true|false) #IMPLIED
+		sleep CDATA #IMPLIED>
 <!ELEMENT get (vars?,headers?,urlParams?,assertRs)>
 <!ATTLIST get
 		url CDATA #REQUIRED
