@@ -6,17 +6,21 @@ toc: true
 
 ## Command
 
+### General
 - `helm create NAME`
   - Create folder `NAME` with initial templates
-- `helm lint ./NAME/`
+- `helm lint ./CHART_DIR/`
   - Runs a series of tests to verify that the chart is well-formed
-- `helm template INTANCE_NAME ./NAME`
+- `[CHART]` can be
+  - `./DIR` - local chart
+  - `CHART --repo URL` - remote chart from specific repo
+- `helm template [NAME] [CHART]`
   - Render chart templates locally and display the output.
   - `--output-dir OUT`
   - `-f VALUE_FILE.yaml`
   - Examples
-    - `helm template test ./NAME --output-dir OUT`
-- `helm install INSTANCE_NAME ./NAME`
+    - `helm template test ./CHART_DIR --output-dir OUT`
+- `helm install [NAME] [CHART]`
   - `-f VALUE_FILE.yaml`
 - `helm list`
   - List instances
@@ -25,10 +29,9 @@ toc: true
   - `-a` - Show all releases without any filter
   - `-d` - Sort by date
   - `-r` - Reverse sort
-- `helm uninstall INSTANCE_NAME`
+- `helm uninstall RELEASE_NAME`
 
-
-## Repo
+### Repo
 - `helm repo list`
 - `helm repo add NAME URL [FLAGS]`
   - `helm repo add owkin https://owkin.github.io/charts`
@@ -50,7 +53,7 @@ toc: true
 - Conditions - `{% raw %}{{- if CONDITION }}{% endraw %}`, and samples are
   - `eq .Values.VAR "STR"`
   - `empty .Values.VAR`
-  - `and BOOL_EXPR1 BOOL_EXPR2`
+  - `and (BOOL_EXPR1) (BOOL_EXPR2)`
   - `not BOOL_EXPR`
 
 
@@ -64,6 +67,31 @@ toc: true
     {{- $cmps = append $cmps (printf "{\"type\":\"orderer\",\"name\":\"%s\",\"fqdn\":\"%s\"}" .name .fqdn) }}
 {{- end }}
 export CMPS='{{ printf "[%s]" (join "," $cmps) }}'{% endraw %}
+```
+
+### Upgrade Script
+```shell
+#!/bin/bash
+
+RELEASE=$1
+CHART=$2
+VERSION=$3
+
+NS=""
+REPO=""
+
+if [[ "${RELEASE}" && "${CHART}" && "${VERSION}" ]]; then
+  helm upgrade -n ${NS} ${RELEASE} ${CHART} \
+    --atomic \
+    --reuse-values \
+    --version ${VERSION} \
+    --repo ${REPO} \
+    --set-string podAnnotations."timestamp"=$(date +'%Y-%m-%d_%H-%M-%S')
+else
+  echo "$0 <RELEASE> <CHART> <VERSION>"
+  echo "------ RELEASE & CHARTS ------"
+  helm -n ${NS} list
+fi
 ```
 
 
