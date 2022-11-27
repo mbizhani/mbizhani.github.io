@@ -34,6 +34,8 @@
 		call (true|false) #IMPLIED>
 <!ELEMENT break-point EMPTY>
 <!ELEMENT when (#PCDATA)>
+<!ATTLIST when
+		message CDATA #IMPLIED>
 <!ELEMENT body (#PCDATA)>
 <!ATTLIST body
 		type (json|text) #IMPLIED>
