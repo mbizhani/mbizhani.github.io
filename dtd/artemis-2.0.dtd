@@ -7,32 +7,33 @@
 		loop CDATA #IMPLIED
 		call (true|false) #IMPLIED
 		sleep CDATA #IMPLIED>
-<!ELEMENT get (vars?,headers?,urlParams?,assertRs)>
+<!ELEMENT get (vars?,headers?,urlParams?,when?,assertRs)>
 <!ATTLIST get
 		url CDATA #REQUIRED
 		id CDATA #IMPLIED
 		call (true|false) #IMPLIED>
-<!ELEMENT post (vars?,headers?,urlParams?,body?,form?,assertRs)>
+<!ELEMENT post (vars?,headers?,urlParams?,when?,body?,form?,assertRs)>
 <!ATTLIST post
 		url CDATA #REQUIRED
 		id CDATA #IMPLIED
 		call (true|false) #IMPLIED>
-<!ELEMENT put (vars?,headers?,urlParams?,body?,form?,assertRs)>
+<!ELEMENT put (vars?,headers?,urlParams?,when?,body?,form?,assertRs)>
 <!ATTLIST put
 		url CDATA #REQUIRED
 		id CDATA #IMPLIED
 		call (true|false) #IMPLIED>
-<!ELEMENT patch (vars?,headers?,urlParams?,body?,form?,assertRs)>
+<!ELEMENT patch (vars?,headers?,urlParams?,when?,body?,form?,assertRs)>
 <!ATTLIST patch
 		url CDATA #REQUIRED
 		id CDATA #IMPLIED
 		call (true|false) #IMPLIED>
-<!ELEMENT delete (vars?,headers?,urlParams?,assertRs)>
+<!ELEMENT delete (vars?,headers?,urlParams?,when?,assertRs)>
 <!ATTLIST delete
 		url CDATA #REQUIRED
 		id CDATA #IMPLIED
 		call (true|false) #IMPLIED>
 <!ELEMENT break-point EMPTY>
+<!ELEMENT when (#PCDATA)>
 <!ELEMENT body (#PCDATA)>
 <!ATTLIST body
 		type (json|text) #IMPLIED>
