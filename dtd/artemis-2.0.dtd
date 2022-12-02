@@ -1,0 +1,70 @@
+<!ELEMENT artemis (vars?,scenario+)>
+<!ELEMENT scenario (vars?,(get|post|put|patch|delete|break-point)+)>
+<!ATTLIST scenario
+		id CDATA #REQUIRED
+		enabled (true|false) #IMPLIED
+		parallel CDATA #IMPLIED
+		loop CDATA #IMPLIED
+		call (true|false) #IMPLIED
+		sleep CDATA #IMPLIED>
+<!ELEMENT get (vars?,headers?,urlParams?,when?,assertRs)>
+<!ATTLIST get
+		url CDATA #REQUIRED
+		id CDATA #IMPLIED
+		call (true|false) #IMPLIED>
+<!ELEMENT post (vars?,headers?,urlParams?,when?,body?,form?,assertRs)>
+<!ATTLIST post
+		url CDATA #REQUIRED
+		id CDATA #IMPLIED
+		call (true|false) #IMPLIED>
+<!ELEMENT put (vars?,headers?,urlParams?,when?,body?,form?,assertRs)>
+<!ATTLIST put
+		url CDATA #REQUIRED
+		id CDATA #IMPLIED
+		call (true|false) #IMPLIED>
+<!ELEMENT patch (vars?,headers?,urlParams?,when?,body?,form?,assertRs)>
+<!ATTLIST patch
+		url CDATA #REQUIRED
+		id CDATA #IMPLIED
+		call (true|false) #IMPLIED>
+<!ELEMENT delete (vars?,headers?,urlParams?,when?,assertRs)>
+<!ATTLIST delete
+		url CDATA #REQUIRED
+		id CDATA #IMPLIED
+		call (true|false) #IMPLIED>
+<!ELEMENT break-point EMPTY>
+<!ELEMENT when (#PCDATA)>
+<!ATTLIST when
+		message CDATA #IMPLIED>
+<!ELEMENT body (#PCDATA)>
+<!ATTLIST body
+		type (json|text) #IMPLIED>
+<!ELEMENT assertRs EMPTY>
+<!ATTLIST assertRs
+		status CDATA #REQUIRED
+		body (json|text|empty) #IMPLIED
+		call (true|false) #IMPLIED
+		properties CDATA #IMPLIED
+		cookies CDATA #IMPLIED
+		store CDATA #IMPLIED>
+<!ELEMENT vars (var+)>
+<!ELEMENT var (#PCDATA)>
+<!ATTLIST var
+		name CDATA #REQUIRED
+		value CDATA #IMPLIED>
+<!ELEMENT headers (header+)>
+<!ELEMENT header EMPTY>
+<!ATTLIST header
+		name CDATA #REQUIRED
+		value CDATA #REQUIRED>
+<!ELEMENT form (field+)>
+<!ELEMENT urlParams (param+)>
+<!ELEMENT param EMPTY>
+<!ATTLIST param
+		name CDATA #REQUIRED
+		value CDATA #REQUIRED>
+<!ELEMENT field EMPTY>
+<!ATTLIST field
+		name CDATA #REQUIRED
+		value CDATA #REQUIRED
+		file (true|false) #IMPLIED>

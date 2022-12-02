@@ -303,6 +303,25 @@ node.session.auth.password_in = INITIATOR_PASSWORD
 **-- Initiator --**
 - `iscsiadm -m node --targetname LUN_FQDN -R`
 
+## Cryptography
+
+### OpenSSL
+
+- [[REF](https://unix.stackexchange.com/questions/367220/how-to-export-ca-certificate-chain-from-pfx-in-pem-format-without-bag-attributes)] for `sed`
+- [[REF](https://www.openssl.org/docs/manmaster/man1/openssl-pkcs12.html)] for `-legacy` option
+
+```shell
+# Generate private & certificate
+openssl req -x509 -sha256 -days 365 -newkey rsa:2048 -nodes -keyout my-key.pem -out my-cert.pem
+
+# Import private & certificate pem files to PFX file
+openssl pkcs12 -export -out my.pfx -inkey my-key.pem -in my-cert.pem -passin pass:"mypass" -passout pass:"mypass" -name "myalias"
+
+# Extract certificate from PFX file in PEM format
+# note: '-legacy' is used via OpenSSL 3+
+# note: the 'sed' removed the 'Bag Attributes' from beginning of file
+openssl pkcs12 -legacy -in ${PFX_FILE} -clcerts -nokeys | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > ${PFX_FILE}.pem
+```
 
 ## Config Files
 - `/etc/environment`
