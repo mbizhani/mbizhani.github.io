@@ -404,6 +404,7 @@ EOL
   --------|--------|--------
   Storage | `find /sys/class/scsi_host/ -name "host*" -exec sh -c "echo '- - -' > {}/scan" \;` | [[REF](https://www.cyberciti.biz/tips/vmware-add-a-new-hard-disk-without-rebooting-guest.html)]
   RAM     | `grep line /sys/devices/system/memory/*/state |grep offline |awk -F '\/' '{print $6}' |while read xx; do echo online >/sys/devices/system/memory/$xx/state ; done` | [[REF](https://askubuntu.com/questions/764620/how-do-you-hotplug-enable-new-cpu-and-ram-in-a-virtual-machine)]
+  CPU     | `grep 0 /sys/devices/system/cpu/cpu*/online | awk -F ':' '{print $1}' | while read xx; do echo 1 > $xx; done` | [[REF](https://askubuntu.com/questions/764620/how-do-you-hotplug-enable-new-cpu-and-ram-in-a-virtual-machine)]
 
 - VM Tools
   - `apt install open-vm-tools` - Open VMware Tools for virtual machines hosted on VMware (CLI)
