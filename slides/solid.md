@@ -13,13 +13,13 @@ theme: moon
 ===
 ### Principles
 
-|       |                       |
-|-------|-----------------------|
-| **S** | Single Responsibility |
-| **O** | Open-Closed (OCP)     |
-| **L** | Liskov Substitutions  |
-| **I** | Interface Segregation |
-| **D** | Dependency Inversion  |
+|       |                           |
+|-------|---------------------------|
+| **S** | Single Responsibility     |
+| **O** | Open/Closed (OCP)         |
+| **L** | Liskov Substitution (LSP) |
+| **I** | Interface Segregation     |
+| **D** | Dependency Inversion      |
 
 ===
 ### Single Responsibility
@@ -36,16 +36,26 @@ theme: moon
 - Classes
   - Open for extension
   - Closed for modification
-- Stop ourselves from modifying existing code 
-  - => fewer bugs
+- Solutions
+  - `inheritance` as a mechanism to inherit existing code, and add extra functionality in the subclass
+  - `decorator design pattern` by applying composition on existing code, and add extra functionality in the `wrapper` class
 
 ===
-### Liskov Substitutions
+### Liskov Substitution
 
 <table><tr>
 <td>
-If class <code>Child</code> is a subtype of class <code>Parent</code>, it should be possible to replace <code>Parent</code>
-with any <code>Child</code> without disrupting the behavior of the program.
+<ul>
+  <li>
+  If class <code>Child</code> is a subtype of class <code>Parent</code>, it should be possible to replace <code>Parent</code>
+  with any <code>Child</code> without disrupting the behavior of the program.
+  </li>
+
+  <li>
+   If <code>test(Parent)</code> passed => <code>test(Child1)</code> and <code>test(Child2)</code> should pass!
+  </li>
+  <li>It ensures conformity in all classes in the entire hierarchy</li>
+</ul>
 </td>
 <td>
   <img width="1500" src="/assets/images/slides/solid/liskov-class-diagram.png"/>
