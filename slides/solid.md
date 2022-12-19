@@ -2,7 +2,7 @@
 layout: slide
 caption: SOLID Principles 
 description: SOLID Principles
-theme: moon
+theme: blood
 ---
 
 <section data-markdown data-separator="===" data-separator-vertical="^---$">
@@ -31,7 +31,7 @@ theme: moon
   - Lower Coupling - fewer dependencies
 
 ===
-### Open-Closed
+### Open/Closed (OCP)
 
 - Classes
   - Open for extension
@@ -41,26 +41,39 @@ theme: moon
   - `decorator design pattern` by applying composition on existing code, and add extra functionality in the `wrapper` class
 
 ===
-### Liskov Substitution
+### Liskov Substitution (LSP)
 
-<table><tr>
-<td>
+<table>
+<tr>
+<td colspan="2" style="border:0">
 <ul>
   <li>
   If class <code>Child</code> is a subtype of class <code>Parent</code>, it should be possible to replace <code>Parent</code>
   with any <code>Child</code> without disrupting the behavior of the program.
   </li>
-
   <li>
-   If <code>test(Parent)</code> passed => <code>test(Child1)</code> and <code>test(Child2)</code> should pass!
+   If <code>test(Parent)</code> passed => both <code>test(Child1)</code> and <code>test(Child2)</code> should pass!
   </li>
-  <li>It ensures conformity in all classes in the entire hierarchy</li>
+</ul>
+</td>
+</tr>
+
+<tr>
+<td>
+<ul>
+  <li>It ensures conformity in all classes in the entire hierarchy.</li>
 </ul>
 </td>
 <td>
-  <img width="1500" src="/assets/images/slides/solid/liskov-class-diagram.png"/>
+  <img width="1000" src="/assets/images/slides/solid/liskov-class-diagram.png"/>
 </td>
-</tr></table>
+</tr>
+</table>
+
+---
+#### Sample
+
+![liskov-sample](/assets/images/slides/solid/liskov-sample.png)
 
 ===
 ### Interface Segregation
@@ -71,7 +84,16 @@ theme: moon
 ===
 ### Dependency Inversion
 
-The principle of dependency inversion refers to the decoupling of software modules. This way, instead of high-level modules depending on low-level modules, both will depend on abstractions.
+- For decoupling of software modules, both high-level and low-level modules should depend on abstractions:
+  - High-level modules/classes should not depend on low-level modules/classes. Both should depend upon abstractions.
+  - Abstractions should not depend upon details. Details should depend upon abstractions.
+- Different from `dependency injection`
+
+===
+### References
+- [A Solid Guide to SOLID Principles](https://www.baeldung.com/solid-principles)
+- [The Liskov Substitution Principle (LSP)](https://www.linkedin.com/pulse/liskov-substitution-principle-lsp-paul-gichure-ctfl/)
+- [SOLID Principle in Programming: Understand With Real Life Examples](https://www.geeksforgeeks.org/solid-principle-in-programming-understand-with-real-life-examples/)
 
   </textarea>
 </section>
