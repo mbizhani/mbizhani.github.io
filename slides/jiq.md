@@ -54,7 +54,96 @@ System.out.println("Integer.MIN_VALUE = " + Integer.MIN_VALUE);
 - Using literal `String` ensures that the string is created in the string pool. 
   - String pool exists as part of the perm area in the heap.
   
+===
+### Class
 
+#### Order of Initialization
+
+- Fields and instance initializer blocks are run in the order in which they appear in the file.
+- The constructor runs after all fields and instance initializer blocks have run.
+
+---
+
+#### Example 1
+
+```java
+public class Test {
+  private final String f1 = "a";
+  private final String f2;
+  private final String f3;
+
+  public Test() {
+    f3 = "c";
+    System.out.printf("C: f1=%s, f2=%s, f3=%s\n", f1, f2, f3);
+  }
+
+  { // `Instance Initializer` Block
+    f2 = "b";
+    System.out.printf("I: f1=%s, f2=%s, f3=%s\n", f1, f2, f3);
+  }
+
+  public static void main(String[] args) {
+    Test t = new Test();
+    // OUTPUT
+    // I: f1=a, f2=b, f3=null
+    // C: f1=a, f2=b, f3=c
+  }
+}
+```
+
+---
+
+#### Example 2
+
+```java
+public class Test {
+  private final String f1 = "a";
+  private final String f2;
+  private final String f3;
+
+  public Test() {
+    f3 = "c";
+    System.out.printf("C: f1=%s, f2=%s, f3=%s\n", f1, f2, f3);
+  }
+
+  {
+    f2 = "b";
+    System.out.printf("I: f1=%s, f2=%s\n", f1, f2);
+    // System.out.printf("I: f1=%s, f2=%s, f3=%s\n", f1, f2, f3);
+    // COMPILE ERROR for f3: not initialized
+  }
+
+  public static void main(String[] args) {
+    Test t = new Test();
+    // OUTPUT
+    // I: f1=a, f2=b
+    // C: f1=a, f2=b, f3=c
+  }
+}
+```
+
+===
+### Package
+- If you explicitly import a class name, it takes precedence over any wildcards present
+
+```java
+import java.util.*;
+import java.sql.*;
+
+Date dt = ...; 
+// COMPILE ERROR - java.util.Date or java.sql.Date
+```
+
+```java
+import java.util.*;
+import java.sql.Date;
+
+Date dt = ...;  
+// It is java.sql.Date
+
+java.util.Date dt2 = ...;
+// explicit fqdn for defining java.util.Date  
+```
 
 ===
 ### References
