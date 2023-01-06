@@ -21,7 +21,7 @@ extra: highlight
 - Literals and the Underscore Character
   - valid: `1_000_000`, `1_______2` (12), `1__1.1__1` (11.11), `.1_1`
   - invalid: `_1000`, `1_`, `1_000._`, `0._1`
-    (at beginning, at end, just before or after decimal point)
+    - At beginning, at end, just before or after decimal point
 
 ---
 #### Integer Cache
@@ -58,12 +58,25 @@ System.out.println("Integer.MIN_VALUE = " + Integer.MIN_VALUE);
 ```
 
 ===
-### String Pool
+### String
+
+#### String Pool
 
 - Using the `new` operator for `String`, ensures that it is created in the heap (not into the string pool). 
 - Using literal `String` ensures that the string is created in the string pool. 
   - String pool exists as part of the perm area in the heap.
-  
+
+---
+#### Text Block
+
+- A line break after the opening `"""` is required
+- `\` at the end prevent new line (like shell script)
+- Imagine a vertical line on the leftmost non-whitespace character
+  - The left is `incidental whitespace` 
+  - The right is `essential whitespace`
+
+![text-block](/assets/images/slides/jiq/java-text-block.png)
+
 ===
 ### Class
 
