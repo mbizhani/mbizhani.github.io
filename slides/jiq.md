@@ -7,13 +7,23 @@ extra: highlight
 ---
 
 <section data-markdown data-separator="===" data-separator-vertical="^---$">
-  <textarea data-template> 
+  <textarea data-template>
 
 ## Java Interview Questions
 
 ===
 ### Numbers
 
+#### Format
+- Octal - starts with `0`: `017`, `0654`
+- Hexadecimal - starts with `0x` or `0X`: `0xaaaaaa`, `0Xdff`
+- Binary - starts with `0b` or `0B`: `0b10`, `0b11`
+- Literals and the Underscore Character
+  - valid: `1_000_000`, `1_______2` (12), `1__1.1__1` (11.11), `.1_1`
+  - invalid: `_1000`, `1_`, `1_000._`, `0._1`
+    (at beginning, at end, just before or after decimal point)
+
+---
 #### Integer Cache
 
 ```java
@@ -35,14 +45,14 @@ System.out.println(num7 == num8); // false
 
 ```java
 final Double d = 1.0 / 0.0;
-System.out.println("1.0/0.0 = " + d + " - " + d.isInfinite()); 
+System.out.println("1.0/0.0 = " + d + " - " + d.isInfinite());
 // 1.0/0.0 = Infinity - true
 
 System.out.println(Math.min(Double.MIN_VALUE, 0.0d));
 // 0.0
 System.out.println("Double.MIN_VALUE = " + Double.MIN_VALUE);
 // Double.MIN_VALUE = 4.9E-324
-        
+
 System.out.println("Integer.MIN_VALUE = " + Integer.MIN_VALUE);
 // Integer.MIN_VALUE = -2147483648
 ```
@@ -63,7 +73,6 @@ System.out.println("Integer.MIN_VALUE = " + Integer.MIN_VALUE);
 - The constructor runs after all fields and instance initializer blocks have run.
 
 ---
-
 #### Example 1
 
 ```java
@@ -92,7 +101,6 @@ public class Test {
 ```
 
 ---
-
 #### Example 2
 
 ```java
