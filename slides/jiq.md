@@ -12,6 +12,52 @@ extra: highlight
 ## Java Interview Questions
 
 ===
+### Variables
+
+#### `var`
+- `var` is only used for local variable type inference
+- `var` is not a reserved word and allowed to be used as an identifier
+  - It is a `reserved type` name which means it cannot be used to define a type, such as a `class`, `interface`, or `enum`
+
+---
+#### Example 1
+
+```java
+int i1, i2 = 1;
+
+//var a=1,b=3; ERR:'var' is not allowed in compound declaration
+
+var arr = new ArrayList<>();
+arr.add("A");
+arr.add(1.1);
+
+var st = new HashSet<String>();
+st.add("A");
+//st.add(1); ERR: incompatible types
+
+final var name = "John";
+
+//var text = null; ERR: can't infer type
+```
+
+---
+#### Example 2
+- Following code compiles successfully!
+
+```java
+package var;
+
+public class Var {
+    public void var() {
+        var var = "var";
+    }
+
+	public void Var() {
+        Var var = new Var();
+    }
+}
+```
+===
 ### Numbers
 
 #### Format
@@ -90,9 +136,9 @@ System.out.println("Integer.MIN_VALUE = " + Integer.MIN_VALUE);
 
 ```java
 public class Test {
-  private final String f1 = "a";
-  private final String f2;
-  private final String f3;
+  private String f1 = "a";
+  private String f2;
+  private String f3;
 
   public Test() {
     f3 = "c";
@@ -152,7 +198,7 @@ import java.util.*;
 import java.sql.*;
 
 Date dt = ...; 
-// COMPILE ERROR - java.util.Date or java.sql.Date
+// COMPILE ERROR - `java.util.Date` or `java.sql.Date`
 ```
 
 ```java
@@ -160,10 +206,10 @@ import java.util.*;
 import java.sql.Date;
 
 Date dt = ...;  
-// It is java.sql.Date
+// It is `java.sql.Date`
 
 java.util.Date dt2 = ...;
-// explicit fqdn for defining java.util.Date  
+// explicit fqdn for defining `java.util.Date`  
 ```
 
 ===
