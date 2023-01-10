@@ -63,3 +63,80 @@ futures.size() = 4
 3: canceled
 4: canceled
 ```
+
+## Replace text by Pattern
+
+Suppose in a payment system, we have some nested JSONs with its signatures. We want to log received messages, however the
+security team has forced you to mask following fields before writing to log files: `srcCardId`, `destCardId`, `trx`, and `refNo`.
+
+Following code is just a simulation for single message, and you want to log received `serverSignedJson`.
+
+```java
+final var mapper = new ObjectMapper();
+
+final var trxUser = new TransferUserData("c123-1-9870", "c345-1-9871", 1210L, 23874623L, 1000001L, null);
+final var trxUserJson = mapper.writeValueAsString(trxUser);
+System.out.println("trxUser = " + trxUserJson);
+
+final var userSigned = new SignedData(trxUserJson, signByUser(trxUserJson));
+final var userSignedJson = mapper.writeValueAsString(userSigned);
+System.out.println("userSigned = " + userSignedJson);
+
+final var serverData = new ServerData("1000", userSignedJson);
+final var serverDataJson = mapper.writeValueAsString(serverData);
+System.out.println("serverData = " + serverDataJson);
+
+final var serverSigned = new SignedData(serverDataJson, signByServer(serverDataJson));
+final var serverSignedJson = mapper.writeValueAsString(serverSigned);
+System.out.println("serverSigned = " + serverSignedJson);
+```
+
+The output is something like this:
+
+```text
+trxUser = {"srcCardId":"c123-1-9870","destCardId":"c345-1-9871","amount":1210,"trxId":23874623,"refNo":1000001,"trx":null}
+userSigned = {"raw":"{\"srcCardId\":\"c123-1-9870\",\"destCardId\":\"c345-1-9871\",\"amount\":1210,\"trxId\":23874623,\"refNo\":1000001,\"trx\":null}","signed":"SIGNED_BY_USER"}
+serverData = {"serverId":"1000","signedUserData":"{\"raw\":\"{\\\"srcCardId\\\":\\\"c123-1-9870\\\",\\\"destCardId\\\":\\\"c345-1-9871\\\",\\\"amount\\\":1210,\\\"trxId\\\":23874623,\\\"refNo\\\":1000001,\\\"trx\\\":null}\",\"signed\":\"SIGNED_BY_USER\"}"}
+serverSigned = {"raw":"{\"serverId\":\"1000\",\"signedUserData\":\"{\\\"raw\\\":\\\"{\\\\\\\"srcCardId\\\\\\\":\\\\\\\"c123-1-9870\\\\\\\",\\\\\\\"destCardId\\\\\\\":\\\\\\\"c345-1-9871\\\\\\\",\\\\\\\"amount\\\\\\\":1210,\\\\\\\"trxId\\\\\\\":23874623,\\\\\\\"refNo\\\\\\\":1000001,\\\\\\\"trx\\\\\\\":null}\\\",\\\"signed\\\":\\\"SIGNED_BY_USER\\\"}\"}","signed":"SIGNED_BY_SERVER"}
+```
+
+The `mask()` method tries to find the fields' value and replace it via using regex:
+
+```java
+String mask(String json) {
+  final var pattern = Pattern.compile(
+	  "\"(srcCardId|destCardId|trx|refNo)\\\\*?\":.*?(null|\"(?<STRVAL>.*?)\\\\*?\"|(?<NUMVAL>\\d+))");
+
+  final Matcher matcher = pattern.matcher(json);
+
+  final StringBuilder builder = new StringBuilder();
+
+  while (matcher.find()) {
+    final String expr = matcher.group(0);
+
+    if (matcher.group("STRVAL") != null || matcher.group("NUMVAL") != null) {
+
+      final String replacement = matcher.group("STRVAL") != null ?
+        matcher.group("STRVAL") :
+        matcher.group("NUMVAL");
+
+      final String newStr = replacement.length() > 2 ?
+        "*".repeat(replacement.length() - 2) + replacement.substring(replacement.length() - 2) :
+        replacement;
+
+      final String newExpr = expr.replace(replacement, newStr);
+      matcher.appendReplacement(builder, Matcher.quoteReplacement(newExpr));
+    } else {
+      matcher.appendReplacement(builder, Matcher.quoteReplacement(expr));
+    }
+  }
+  matcher.appendTail(builder);
+  return builder.toString();
+}
+```
+
+The output is this:
+
+```text
+serverSignedJson = {"raw":"{\"serverId\":\"1000\",\"signedUserData\":\"{\\\"raw\\\":\\\"{\\\\\\\"srcCardId\\\\\\\":\\\\\\\"*********70\\\\\\\",\\\\\\\"destCardId\\\\\\\":\\\\\\\"*********71\\\\\\\",\\\\\\\"amount\\\\\\\":1210,\\\\\\\"trxId\\\\\\\":23874623,\\\\\\\"refNo\\\\\\\":*****01,\\\\\\\"trx\\\\\\\":null}\\\",\\\"signed\\\":\\\"SIGNED_BY_USER\\\"}\"}","signed":"SIGNED_BY_SERVER"}
+```
