@@ -32,10 +32,10 @@ arr.add("A");
 arr.add(1.1);
 
 var st = new HashSet<String>();
-st.add("A");
 //st.add(1); ERR: incompatible types
 
 final var name = "John";
+var num = 1/0;
 
 //var text = null; ERR: can't infer type
 ```
