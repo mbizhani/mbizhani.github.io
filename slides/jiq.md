@@ -60,7 +60,7 @@ public class Var {
 ===
 ### Numbers
 
-#### Format
+#### Literals Format (1/2)
 - Octal - starts with `0`: `017`, `0654`
 - Hexadecimal - starts with `0x` or `0X`: `0xaaaaaa`, `0Xdff`
 - Binary - starts with `0b` or `0B`: `0b10`, `0b11`
@@ -68,6 +68,40 @@ public class Var {
   - valid: `1_000_000`, `1_______2` (12), `1__1.1__1` (11.11), `.1_1`
   - invalid: `_1000`, `1_`, `1_000._`, `0._1`
     - At beginning, at end, just before or after decimal point
+
+---
+#### Literals Format (2/2)
+- Long - ends with `l` or `L` (default is `int`)
+- Float - ends with `f` or `F` (default is `double`)
+
+---
+#### Numeric Promotion Rules
+1. Two values have different data types => promote one of the values to the larger of the two data types.
+2. One is integral and the other is floating-point => promote the integral value to the floating-point value’s data type.
+3. Data types `byte`, `short`, and `char` => first promoted to `int` in **binary** arithmetic operations.
+4. After all promotion, the resulting value will have the same data type as its promoted operands.
+
+---
+#### Numeric Promotion Rules - Samples
+
+```java
+byte a = 2 + 100;
+short b = 100 * 10;
+byte c = 2 * 200;  // COMPILE ERROR - int result
+
+long l = 10;
+a += b + l;
+a = a + b;  // COMPILE ERROR (int promotion)
+
+short s = a + b;  // COMPILE ERROR (int promotion)
+int i = a + b;
+int j = a + b + 1l;  // COMPILE ERROR (long promotion)
+ 
+float d = a + 1.0;  // COMPILE ERROR (double promotion)
+float f = a + 1.0f;
+
+byte a1 = ++a;
+```
 
 ---
 #### Integer Cache
@@ -101,6 +135,33 @@ System.out.println("Double.MIN_VALUE = " + Double.MIN_VALUE);
 
 System.out.println("Integer.MIN_VALUE = " + Integer.MIN_VALUE);
 // Integer.MIN_VALUE = -2147483648
+```
+
+===
+### Operators
+
+#### Precedence
+
+![OperatorPrecedence](/assets/images/slides/jiq/operators-precedence.png)
+
+---
+#### Misc
+
+```java
+boolean healthy = false;
+if(healthy = true)   // ASSIGNMENT!
+  System.out.print("Good!");
+
+System.out.print(null == null); // true
+System.out.print(null instanceof null); // COMPILE ERROR
+
+int stripes = 7;
+System.out.print((stripes > 5) ? 21 : "Zebra");
+int animal = (stripes < 9) ? 3 : "Horse"; // COMPILE ERROR
+
+int sheep = 1, zzz = 1;
+int s1 = zzz < 10 ? sheep++ : zzz++;    // sheep=2,zzz=1
+int s2 = sheep >= 10 ? sheep++ : zzz++; // sheep=2,zzz=2
 ```
 
 ===
@@ -214,6 +275,7 @@ java.util.Date dt2 = ...;
 
 ===
 ### References
+- Oracle Certified Professional Java SE 17 Developer Study Guide Exam 1Z0-829, Scott Selikoff, Jeanne Boyarsky
 - [Java Interview Questions for 5 years Experience](https://www.interviewbit.com/java-interview-questions-for-5-years-experience/)
 
 
