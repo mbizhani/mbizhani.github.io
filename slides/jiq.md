@@ -185,6 +185,61 @@ int s2 = sheep >= 10 ? sheep++ : zzz++; // sheep=2,zzz=2
 ![text-block](/assets/images/slides/jiq/java-text-block.png)
 
 ===
+### Pattern Matching
+
+#### instanceof
+- The `final` keyword prevents `pattern variable` reassignment!
+
+```java
+Object o = "Hello ";
+
+if(o instanceof final String str && !str.isEmpty()) {
+    System.out.printf("[%s]\n", str.trim());
+}
+```
+
+- The pattern variable must be a **subtype** of the variable.
+
+```java
+Integer value = 123;
+if(value instanceof Integer) {}
+if(value instanceof Integer data) {} // COMPILE ERROR
+```
+
+---
+#### Flow Scoping (1/2)
+- The variable is only in scope when the compiler can definitively determine its type
+
+```java
+Number number = 10;
+
+// COMPILE ERROR in both following lines
+//   Can't resolve symbole `data`
+if(number instanceof Integer data || data.compareTo(5) > 0)
+    System.out.println(data);
+```
+
+---
+#### Flow Scoping (2/2)
+- It is determined by the compiler based on the branching and flow of the program
+  - It is not strictly hierarchical like instance, class, or local scoping
+
+```java
+void printIntegerTwice(Number number) {
+    if (number instanceof Integer data)
+        System.out.print(data.intValue());
+    System.out.println(data.intValue()); // COMPILE ERROR
+}
+
+// However, following is OK!!!
+void printOnlyIntegers(Number number) {
+    if (!(number instanceof Integer data))
+        return;
+    System.out.println(data.intValue());
+}
+```
+
+===
 ### Class
 
 #### Order of Initialization
