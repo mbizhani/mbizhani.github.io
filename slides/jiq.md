@@ -239,6 +239,25 @@ void printOnlyIntegers(Number number) {
 }
 ```
 
+#### switch
+
+```java
+// Following 'switch' has no 'break'!
+switch(a) {
+  // Since Java 14, case values can be combined.
+  case 1,2: System.out.println("Lion");  // printed if a=1,2
+  case 3: System.out.println("Tiger");   // printed if a=1,2,3
+  case null: System.out.println("Tiger");   // printed if a=1,2,3
+  default: System.out.println("N/A");    // always printed!
+}
+
+switch(a) {
+  case 1,2 -> System.out.println("Lion"); // printed if a=1,2
+  case 3 -> System.out.println("Tiger");  // printed if a=3
+  default -> System.out.println("Def");   // printed if a not above
+}
+```
+
 ===
 ### Class
 
