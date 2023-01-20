@@ -239,23 +239,47 @@ void printOnlyIntegers(Number number) {
 }
 ```
 
-#### switch
+---
+#### switch statement
+- In `switch` statement, the `break` statements are optional, but without them the code will execute every branch following a matching 
+  `case` statement, including any `default` statements it finds.
 
 ```java
-// Following 'switch' has no 'break'!
+// cases without 'break'!
 switch(a) {
   // Since Java 14, case values can be combined.
-  case 1,2: System.out.println("Lion");  // printed if a=1,2
-  case 3: System.out.println("Tiger");   // printed if a=1,2,3
-  case null: System.out.println("Tiger");   // printed if a=1,2,3
-  default: System.out.println("N/A");    // always printed!
+  case 1, 2: System.out.println("Lion");  // if a=1,2
+  case 3: System.out.println("Tiger");    // if a=1,2,3
+  case null: System.out.println("ERR");   // if a=1,2,3,null
+  default: System.out.println("N/A");     // always printed!
 }
+```
 
-switch(a) {
-  case 1,2 -> System.out.println("Lion"); // printed if a=1,2
-  case 3 -> System.out.println("Tiger");  // printed if a=3
-  default -> System.out.println("Def");   // printed if a not above
-}
+---
+#### switch expression (1/2)
+
+- If the switch expression returns a value:
+  - All branches without throwing an exception must return a consistent data type.
+  - Block branches must `yield` a value.
+  - `default` branch is required unless all cases are covered (e.g. `enum`).
+- Define `default` branch in every switch expression, even those that involve `enum` values.
+
+---
+#### switch expression (2/2)
+
+```java
+// Using pattern matching no need for 'break'
+var result = switch(a) {
+  case 1, 2 -> "Lion"; // if a=1,2
+  case 3 -> "Tiger";   // if a=3
+  case null -> {       // if a=null
+    System.err.println("NULL");
+    yield "ERR";
+  } 
+  default -> "N/A";    // if a not above
+};
+
+System.out.println("result = " + result);
 ```
 
 ===
