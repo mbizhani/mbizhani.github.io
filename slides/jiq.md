@@ -167,6 +167,15 @@ int s2 = sheep >= 10 ? sheep++ : zzz++; // sheep=2,zzz=2
 ===
 ### String
 
+#### Concatenation (+)
+
+- `1 + 2 + "c"` => `3c`
+- `"c" + 1 + 2` => `c12`
+- If both operands are numeric, `+` means numeric addition.
+- If either operand is a `String`, `+` means concatenation.
+- **The expression is evaluated left to right.**
+
+---
 #### String Pool
 
 - Using the `new` operator for `String`, ensures that it is created in the heap (not into the string pool). 
@@ -183,6 +192,31 @@ int s2 = sheep >= 10 ? sheep++ : zzz++; // sheep=2,zzz=2
   - The right is `essential whitespace`
 
 ![text-block](/assets/images/slides/jiq/java-text-block.png)
+
+---
+#### String Methods
+
+- Removing Whitespace
+  - `strip()` - the same as `trime()` + Unicode support
+  - `stripLeading()` & `stripTrailing()`
+- Indentation
+  - `indent(+/-int)` & `stripIndent()`
+
+===
+### Array
+
+- **Anonymous Array**
+  - `int[] nums = {42, 55, 99}`
+- `ArrayStoreException` (runtime error)
+  ```java
+  Object x[] = new String[3];
+  x[0] = new Integer(0);
+  ```
+- ```java
+  int[] ids, types;  // both array
+  int ids[], types;  // only 'ids' is array
+  int[] a[], b[][];  // 'a' is 2D, 'b' is 3D array
+  ```
 
 ===
 ### Pattern Matching
@@ -281,6 +315,23 @@ var result = switch(a) {
 
 System.out.println("result = " + result);
 ```
+
+===
+### Date & Time
+
+- `java.time.*`
+
+<img style="background-color:white;" src="/assets/images/java/java-date-time.png"/>
+
+---
+#### Methods
+
+![date.time.methods](/assets/images/slides/jiq/date.time.methods.png)
+
+---
+#### Duration vs Period
+
+![duration.vs.period](/assets/images/slides/jiq/duration.vs.period.png)
 
 ===
 ### Class
