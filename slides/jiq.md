@@ -82,7 +82,7 @@ public class Var {
 4. After all promotion, the resulting value will have the same data type as its promoted operands.
 
 ---
-#### Numeric Promotion Rules - Samples
+#### Numeric Promotion Rules - Samples (1/2)
 
 ```java
 byte a = 2 + 100;
@@ -101,6 +101,22 @@ float d = a + 1.0;  // COMPILE ERROR (double promotion)
 float f = a + 1.0f;
 
 byte a1 = ++a;
+```
+
+---
+#### Numeric Promotion Rules - Samples (2/2)
+
+```java
+int big = 1234567890;
+
+float f = big;
+System.out.println(big - (int)f);   // -46
+
+long l = big;
+System.out.println(big - (int)l);   // 0
+
+double d = big;
+System.out.println(big - (int)d);   // 0
 ```
 
 ---
@@ -331,6 +347,11 @@ System.out.println("result = " + result);
 ---
 #### Duration vs Period
 
+- `Duration` units: [_nanos_, ..., _days_]
+  - suitable for _time_
+- `Period` units: [_days_, ..., _years_]
+  - suitable for _date_
+
 ![duration.vs.period](/assets/images/slides/jiq/duration.vs.period.png)
 
 ===
@@ -342,7 +363,7 @@ System.out.println("result = " + result);
 - The constructor runs after all fields and instance initializer blocks have run.
 
 ---
-#### Example 1
+##### Example 1
 
 ```java
 public class Test {
@@ -370,7 +391,7 @@ public class Test {
 ```
 
 ---
-#### Example 2
+##### Example 2
 
 ```java
 public class Test {
@@ -398,6 +419,25 @@ public class Test {
   }
 }
 ```
+
+---
+#### Access Modifiers
+
+- `private` - can be accessed only from within the same class
+- Package Access (no keyword) - can be accessed only from a class in the same package
+- `protected` - can be accessed only from
+  - **a class in the same package**
+  - **a subclass**
+- `public` - can be accessed from anywhere
+
+
+---
+#### Methods
+
+- While _access modifiers_ and _optional specifiers_ can appear **in any order**, they must all appear **before the return type**.
+- Method Signature = `method name` + `parameter list`
+  - `parameter list` - types of parameters and their order
+  - uniquely determines a method in a class
 
 ===
 ### Package
