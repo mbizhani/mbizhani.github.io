@@ -12,16 +12,16 @@ toc: true
 	- `-t` : Turn off the header showing the interval, command, and current time at the top of the display
   - Multiple commands - `watch "CMD1; echo '\n'; CMD2; ..."`
 
-Command                             | Description
-------------------------------------|----------------
-`echo $(date +'%Y-%m-%d_%H-%M-%S')` | Formatted Date
-`timedatectl set-timezone UTC`      | Set timezone to UTC
-`seq -f "MSG_ID: %03g" 20`          | String Generator
-`w`                                 | Shows brief info of system and current logged in users
-`dpkg -S ABSOLUTE_FILE_NAME`        | Search for a filename from installed packages. (note: can't work on symlinks)
-`systemctl show SERVICE`            | Show properties of one or more units, jobs, or the manager itself.
-`dmidecode --type 17 | less`        | RAM Modules Information
-`hdparm -I /dev/sda | less`         | HDD Information
+| Command                            | Description                                                                   |
+|------------------------------------|-------------------------------------------------------------------------------|
+|`echo $(date +'%Y-%m-%d_%H-%M-%S')` | Formatted Date                                                                |
+|`timedatectl set-timezone UTC`      | Set timezone to UTC                                                           |
+|`seq -f "MSG_ID: %03g" 20`          | String Generator                                                              |
+|`w`                                 | Shows brief info of system and current logged in users                        |
+|`dpkg -S ABSOLUTE_FILE_NAME`        | Search for a filename from installed packages. (note: can't work on symlinks) |
+|`systemctl show SERVICE`            | Show properties of one or more units, jobs, or the manager itself.            |
+|`dmidecode --type 17 | less`        | RAM Modules Information                                                       |
+|`hdparm -I /dev/sda | less`         | HDD Information                                                               |
 
 - Filesystem Navigation [[REF](https://linuxize.com/post/popd-and-pushd-commands-in-linux/)]
   - `pushd DIR` - push the current directory to stack and change directory to `DIR`
@@ -50,13 +50,13 @@ find /path/to/folders/* -type d \
 
 ### awk cmd
 
-Command                                                                                                               | Description
-----------------------------------------------------------------------------------------------------------------------|----------------
-`find . -iname "*.rar" -printf "%f\n" | awk -F ".part" '{print $1}' | sort | uniq`                                    | list rar-parted files
-`docker ps -a -f "status=exited" | awk '$3 ~ /runner/ {print "docker rm "$1}' | bash`                                 | remove GitLab Runner exited containers
-`docker images -q -f "dangling=true" | awk '{print "docker rmi -f "$1}' | bash`                                       | remove dangling Docker images
-`docker images | grep rancher | awk '{I=$1; gsub("/", "_", $1); print "docker save -o "$1"_"$2".tar "I":"$2}' | bash` | export images as tar
-`apt list firefox* | grep firefox | awk -F '/' '{print "apt-mark hold "$1}' | bash`                                   | hold all `firefox` packages
+| Command                                                                                                              | Description                            |
+|----------------------------------------------------------------------------------------------------------------------|----------------------------------------|
+|`find . -iname "*.rar" -printf "%f\n" | awk -F ".part" '{print $1}' | sort | uniq`                                    | list rar-parted files                  |
+|`docker ps -a -f "status=exited" | awk '$3 ~ /runner/ {print "docker rm "$1}' | bash`                                 | remove GitLab Runner exited containers |
+|`docker images -q -f "dangling=true" | awk '{print "docker rmi -f "$1}' | bash`                                       | remove dangling Docker images          |
+|`docker images | grep rancher | awk '{I=$1; gsub("/", "_", $1); print "docker save -o "$1"_"$2".tar "I":"$2}' | bash` | export images as tar                   |
+|`apt list firefox* | grep firefox | awk -F '/' '{print "apt-mark hold "$1}' | bash`                                   | hold all `firefox` packages            |
 
 
 ## User Management
@@ -156,21 +156,28 @@ iface eth0 inet static
 - `rsync -av -e "ssh -i ~/.ssh/NAME" DIR USER@HOST:DEST_DIR` - on source server
 
 ### iptables
-- `iptables -L [chain]` - List all rules (in selected `chain`, such as `INPUT`, `OUTPUT`, etc)
-- `iptables -S` - List active rules by specification
-- `iptables -D rule` - Remove rule (copy rule from above command) 
-- `iptables -A chain rule` - Append rule to `chain`
-- `INPUT` chain
-  - First adding specific acceptance rules
-    - `iptables -A INPUT -s IP        -p tcp --dport 22 -j ACCEPT` - accept incoming traffic from the source (`-s`) `IP`
-  - Then, adding general prevention rules
-    - `iptables -A INPUT -s 0.0.0.0/0 -p tcp --dport 22 -j DROP` - prevent incoming traffic from all IPs 
-- `OUTPUT` chain
-  - `iptables -A OUTPUT -d IP -j DROP` - prevent outgoing traffic to the destination (`-d`) `IP`
-- Switches
-  - `-j TARGET` - most usable targets are `ACCEPT` or `DROP`
-  - `-p PROTOCOL` - define the protocol, such as `tcp` or `udp`
-    - `--dport NUM` - port number for `tcp` or `udp` (`-p` is required)
+- List
+  - `iptables [-t table] -L [chain] [--line-numbers] [-n]`
+    - `table` = `filter` | `nat` | `mangle` ... 
+    - `chain` = `INPUT` | `FORWARD` | `OUTPUT` ...
+    - `-n` - avoid long reverse DNS lookups, shows IP instead of DNS names
+- Modify Rules 
+  - `iptables -A chain rule` - Append rule to `chain`
+  - `iptables -I chain num rule` - Insert rule to `chain` at place `num`
+  - `iptables -R chain num rule` - Replace rule of `chain` at place `num`
+  - `iptables -D chain num` - Delete rule from `chain` at place `num`
+- Chains & Rules
+  - `INPUT` chain
+    - First add specific acceptance rules
+      - `iptables -A INPUT -s IP        -p tcp --dport 22 -j ACCEPT` - accept incoming traffic from the source (`-s`) `IP`
+    - Then, add general prevention rules
+      - `iptables -A INPUT -s 0.0.0.0/0 -p tcp --dport 22 -j DROP` - prevent incoming traffic from all IPs 
+  - `OUTPUT` chain
+    - `iptables -A OUTPUT -d IP -j DROP` - prevent outgoing traffic to the destination (`-d`) `IP`
+  - Switches
+    - `-j TARGET` - most usable targets are `ACCEPT` or `DROP`
+    - `-p PROTOCOL` - define the protocol, such as `tcp` or `udp`
+      - `--dport NUM` - port number for `tcp` or `udp` (`-p` is required)
 
 **Note:** Create an executable script in `/etc/network/if-pre-up.d`, and define your rules in cmd format in it 
 to automate defining custom rules on system's restart.
