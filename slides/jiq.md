@@ -119,6 +119,27 @@ double d = big;
 System.out.println(big - (int)d);   // 0
 ```
 
+
+---
+#### Boxing
+
+- Autoboxing can't work with numeric promotion
+
+```java
+Integer a = 10;  // Autoboxing
+long b = a;      // Unboxing, then implicit casting 
+
+Long d = 8;      // COMPILE ERROR
+Long w = 10L;    // Autoboxing
+
+// Both methods are valid - overloading
+public class Kiwi {
+	public void fly(int numMiles) {}
+	public void fly(Integer numMiles) {}
+}
+```
+
+
 ---
 #### Integer Cache
 
@@ -421,7 +442,7 @@ public class Test {
 ```
 
 ---
-#### Access Modifiers
+#### Access Modifiers (1/2)
 
 - `private` - can be accessed only from within the same class
 - Package Access (no keyword) - can be accessed only from a class in the same package
@@ -432,12 +453,41 @@ public class Test {
 
 
 ---
+#### Access Modifiers (2/2)
+
+A method in ______ can access a ______ member.
+
+![Access Modifiers](/assets/images/slides/jiq/access-modifiers.png)
+
+
+---
 #### Methods
 
 - While _access modifiers_ and _optional specifiers_ can appear **in any order**, they must all appear **before the return type**.
 - Method Signature = `method name` + `parameter list`
   - `parameter list` - types of parameters and their order
   - uniquely determines a method in a class
+
+---
+#### Specifier - `static`
+
+- You can access a `static` member via a reference variable, even a `null` one.
+
+```java
+public class C1 {
+    public static int STA = 1;
+}
+
+public class Main {
+    public static void main(String[] args) {
+
+        C1 c1 = null;
+        System.out.println(c1.STA);
+
+    }
+}
+```
+
 
 ===
 ### Package

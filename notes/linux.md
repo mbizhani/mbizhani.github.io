@@ -158,22 +158,22 @@ iface eth0 inet static
 ### iptables
 - List
   - `iptables [-t table] -L [chain] [--line-numbers] [-n]`
-    - `table` = `filter` | `nat` | `mangle` ... 
-    - `chain` = `INPUT` | `FORWARD` | `OUTPUT` ...
+    - _table_ = `filter` \| `nat` \| `mangle` ... 
+    - _chain_ = `INPUT` \| `FORWARD` \| `OUTPUT` ...
     - `-n` - avoid long reverse DNS lookups, shows IP instead of DNS names
 - Modify Rules 
-  - `iptables -A chain rule` - Append rule to `chain`
-  - `iptables -I chain num rule` - Insert rule to `chain` at place `num`
-  - `iptables -R chain num rule` - Replace rule of `chain` at place `num`
-  - `iptables -D chain num` - Delete rule from `chain` at place `num`
+  - `iptables -A chain rule` - Append rule to _chain_
+  - `iptables -I chain num rule` - Insert rule to _chain_ at place _num_
+  - `iptables -R chain num rule` - Replace rule of _chain_ at place _num_
+  - `iptables -D chain num` - Delete rule from _chain_ at place _num_
 - Chains & Rules
   - `INPUT` chain
     - First add specific acceptance rules
-      - `iptables -A INPUT -s IP        -p tcp --dport 22 -j ACCEPT` - accept incoming traffic from the source (`-s`) `IP`
+      - `iptables -A INPUT -s IP -p tcp --dport 22 -j ACCEPT` - accept incoming traffic from the source (`-s`) _IP_
     - Then, add general prevention rules
       - `iptables -A INPUT -s 0.0.0.0/0 -p tcp --dport 22 -j DROP` - prevent incoming traffic from all IPs 
   - `OUTPUT` chain
-    - `iptables -A OUTPUT -d IP -j DROP` - prevent outgoing traffic to the destination (`-d`) `IP`
+    - `iptables -A OUTPUT -d IP -j DROP` - prevent outgoing traffic to the destination (`-d`) _IP_
   - Switches
     - `-j TARGET` - most usable targets are `ACCEPT` or `DROP`
     - `-p PROTOCOL` - define the protocol, such as `tcp` or `udp`
