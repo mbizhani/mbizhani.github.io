@@ -398,12 +398,15 @@ EOL
 - `mp3splt` [[REF](https://manpages.debian.org/testing/mp3splt/mp3splt.1.en.html)]
   - `mp3splt -f -a -t MIN.SEC FILE` - Split by Time
   - `mp3splt -f -a -S NUMBERS FILE` - Split by Parts
-- `youtube-dl URL`
+- `yt-dlp (youtube-dl) URL`
   - `-F` - list all formats
   - `-f 22` - download best format (both audio and video)
   - `--skip-download` - no download, just for subtitle
-  - `--write-auto-sub` - download subtitle
+  - `--list-subs`
+  - `--write-auto-sub` - download auto-generated subtitle
+  - `--write-sub` - download subtitle
   - `--sub-lang en` - english subtitle
+  - `--convert-subs=srt` - convert subtitle format to `srt`
 
 ### VMWare
 - VM Hardware Hot Add/Detection
