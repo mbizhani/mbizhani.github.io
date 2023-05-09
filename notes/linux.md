@@ -463,21 +463,21 @@ EOL
 
 ### Utility Apps
 
-| Function          | App                                                                                       |
-|-------------------|-------------------------------------------------------------------------------------------|
-| Media Converter   | `HandBrake` `WinFF`(using `ffmpeg` library)                                               |
-| Screen Snapshot   | **`Flameshot`**                                                                           |
-| Screen Recorder   | **`obs-studio`** **`asciinema`**[[player](https://github.com/asciinema/asciinema-player)] |
-| Screen Annotate   | `gromit-mpx`                                                                              |
-| Code Editor       | **`Intellij Idea`** `VSCode` `Atom` `Sublime Text`                                        |
-| Kubernetes Editor | [**`k8slens.dev`**](https://k8slens.dev/)                                                 |
-| Diff/Merge Files  | **`meld`** `vimdiff`                                                                      |
-| Note/Wiki Editor  | `Zim`                                                                                     |
-| PDF               | `Foxit Reader` `unoconv`(doc converter)                                                   |
-| Photo Editor      | **`Krita`**, `Inkscape`, `RawTherapee`                                                    |
-| Diagram Editor    | [`draw.io`](https://www.draw.io/)                                                         |
-| Download Manager  | [**`XDM`**](https://github.com/subhra74/xdm)                                              |
-| Remoting Client   | `remmina`                                                                                 |
-| Shell Monitoring  | System: `htop` <br/> Network: `iptraf` `tcptrack`                                         |
-| Shell Utility     | **`tmux`** `multitail`                                                                    |
+| Function         | App                                                                                       |
+|------------------|-------------------------------------------------------------------------------------------|
+| Media Converter  | `HandBrake` `WinFF`(using `ffmpeg` library)                                               |
+| Screen Snapshot  | **`Flameshot`**                                                                           |
+| Screen Recorder  | **`obs-studio`** **`asciinema`**[[player](https://github.com/asciinema/asciinema-player)] |
+| Screen Annotate  | `gromit-mpx`                                                                              |
+| Code Editor      | **`Intellij Idea`** `VSCode` `Atom` `Sublime Text`                                        |
+| Kubernetes CLI   | [**`k9s`**](https://k9scli.io)                                                            |
+| Diff/Merge Files | **`meld`** `vimdiff`                                                                      |
+| Note/Wiki Editor | `Zim`                                                                                     |
+| PDF              | `Foxit Reader` `unoconv`(doc converter)                                                   |
+| Photo Editor     | **`Krita`**, `Inkscape`, `RawTherapee`                                                    |
+| Diagram Editor   | [`draw.io`](https://www.draw.io/)                                                         |
+| Download Manager | [**`XDM`**](https://github.com/subhra74/xdm)                                              |
+| Remoting Client  | `remmina`                                                                                 |
+| Shell Monitoring | System: `htop` <br/> Network: `iptraf` `tcptrack`                                         |
+| Shell Utility    | **`tmux`** `multitail`                                                                    |
 
