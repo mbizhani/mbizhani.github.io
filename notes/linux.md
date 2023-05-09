@@ -58,6 +58,13 @@ find /path/to/folders/* -type d \
 |`docker images | grep rancher | awk '{I=$1; gsub("/", "_", $1); print "docker save -o "$1"_"$2".tar "I":"$2}' | bash` | export images as tar                   |
 |`apt list firefox* | grep firefox | awk -F '/' '{print "apt-mark hold "$1}' | bash`                                   | hold all `firefox` packages            |
 
+### sed cmd
+
+- `sed -n '/START_DATE/,/FINISH_DATE/p' LOG_FILE` - [Read Log Files Between Two Dates](https://www.baeldung.com/linux/read-logs-between-dates)
+  - `sed -n '/SINGLE_DATE/p' LOG_FILE`
+  - `-n`: not output each line of the file it reads
+  - `p` : prints lines that match the preceding expression
+
 
 ## User Management
 
@@ -354,19 +361,21 @@ openssl pkcs12 -legacy -in ${PFX_FILE} -clcerts -nokeys | sed -ne '/-BEGIN CERTI
 **-- ISO Image Addresses --**
 - [Stable](https://cdimage.debian.org/debian-cd/current/amd64/iso-dvd/)
 - [Testing/Weekly-Builds](https://cdimage.debian.org/cdimage/weekly-builds/amd64/iso-dvd/)
-- [Testing/Weekly-Builds + Non-free](https://cdimage.debian.org/cdimage/unofficial/non-free/cd-including-firmware/weekly-builds/amd64/iso-dvd/)
+- About **non-free**, from version 12 (_bookworm_) onward, Debian's installation and live images now include all of those firmware packages ([REF](https://wiki.debian.org/Firmware#Debian_12_.28bookworm.29_and_later)).
+  - All the packaged non-free firmware binaries that Debian can distribute have been moved to a new component in the Debian archive, called `non-free-firmware`, so you should update the apt `sources.list`.
 - [Live](https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/)
 
 **-- APT Config --**
 File - `/etc/apt/sources.list`
 ```
-deb http://deb.debian.org/debian <RELEASE> main contrib non-free
+deb http://deb.debian.org/debian <RELEASE> main contrib non-free non-free-firmware
 
-deb http://deb.debian.org/debian <RELEASE>-updates main contrib non-free
+deb http://deb.debian.org/debian <RELEASE>-updates main contrib non-free non-free-firmware
 
-deb http://deb.debian.org/debian-security <RELEASE>-security main contrib non-free
+deb http://deb.debian.org/debian-security <RELEASE>-security main contrib non-free non-free-firmware
 ```
 - For testing - `<RELEASE>:=testing`
+  - NOTE: `non-free-firmware` from version 12 (bookworm) onward
 - For stable  - `<RELEASE>:=stable|bullseye|buster`
 
 ### Hold Packages
