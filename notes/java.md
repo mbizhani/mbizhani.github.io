@@ -59,12 +59,18 @@ Following graph shows `java.util.Date`, and other `java.time.*` classes conversi
 </div>
 
 ## Concurrency
-- **Visibility Problem**: a variable is cached in CPU's cache and its change is not _visible_ to other thread(s) running by other cores
-  - Results in _instruction reordering_!
+
+- **Visibility Problem** ([Jenkov](http://tutorials.jenkov.com/java-concurrency/volatile.html) & [Baeldung](https://www.baeldung.com/java-volatile))
+  - A variable is cached in CPU's cache and its change is not _visible_ to other thread(s) running by other cores.
+  - With non-volatile variables there are no guarantees about when the JVM reads data from main memory into CPU caches, or writes data from CPU caches to main memory.
   - Solutions
-    - Use `volatile` modifier ([REF](http://tutorials.jenkov.com/java-concurrency/volatile.html))
+    - Use `volatile` modifier
+      - mark a variable as "being stored in main memory", not from the CPU cache
+      - every write will be written to main memory
+      - guarantees _visibility_ of changes to variables across threads without providing mutual exclusion
     - Use `Atomic*` type for primitive types (they have `volatile` variable inside!)
-    - Variables in `synchronized` blocks or methods 
+    - Variables in `synchronized` blocks or methods
+
 - **Race Condition**: updating shared variable by concurrent threads. Solutions
   - _Confinement_: Don't share
   - _Immutability_: Immutable data structures
