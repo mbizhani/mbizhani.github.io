@@ -8,7 +8,10 @@ theme: blood
 <section data-markdown data-separator="===" data-separator-vertical="^---$">
   <textarea data-template>
 
-## Data @ Software
+# Data @ Software
+
+===
+## Data Models & Query Languages
 
 ===
 ### Data Models
@@ -31,7 +34,7 @@ theme: blood
 - **Polyglot persistence** - use both SQL & NoSQL alongside
 
 ===
-### Sample Model
+### Sample Model (1/4)
 
 - In relational model, entities are mapped to tables
 - In document model, it can be contained in a JSON
@@ -42,38 +45,192 @@ theme: blood
 ![resume-class-diagram](/assets/images/slides/data/resume-class-diagram01.png)
 
 ---
-### Sample Model
+### Sample Model (2/4)
 
 - We don't want to repeat _Industry_ & _Region_ (normalization)
-- Refactor `Education` & `Position` (adding two mode `*-to-` relations)
+- Refactor `Education` & `Position` (adding two more `*-to-1` relations)
 - Now, only `Education`, `Postion`, and `ContactInfo` are _local_ to `User` 
 
 ![resume-class-diagram](/assets/images/slides/data/resume-class-diagram02.png)
 
 ---
-### Sample Model
+### Sample Model (3/4)
 So in document model
 - `*-to-1`
-  - Not fit nicely
-  - Need _implicit_ joins
-  - Usually no join support (need multiple queries)
+  - Not fit nicely, need _implicit_ joins
+  - Usually no join support, such as MongoDB, needs multiple queries (_RethinkDB_ supports)
+  - Data has a tendency of becoming more interconnected as features are added to applications
 - `1-to-*`
   - Perfect
   - Fetched by single query
 
-===
-### Query Languages
+---
+### Sample Model (4/4)
 
-- SQL
-  - Declarative lang
-  - Can be executed in parallel
-- MapReduce
-  - A programming model for processing large amounts of data in bulk across many machines
-  - Available in MongoDB and CouchDB
-  - `map` known as _collect_, and `reduce` known as _fold_ or _inject_
+![resume-m-2-m](/assets/images/slides/data/resume-m2m-rels.png)
+
+- Data within each dotted rectangle can be grouped into one document
+- References to _organizations_, _schools_, and other _users_ require joins when queried
+
+===
+#### Hierarchical vs Network Model (1/2)
+
+- Start data from a root record
+- Hierarchical
+  - _CODASYL_ Model
+  - Tree structure, every record has exactly one parent
+  - A query in CODASYL: moving a cursor through the database by iterating over lists of records and following _access paths_
+  - Similar to document model: storing nested records
+
+---
+#### Hierarchical vs Network Model (2/2)
+
+- Network
+  - A record could have multiple parents
+  - Links between records are not foreign keys
+
+===
+### Data Locality
+
+- Document Model - a JSON has the data and its nested elements in one fetch
+- Oracle multi-table index cluster tables
+- Column family in the Bigtable model such as Cassandra & HBase
+
+===
+### Query Languages - SQL
+
+- Declarative lang
+  - You define _what_ to want
+  - But _how_ to achieve the goal is up to the database system’s query optimizer
+- Can be executed in parallel
+
+```sql
+SELECT
+  date_trunc('month', observation_timestamp) AS observ_month,
+  sum(num_animals) AS total_animals
+FROM observations
+WHERE family = 'Sharks'
+GROUP BY observ_month
+```
+
+---
+### Query Languages - MapReduce (1/3)
+
+- A programming model for processing large amounts of data in bulk across many machines
+- Available in MongoDB and CouchDB
+- `map` known as _collect_, and `reduce` known as _fold_ or _inject_
+- Writing two carefully coordinated functions, which is often harder than writing a single query
+
+---
+### Query Languages - MapReduce (2/3)
+
+```js
+db.observations.mapReduce(
+    function map() {
+        var year = this.observationTimestamp.getFullYear();
+        var month = this.observationTimestamp.getMonth() + 1;
+        emit(year + "-" + month, this.numAnimals);
+    },
+    function reduce(key, values) {
+        return Array.sum(values);
+		},
+    {
+        query: { family: "Sharks" },
+        out: "monthlySharkReport"
+    }
+);
+```
+
+---
+### Query Languages - MapReduce (3/3)
+- MongoDB Solution: _aggregation pipeline_
+
+```js
+db.observations.aggregate([
+    { $match: { family: "Sharks" } },
+    { $group: {
+        _id: {
+            year: { $year: "$observationTimestamp" },
+            month: { $month: "$observationTimestamp" }
+        },
+        totalAnimals: { $sum: "$numAnimals" }
+    } }
+]);
+```
 
 ===
 ### Graph-Like Data Model
+
+- If many-to-many relationships are very common in your data
+- Types
+  - Property graph model (e.g Neo4j, InfiniteGraph)
+  - Triple-store model
+- Declarative query languages
+  - Cypher
+  - SPARQL
+  - Datalog
+
+===
+## Storage & Retrieval
+
+===
+### Simple Key-Value Store
+
+```shell
+#!/bin/bash
+
+db_set () {
+  echo "$1,$2" >> database
+}
+
+db_get () {
+  grep "^$1," database | sed -e "s/^$1,//" | tail -n 1
+}
+
+db_set 12 '{"name":"London","attractions":["Big Ben","London Eye"]}'
+db_set 42 '{"name":"San Francisco","attractions":["Golden Gate Bridge"]}'
+db_get 42
+# OUTPUT: {"name":"San Francisco","attractions":["Golden Gate Bridge"]}
+```
+
+---
+### Log-file Data Store
+
+- Pros
+  - Append-only sequence of records
+  - Fast write data `db-set`
+- Cons
+  - Slow read data `db-get`, O(n) lookup -> we should use _index_
+  - Large data file -> solutions are _segmentation_ & _compaction_ 
+
+---
+#### Segmentation, Compaction & Merge
+
+- Segmentation - create a new log file based on specific size limit
+- Compaction - throwing away duplicate keys with the most recent update for each key
+
+![Segmentation, Compaction & Merge](/assets/images/slides/data/seg-compac-merge.png)
+
+---
+### Concurrency Control
+
+- Write data by only thread
+- Read concurrently by multiple threads
+
+---
+### Index
+
+- Pros
+  - **Well-chosen** indexes speed up read queries
+- Cons
+  - Every index slows down writes
+
+===
+### Hash Index
+
+- In previous example, an in-memory hash map where every key is mapped to a byte offset in the data file
+- Example _Bitcask_ in _Riak_
+- This structure is suitable when the value for each key is updated frequently (e.g. the value is a counter) 
 
   </textarea>
 </section>
