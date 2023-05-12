@@ -72,7 +72,7 @@ find /path/to/folders/* -type d \
 
 | Command                                  | Description                    |
 |------------------------------------------|--------------------------------|
-| `adduser USERNAME`                       | add new user                   |
+| `useradd -m -s /bin/bash USERNAME`       | add new user (`-m`: home dir)  |
 | `usermod -a -G GRP1[,GRP2,...] USERNAME` | append groups to user's groups |
 | `usermod -g GRP USERNAME`                | change user’s primary group    |
 
