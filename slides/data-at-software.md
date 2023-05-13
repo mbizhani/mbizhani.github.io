@@ -177,20 +177,20 @@ db.observations.aggregate([
 ### Simple Key-Value Store
 
 ```shell
-#!/bin/bash
-
+# O(1) - append
 db_set () {
   echo "$1,$2" >> database
 }
 
+# O(n) - fetch
 db_get () {
+  # 'tail -n 1' fetch latest key
   grep "^$1," database | sed -e "s/^$1,//" | tail -n 1
 }
 
-db_set 12 '{"name":"London","attractions":["Big Ben","London Eye"]}'
-db_set 42 '{"name":"San Francisco","attractions":["Golden Gate Bridge"]}'
-db_get 42
-# OUTPUT: {"name":"San Francisco","attractions":["Golden Gate Bridge"]}
+db_set 12 '{"name":"London","attractions":["London Eye"]}'
+db_get 12
+# OUTPUT: {"name":"London","attractions":["London Eye"]}
 ```
 
 ---
@@ -206,16 +206,10 @@ db_get 42
 ---
 #### Segmentation, Compaction & Merge
 
-- Segmentation - create a new log file based on specific size limit
-- Compaction - throwing away duplicate keys with the most recent update for each key
+- **Segmentation** - create a new log file based on specific size limit
+- **Compaction** - throwing away duplicate keys with the most recent update for each key
 
 ![Segmentation, Compaction & Merge](/assets/images/slides/data/seg-compac-merge.png)
-
----
-### Concurrency Control
-
-- Write data by only thread
-- Read concurrently by multiple threads
 
 ---
 ### Index
@@ -225,12 +219,69 @@ db_get 42
 - Cons
   - Every index slows down writes
 
-===
+---
 ### Hash Index
 
-- In previous example, an in-memory hash map where every key is mapped to a byte offset in the data file
+- Using an in-memory hash map where every key is mapped to a byte offset in the data file
 - Example _Bitcask_ in _Riak_
-- This structure is suitable when the value for each key is updated frequently (e.g. the value is a counter) 
+- This structure is suitable when the value for each key is updated frequently (e.g. the value is a counter)
+
+---
+### Real Projects Issues
+
+- **File format** - using binary instead of CSV
+- **Deleting Records** - append the key with _tombstone_ mark, later discard on merge
+- **Crash recovery** - storing a snapshot of in-memory hash index on disk 
+- **Partially written records** - using checksums to ignore corrupted data
+- **Concurrency control**
+  - Only one thread to write data
+  - Multiple threads to read concurrently
+
+===
+### SSTables
+
+- **SSTable** = Sorted String Table
+- Store key-value pairs _sorted by key_
+  - Merge segment files like _mergesort_
+  - Same key in multiple segments, get the value from the most recent segment
+- No need to keep an index of all the keys in memory
+  - Find a range in index
+  - Scan sorted keys inside the range in the data file
+
+---
+### SSTables - Sample
+
+![SSTable on Disk](/assets/images/slides/data/sstable-on-disk.png)
+
+- Looking for _handiwork_
+  - In index, it is between _handbag_ & _handsome_
+  - Scan in data file inside the range
+
+---
+### SSTables - Sparse Index
+
+![SSTable on Disk](/assets/images/slides/data/sstable-on-disk.png)
+- One key for every few kilobytes of segment file is sufficient
+  - Group those records into a block and compress it before writing it to disk
+
+---
+### SSTables - Process (1/2)
+
+- On write, add record to an in-memory balanced tree, called _memtable_.
+- When the memtable reaches to a size limit, flush it to disk as an SSTable file as the most recent segment.
+  - While the SSTable is being written out to disk, writes can continue to a new memtable instance.
+
+---
+### SSTables - Process (2/2)
+
+- On read, first try to find the key in the memtable, then in the most recent on-disk segment, and then older ones.
+- From time to time, run a merging and compaction process in the background.
+- To avoid crash, we can keep a separate log on disk to which every write is immediately appended not in sorted order.
+  - The log file will be truncated after flushing the memtable to an SSTable.
+
+===
+### LSM-tree out of SSTables
+
 
   </textarea>
 </section>
