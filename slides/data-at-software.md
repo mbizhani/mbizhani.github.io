@@ -59,7 +59,7 @@ So in document model
 - `*-to-1`
   - Not fit nicely, need _implicit_ joins
   - Usually no join support, such as MongoDB, needs multiple queries (_RethinkDB_ supports)
-  - Data has a tendency of becoming more interconnected as features are added to applications
+  - **Data has a tendency of becoming more interconnected as features are added to applications**
 - `1-to-*`
   - Perfect
   - Fetched by single query
@@ -225,6 +225,8 @@ db_get 12
 - Using an in-memory hash map where every key is mapped to a byte offset in the data file
 - Example _Bitcask_ in _Riak_
 - This structure is suitable when the value for each key is updated frequently (e.g. the value is a counter)
+- It must fit in memory, so not suitable for very large number of keys.
+- Range queries are not efficient.
 
 ---
 ### Real Projects Issues
@@ -280,7 +282,12 @@ db_get 12
   - The log file will be truncated after flushing the memtable to an SSTable.
 
 ===
-### LSM-tree out of SSTables
+### LSM-tree
+
+- LSM-tree = Log-Structured Merge-Tree
+- Used in _LevelDB_ and _RocksDB_
+- Storage engines based on merging and compacting of sorted files
+- In Lucene, mapping from term to postings list (list of IDs of all the documents) is kept in SSTable-like sorted files, which are merged in the background as needed.
 
 
   </textarea>
