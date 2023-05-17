@@ -289,6 +289,66 @@ db_get 12
 - Storage engines based on merging and compacting of sorted files
 - In Lucene, mapping from term to postings list (list of IDs of all the documents) is kept in SSTable-like sorted files, which are merged in the background as needed.
 
+===
+### B-Tree - Introduction
+
+- Most widely used indexing structure
+- Keep key-value pairs sorted by key (like _SSTable_)
+  - Efficient for key lookup and range query
+- Using fixed-size blocks, called _pages_
+  - Read/Write one page at a time
+  - Each page can be identified using an address or location
+- Always _balanced_
+  - _n_ keys => O(log _n_) depth
+
+---
+### B-Tree - Sample
+
+![BTree Lookup](/assets/images/slides/data/btree-lookup.png)
+
+---
+### B-Tree - Lookup
+
+- Root Page - first page as the starting point
+- Child Page - having a continuous range of keys and reference to other children
+- Leaf Page - having real key-value (inline value or ref to a page contains the value)
+- Branching Factor - number of references in a page (in prev figure is 6)
+
+---
+### B-Tree - Update Value
+
+- Find leaf page by key
+- Change value for that key
+- Write back (replace) the modified page
+
+---
+### B-Tree - Add New Key (1/2)
+
+- Find leaf page containing the range for the new key
+- If there is enough space in the leaf page, add new key
+- Else
+  - Split the leaf page into two half-full pages
+  - Update parent page
+
+---
+### B-Tree - Add New Key (2/2)
+
+![BTree Add New Key](/assets/images/slides/data/btree-add-new-key.png)
+
+---
+### B-Tree - Reliability
+
+- Problem: database crash on rebalancing pages
+- Using _write-ahead log_ (_WAL_) or _redo log_
+  - Append-only file
+  - Writing every B-tree modification before applying the changes to the pages of the tree itself
+- Careful concurrency control
+  - Protecting the tree’s data structures with _latches_ (lightweight locks)
+
+---
+### B-Tree Optimizations
+
+
 
   </textarea>
 </section>
