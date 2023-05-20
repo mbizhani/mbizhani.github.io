@@ -104,7 +104,34 @@ public static void main(String[] args) throws Exception {
   simpleTh.join();
   System.out.println("'simple' is false"); // This line may not be printed!
 }
-``` 
+```
+
+### Thread-safe Singleton
+
+- [[REF](https://www.baeldung.com/spring-boot-singleton-vs-beans)]
+- Lazy initialization
+- Using `synchronized` block to prevent race condition
+- Using _double-checked locking_ to prevent recreation by different threads
+
+```java
+public final class ThreadSafeSingleInstance {
+
+    private static volatile ThreadSafeSingleInstance INSTANCE = null;
+
+    private ThreadSafeSingleInstance() {}
+
+    public static ThreadSafeSingleInstance getInstance() {
+        if (INSTANCE == null) {
+            synchronized(ThreadSafeSingleInstance.class) {
+                if (INSTANCE == null) {
+	                INSTANCE = new ThreadSafeSingleInstance();
+                }
+            }
+        }
+        return instance;
+    }
+}
+```
 
 ## JDBC
 

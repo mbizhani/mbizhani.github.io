@@ -513,9 +513,79 @@ java.util.Date dt2 = ...;
 ```
 
 ===
+### Singleton DP
+
+- Lazy Init Singleton
+
+```java
+public final class ThreadSafeSingleton {
+	private static volatile ThreadSafeSingleton INSTANCE = null;
+
+	public static ThreadSafeSingleton getInstance() {
+		if (INSTANCE == null) {
+			synchronized (ThreadSafeSingleton.class) {
+				if (INSTANCE == null) {
+					INSTANCE = new ThreadSafeSingleton();
+				}
+			}
+		}
+		return instance;
+	}
+	// private constructor & other methods ...
+}
+```
+
+---
+#### Initialization on Demand (*)
+
+```java
+public class LazyInitSingleton {
+
+	private static class InstanceHolder {
+		private static final LazyInitSingleton INSTANCE =
+          new LazyInitSingleton();
+	}
+
+	public static LazyInitSingleton getInstance() {
+		return InstanceHolder.INSTANCE;
+	}
+
+	// private constructor & other methods ...
+}
+```
+
+---
+#### Enum Singleton
+
+```java
+public enum EnumSingleton {
+	INSTANCE;
+
+	// other methods...
+}
+```
+
+---
+#### Early Initialization
+
+```java
+public class EarlyInitSingleton {
+	private static final EarlyInitSingleton INSTANCE =
+		new EarlyInitSingleton();
+
+	public static EarlyInitSingleton getInstance() {
+		return INSTANCE;
+	}
+
+	// private constructor & other methods ...
+}
+```
+
+===
 ### References
 - Oracle Certified Professional Java SE 17 Developer Study Guide Exam 1Z0-829, Scott Selikoff, Jeanne Boyarsky
 - [Java Interview Questions for 5 years Experience](https://www.interviewbit.com/java-interview-questions-for-5-years-experience/)
+- [Double-Checked Locking with Singleton](https://www.baeldung.com/java-singleton-double-checked-locking)
 
 
   </textarea>
