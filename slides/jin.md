@@ -1,7 +1,7 @@
 ---
 layout: slide
-caption: Java Interview Questions
-description: Java Interview Questions
+caption: Java Interview Notes
+description: Java Interview Notes
 theme: blood
 extra: highlight
 ---
@@ -9,7 +9,7 @@ extra: highlight
 <section data-markdown data-separator="===" data-separator-vertical="^---$">
   <textarea data-template>
 
-## Java Interview Questions
+## Java Interview Notes
 
 ===
 ### Variables
