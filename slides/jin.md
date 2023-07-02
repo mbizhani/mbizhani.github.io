@@ -211,13 +211,31 @@ int s2 = sheep >= 10 ? sheep++ : zzz++; // sheep=2,zzz=2
 - If both operands are numeric, `+` means numeric addition.
 - If either operand is a `String`, `+` means concatenation.
 - **The expression is evaluated left to right.**
+- The `+` operator is evaluated at compile time.
 
 ---
-#### String Pool
+#### String Pool (1/2)
 
 - Using the `new` operator for `String`, ensures that it is created in the heap (not into the string pool). 
 - Using literal `String` ensures that the string is created in the string pool. 
   - String pool exists as part of the perm area in the heap.
+
+---
+#### String Pool (2/2)
+
+```java
+String s1 = "hello" + "world";
+String s2 = "helloworld";
+System.out.println(s1 == s2); // true
+
+String s3 = "hello" + "world";
+String s4 = "hello".concat("world");
+System.out.println(s3 == s4); // false
+
+String s5 = "hello" + "world";
+String s6 = "hello".concat("world").intern();
+System.out.println(s5 == s6); // true
+```
 
 ---
 #### Text Block
@@ -254,6 +272,41 @@ int s2 = sheep >= 10 ? sheep++ : zzz++; // sheep=2,zzz=2
   int ids[], types;  // only 'ids' is array
   int[] a[], b[][];  // 'a' is 2D, 'b' is 3D array
   ```
+
+===
+### Collections
+
+- `Collection` extends `Iterable`
+  - `List`
+  - `Set`
+    - `SortedSet`
+  - `Queue`
+    - `Deque` (Double ended queue)
+    - `BlockingQueue`
+- `Map`
+  - `SortedMap`
+  - `ConcurrentMap`
+
+---
+### Thread-Safe (1/2)
+
+- Followings are without **external synchronization**
+- `ConcurrentLinkedQueue`
+  - lock-free algorithm, all operations are atomic
+- `CopyOnWriteArrayList`
+  - updates to the list through a copy-on-write mechanism, then used for subsequent reads
+- `EnumSet`
+  - a bit vector to store its elements, all operations are atomic
+
+---
+### Thread-Safe (2/2)
+
+- `EnumMap`
+  - optimized for use with enum keys
+  - uses an array of entries, each cell associated with a unique enum constant
+- `ConcurrentHashMap`
+  - lock striping technique
+  - the map is divided into segments, and each segment is locked independently
 
 ===
 ### Pattern Matching
