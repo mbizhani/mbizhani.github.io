@@ -27,9 +27,10 @@ theme: blood
 
 - It is all about behavior!
 - The changes to superclass may affect all subclasses.
-- Adding an `abstract` method to the superclass forces all subclasses to implement it.
+- Adding an `abstract` method to the superclass forces all subclasses to implement it (code duplication!).
   - Taking those methods to separate interface(s) is the same problem!
-  - Altering the hierarchy and inserting an abstract class in the middle may solve the problem for **some** behaviors. 
+  - Altering the hierarchy and inserting an abstract class in the middle may solve the problem for **some** behaviors.
+  - Difficult to alter behavior at runtime
 
 
 ===
@@ -65,9 +66,23 @@ theme: blood
 ===
 ### Categories
 
-| Creational | Structural  | Behavioral |
-|------------|-------------|------------|
-| Singleton  | Composition | Strategy   |
+| Creational | Structural | Behavioral            |
+|------------|------------|-----------------------|
+|            |            | [Strategy](#strategy) |
+|            |            | [Observer](#observer) |
+
+
+===
+### Strategy
+
+- It defines a family of algorithms
+  - Encapsulates each one into a separate class
+  - Makes them interchangeable
+
+
+
+===
+### Observer
 
 
 ===
