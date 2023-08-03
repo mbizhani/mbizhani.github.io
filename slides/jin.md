@@ -12,12 +12,38 @@ extra: highlight
 ## Java Interview Notes
 
 ===
+### Java Keywords
+
+![Java Keywords](/assets/images/slides/jiq/keywords.png)
+
+---
+### Java Reserved Words
+
+- `const`
+- `goto`
+- Literals
+  - `true`
+  - `false`
+  - `null`
+
+---
+### Java Restricted Identifiers
+
+- They can be used for variable and method names, but not for type declarations.
+  - So, they are also called **reserved type**
+- `var`
+- `record`
+- `yield`
+- `sealed`
+- `permits`
+
+===
 ### Variables
 
 #### `var`
 - `var` is only used for local variable type inference
 - `var` is not a reserved word and allowed to be used as an identifier
-  - It is a `reserved type` name which means it cannot be used to define a type, such as a `class`, `interface`, or `enum`
+  - It is a **reserved type** name which means it cannot be used to define a type, such as a `class`, `interface`, or `enum`
 
 ---
 #### Example 1
@@ -88,9 +114,10 @@ public class Var {
 byte a = 2 + 100;
 short b = 100 * 10;
 byte c = 2 * 200;  // COMPILE ERROR - int result
+byte a1 = ++a;
 
 long l = 10;
-a += b + l;
+a += b + l; // not binary arithmetic opr
 a = a + b;  // COMPILE ERROR (int promotion)
 
 short s = a + b;  // COMPILE ERROR (int promotion)
@@ -99,8 +126,6 @@ int j = a + b + 1l;  // COMPILE ERROR (long promotion)
  
 float d = a + 1.0;  // COMPILE ERROR (double promotion)
 float f = a + 1.0f;
-
-byte a1 = ++a;
 ```
 
 ---
@@ -285,8 +310,8 @@ if(value instanceof Integer data) {} // COMPILE ERROR
 Number number = 10;
 
 // COMPILE ERROR in both following lines
-//   Can't resolve symbole `data`
-if(number instanceof Integer data || data.compareTo(5) > 0)
+//   Can't resolve symbol `data`
+if (number instanceof Integer data || data.compareTo(5) > 0)
     System.out.println(data);
 ```
 
