@@ -37,4 +37,12 @@ title: Slides
         </div>
     </div>
 
+    <div class="card border-primary" style="max-width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">Design Patterns</h5>
+            <p class="card-text">Introduction to design patterns</p>
+            <a href="/slides/design-patterns" class="btn btn-primary" target="_blank">Start</a>
+        </div>
+    </div>
+
 </div>
