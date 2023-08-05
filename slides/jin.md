@@ -1,7 +1,6 @@
 ---
 layout: slide
 caption: Java Interview Notes
-description: Java Interview Notes
 theme: blood
 extra: highlight
 ---

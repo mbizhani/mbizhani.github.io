@@ -1,7 +1,6 @@
 ---
 layout: slide
 caption: Design Patterns
-description: Design Patterns
 theme: blood
 ---
 

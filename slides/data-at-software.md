@@ -1,17 +1,16 @@
 ---
 layout: slide
 caption: Data @ Software
-description: Handling Data in Software
 theme: blood
 ---
 
 <section data-markdown data-separator="===" data-separator-vertical="^---$">
   <textarea data-template>
 
-# Data @ Software
+## Data @ Software
 
 ===
-## Data Models & Query Languages
+### Data Models & Query Languages
 
 ===
 ### Data Models

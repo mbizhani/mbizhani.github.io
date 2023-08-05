@@ -1,7 +1,6 @@
 ---
 layout: slide
 caption: Software Stuff
-description: Software Design & Architecture & Engineering
 theme: blood
 ---
 

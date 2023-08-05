@@ -1,7 +1,6 @@
 ---
 layout: slide
 caption: SOLID Principles 
-description: SOLID Principles
 theme: blood
 ---
 
