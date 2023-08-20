@@ -186,8 +186,26 @@ iface eth0 inet static
     - `-p PROTOCOL` - define the protocol, such as `tcp` or `udp`
       - `--dport NUM` - port number for `tcp` or `udp` (`-p` is required)
 
-**Note:** Create an executable script in `/etc/network/if-pre-up.d`, and define your rules in cmd format in it 
-to automate defining custom rules on system's restart.
+**Note:** Create an executable script in `/etc/network/if-pre-up.d`, and define your rules in it 
+to automate defining custom rules on system's restart. For example:
+
+```shell
+#!/bin/bash
+
+INC="ens192"
+
+# Enable NAT on interface INC
+if [ "${IFACE}" == "${INC}" ]; then
+  iptables -t nat -A POSTROUTING -o ${INC} -j MASQUERADE
+fi
+
+if [ "${IFACE}" == "--all" ]; then
+  iptables -A INPUT -s 192.168.1.10,192.168.1.11,172.17.0.0/16 -p tcp --dport 9876 -j ACCEPT
+  iptables -A INPUT -s 0.0.0.0/0 -p tcp --dport 9876 -j DROP
+fi
+```
+
+Based on number of your interfaces, this script is called, and each time the `${IFACE}` may have `lo`, `--all`, and interface names.
 
 REFS
   - [How To List and Delete Iptables Firewall Rules](https://www.digitalocean.com/community/tutorials/how-to-list-and-delete-iptables-firewall-rules)
