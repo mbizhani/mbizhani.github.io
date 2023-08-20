@@ -42,6 +42,8 @@ toc: true
 - `helm repo update` - update repo(s) metadata (i.e `apt update`)
 - `helm pull REPO/NAME [--untar] [--version=VER]`
   - `helm pull rancher-stable/rancher --untar --version=2.5.5`
+- `helm pull CHART --repo URL [--untar] [--version=VER]`
+  - `helm pull rook-ceph --repo https://charts.rook.io/release --version v1.12.2`
 
 
 ## Template
