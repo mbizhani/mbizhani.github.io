@@ -185,6 +185,9 @@ iface eth0 inet static
     - `-j TARGET` - most usable targets are `ACCEPT` or `DROP`
     - `-p PROTOCOL` - define the protocol, such as `tcp` or `udp`
       - `--dport NUM` - port number for `tcp` or `udp` (`-p` is required)
+  - NAT
+    - Enable (private to public) - `iptables -t nat -A POSTROUTING -o <OUTGOING_ETH_NAME> -j MASQUERADE`
+    - Port forward (public to private) - `iptables -t nat -A PREROUTING -p tcp --dport <PORT> -j DNAT --to-destination <IP_IN_PRIVATE>`
 
 **Note:** Create an executable script in `/etc/network/if-pre-up.d`, and define your rules in it 
 to automate defining custom rules on system's restart. For example:
