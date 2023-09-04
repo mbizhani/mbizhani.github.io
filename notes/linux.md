@@ -53,6 +53,7 @@ find /path/to/folders/* -type d \
 | Command                                                                                                              | Description                            |
 |----------------------------------------------------------------------------------------------------------------------|----------------------------------------|
 |`find . -iname "*.rar" -printf "%f\n" | awk -F ".part" '{print $1}' | sort | uniq`                                    | list rar-parted files                  |
+|`find . -maxdepth 1 -exec bash -c "echo -ne '{}\t'; ls '{}' | wc -l" \; | awk -F"\t" '$NF==1{print $1}'`              | find dir(s) containing only one file   |
 |`docker ps -a -f "status=exited" | awk '$3 ~ /runner/ {print "docker rm "$1}' | bash`                                 | remove GitLab Runner exited containers |
 |`docker images -q -f "dangling=true" | awk '{print "docker rmi -f "$1}' | bash`                                       | remove dangling Docker images          |
 |`docker images | grep rancher | awk '{I=$1; gsub("/", "_", $1); print "docker save -o "$1"_"$2".tar "I":"$2}' | bash` | export images as tar                   |
